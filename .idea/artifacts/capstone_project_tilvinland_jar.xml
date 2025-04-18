@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="capstone-project-tilvinland:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/capstone_project_tilvinland_jar</output-path>
+    <root id="archive" name="capstone-project-tilvinland.jar">
+      <element id="module-output" name="capstone-project-tilvinland" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../23-lib/lib/slf4j-api-2.0.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../23-lib/lib/slf4j-nop-2.0.9.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
