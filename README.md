@@ -16,3 +16,9 @@ for the player.
 Problems building or running Til Vinland?
 * Ensure you have JDK 21 installed.
 * Run MainTest.java in your text editor to check for any issues.
+
+# Running
+* Download the latest release from the GitHub repo
+* Unzip the .jar file
+* Navigate to the unzipped folder in a Command Console
+* run the command 'java -jar capstone-project-tilvinland.jar'
