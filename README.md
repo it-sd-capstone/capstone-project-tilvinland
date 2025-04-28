@@ -7,10 +7,10 @@ with Java and SQLite to help create the GUI and database
 for the player.
 
 # Installation
-Includes IntelliJ IDEA project.
+Requires a text editor like Intellij IDEA or Virural Studio Code
 Includes JUnit.
 Includes SQLite.
-Includes JDK 21 to run.
+Requires JDK 21 to run. Download here: https://www.oracle.com/java/technologies/downloads/
 
 # Testing
 Problems building or running Til Vinland?
