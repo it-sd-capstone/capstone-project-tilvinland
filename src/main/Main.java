@@ -18,52 +18,12 @@ public class Main {
     static PreparedStatement statementEvent;
     private static final int TIMEOUT_STATEMENT_S = 5;
 
-    // GUI variables
-    static JPanel deck;
-    static JLabel labelReason;
-    static JLabel labelUser;
-    static JLabel labelState;
-    static JButton buttonAcknowledge;
-    private static final String CARD_MAIN = "Main";
-
     public static void main(String[] args) {
         // Test if application boots properly
         System.out.println("Wattup");
 
-        //Test JFrame GUI initialization
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setMinimumSize(new Dimension(320, 240));
-        frame.setPreferredSize(new Dimension(960, 540));
-        frame.setMaximumSize(new Dimension(1920, 1080));
-
-        deck = new JPanel(new CardLayout());
-        Font fontMain = new Font(Font.SANS_SERIF, Font.PLAIN, 24);
-
-        // Main panel
-        JPanel panelMain = new JPanel();
-        panelMain.setLayout(new BoxLayout(panelMain, BoxLayout.PAGE_AXIS));
-        panelMain.setMinimumSize(new Dimension(320, 240));
-        panelMain.setPreferredSize(new Dimension(960, 540));
-        panelMain.setMaximumSize(new Dimension(1920, 1080));
-        panelMain.setBackground(Color.black);
-
-        panelMain.add(Box.createVerticalGlue());
-        JLabel labelDirective = new JLabel("Til Vinland", JLabel.LEADING);
-        labelDirective.setFont(fontMain);
-        labelDirective.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        labelDirective.setForeground(Color.cyan);
-        panelMain.add(labelDirective);
-
-        panelMain.add(Box.createVerticalGlue());
-
-        deck.add(panelMain, CARD_MAIN);
-        frame.getContentPane().add(deck, BorderLayout.CENTER);
-
-        // Display the GUI
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        //Runs the main game window from the GameFrame.java class
+        GameFrame mainFrame = new GameFrame();
     }
 
     public static Connection createConnection() {
@@ -74,15 +34,15 @@ public class Main {
             command.setQueryTimeout(TIMEOUT_STATEMENT_S);
 
             // Create the tables if needed.
-//            command.executeUpdate("CREATE TABLE IF NOT EXISTS player (id INTEGER PRIMARY KEY, name TEXT NOT NULL, score INTEGER NOT NULL)");
             command.executeUpdate("CREATE TABLE IF NOT EXISTS statuses (statusId INTEGER PRIMARY KEY, statusName TEXT NOT NULL, healthEffect INTEGER NOT NULL)");
-            command.executeUpdate("CREATE TABLE IF NOT EXISTS party (memberNum INTEGER PRIMARY KEY, statusId INTEGER FOREIGN KEY, health INTEGER NOT NULL, name TEXT NOT NULL)");
+            command.executeUpdate("CREATE TABLE IF NOT EXISTS party (memberNum INTEGER PRIMARY KEY, FOREIGN KEY (statusId) REFERENCES statuses(statusId), health INTEGER NOT NULL, name TEXT NULL)");
             command.executeUpdate("CREATE TABLE IF NOT EXISTS locations (locationsId INTEGER PRIMARY KEY, locationName TEXT NOT NULL, locationDiff INTEGER NOT NULL, " +
                     "locationDesc TEXT NOT NULL, locationType INTEGER NOT NULL, shop INTEGER KEY)");
             command.executeUpdate("CREATE TABLE IF NOT EXISTS events (eventId INTEGER PRIMARY KEY, eventName TEXT NOT NULL, eventDesc TEXT NOT NULL,eventType TEXT NOT NULL)");
+            command.executeUpdate("INSERT INTO ");
 
             // Set SQL statement
-//            statementScoreBoard = result.prepareStatement("UPDATE players SET score = ? WHERE id = ?");
+//            "INSERT INTO statuses (statusId, statusName, healthEffect) VALUES (1, 'Wounded', -10)" <- ex: To fill in table
             statementParty = result.prepareStatement("UPDATE party SET health = ? WHERE memberNum = ?");
         }
         catch (Exception e) {
