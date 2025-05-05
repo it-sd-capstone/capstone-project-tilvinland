@@ -122,7 +122,7 @@ public class Main {
     }
 
     public static boolean run() {
-
+        return true;
     }
 
     public static void decideEvent(int event, int mainEvent) {
@@ -182,9 +182,9 @@ public class Main {
         }
         playerName ="";//TODO read player4 name
         if (playerName.equals("")) {
-            party.add(new Player(playerName, 3, 0));
+            party.add(new Player(playerName, 4, 0));
         } else {
-            party.add(new Player(playerName, 3, 1));
+            party.add(new Player(playerName, 4, 1));
         }
 
     }
