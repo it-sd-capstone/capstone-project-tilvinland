@@ -3,8 +3,14 @@ package main;
 import javax.swing.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.AbstractDocument;
+import javax.swing.text.*;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.awt.SystemColor.text;
 import java.sql.*;
 
 public class Main {
@@ -18,6 +24,40 @@ public class Main {
     static PreparedStatement statementParty;
 
     private static final int TIMEOUT_STATEMENT_S = 5;
+
+
+    private static Random rng;
+
+    private static class InputFilter extends DocumentFilter {
+        private static final int MAX_LENGTH = 10;
+
+        @Override
+        public void insertString(FilterBypass fb, int offset, String stringToAdd, AttributeSet attr)
+                throws BadLocationException {
+
+            String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+
+            if (fb.getDocument() != null) {
+                if ((fb.getDocument().getLength() + stringToAdd.length()) <= MAX_LENGTH && text.matches("^[a-zA-Z0-9]*$")) {
+                    super.insertString(fb, offset, stringToAdd, attr);
+                }
+
+            } else {
+                Toolkit.getDefaultToolkit().beep();
+            }
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int lengthToDelete, String stringToAdd, AttributeSet attr)
+                throws BadLocationException {
+            if (fb.getDocument() != null) {
+                if ((fb.getDocument().getLength() - lengthToDelete + stringToAdd.length()) <= MAX_LENGTH)
+                    super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
+            } else {
+                Toolkit.getDefaultToolkit().beep();
+            }
+        }
+    }
 
     public static void main(String[] args) {
         // Test if application boots properly
@@ -118,4 +158,52 @@ public class Main {
         }
         return result;
     }
+
+    public static void setSeed(String input) {
+        long seed = (long) input.hashCode();
+        rng = new Random();
+        rng.setSeed(seed);
+
+    }
+
+    // Adds starter items to player's inventory using items table in database
+    // IDK the ID/Name yet so I just used these as placeholders, will adjust later -JH
+    public static void addItem(Connection db, Player player) {
+        try {
+            // query to look up item name and description by ID
+            PreparedStatement itemQuery = db.prepareStatement("SELECT name, description FROM items WHERE id = ?");
+
+            // Add Wood (ID: 1?, Quantity: 100)
+            itemQuery.setInt(1, 1);
+            ResultSet result = itemQuery.executeQuery();
+            if (result.next()) {
+                player.addToInventory(new Item(result.getString("name"), 1, result.getString("description"), 100));
+            }
+            result.close();
+
+            // Add Loot (ID: 2?, Quantity: 100)
+            itemQuery.setInt(1, 2);
+            result = itemQuery.executeQuery();
+            if (result.next()) {
+                player.addToInventory(new Item(result.getString("name"), 2, result.getString("description"), 100));
+            }
+            result.close();
+
+            // Add Food (ID: 3?, Quantity: 100)
+            itemQuery.setInt(1, 3);
+            result = itemQuery.executeQuery();
+            if (result.next()) {
+                player.addToInventory(new Item(result.getString("name"), 3, result.getString("description"), 100));
+            }
+            result.close();
+
+            itemQuery.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }
+
