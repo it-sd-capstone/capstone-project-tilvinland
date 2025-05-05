@@ -45,7 +45,7 @@ public class Main {
             command.executeUpdate("INSERT INTO statuses (statusName, healthEffect) VALUES ('Deceased', -100)");
 
             /* ------- Party Table ------- */
-            command.executeUpdate("CREATE TABLE IF NOT EXISTS party (memberNum INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (statusId) REFERENCES statuses(statusId), health INTEGER NOT NULL, name TEXT NULL)");
+            command.executeUpdate("CREATE TABLE IF NOT EXISTS party (memberNum INTEGER PRIMARY KEY AUTOINCREMENT, health INTEGER NOT NULL, name TEXT NULL, statusId INTEGER NOT NULL, FOREIGN KEY (statusId) REFERENCES statuses(statusId))");
 
             /* ------- Locations Table ------- */
             command.executeUpdate("CREATE TABLE IF NOT EXISTS locations (locationsId INTEGER PRIMARY KEY AUTOINCREMENT, locationName TEXT NOT NULL, locationDiff INTEGER NOT NULL, " +
@@ -68,11 +68,11 @@ public class Main {
             /* ------- Events Table ------- */
             command.executeUpdate("CREATE TABLE IF NOT EXISTS events (eventId INTEGER PRIMARY KEY AUTOINCREMENT, eventName TEXT NOT NULL, eventDesc TEXT NOT NULL, eventType TEXT NOT NULL)");
             // Static event data 1-5
-            command.executeUpdate("INSERT INTO events (eventId, eventName, eventDesc, eventType) VALUES (1, ?, ?, ?)");
-            command.executeUpdate("INSERT INTO events (eventId, eventName, eventDesc, eventType) VALUES (2, ?, ?, ?)");
-            command.executeUpdate("INSERT INTO events (eventId, eventName, eventDesc, eventType) VALUES (3, ?, ?, ?)");
-            command.executeUpdate("INSERT INTO events (eventId, eventName, eventDesc, eventType) VALUES (4, ?, ?, ?)");
-            command.executeUpdate("INSERT INTO events (eventId, eventName, eventDesc, eventType) VALUES (5, ?, ?, ?)");
+            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName1', 'staticDesc1', 'staticType1')");
+            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName2', 'staticDesc2', 'staticDesc2')");
+            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName3', 'staticDesc3', 'staticDesc3')");
+            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName4', 'staticDesc4', 'staticDesc4')");
+            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName5', 'staticDesc5', 'staticDesc5')");
 
             // Fills events table
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Start', 'We are about to make a long voyage across the seas. We better stock up on any supplies we will need for the long trip.', 'Shop')");
@@ -88,8 +88,8 @@ public class Main {
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Greenland', 'A rocky coast line where large animals can be seen from the shore. We could stock up on more food or repair our ship for the voyage ahead.', 'Land')");
 
             /* ------- Saves & Score Table ------- */
-            command.executeUpdate("CREATE TABLE IF NOT EXISTS saves (saveId INTEGER PRIMARY KEY AUTOINCREMENT, saveName TEXT NOT NULL, FOREIGN KEY (locationsId) REFERENCES locations(locationsId), " +
-                    "FOREIGN KEY (eventsId) REFERENCES events(eventsId), FOREIGN KEY (memberNum) REFERENCES party(memberNum))");
+            command.executeUpdate("CREATE TABLE IF NOT EXISTS saves (saveId INTEGER PRIMARY KEY AUTOINCREMENT, saveName TEXT NOT NULL, locationsId INTEGER NOT NULL, eventsId INTEGER NOT NULL, memberNum INTEGER NOT NULL, " +
+                    "FOREIGN KEY (locationsId) REFERENCES locations(locationsId), FOREIGN KEY (eventsId) REFERENCES events(eventsId), FOREIGN KEY (memberNum) REFERENCES party(memberNum))");
             command.executeUpdate("CREATE TABLE IF NOT EXISTS score (scoreId INTEGER PRIMARY KEY AUTOINCREMENT, player TEXT NULL, score INTEGER NOT NULL, time TEXT NOT NULL)");
 
             // Set SQL statement
