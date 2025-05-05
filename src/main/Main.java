@@ -112,5 +112,43 @@ public class Main {
 
     }
 
+    // Adds starter items to player's inventory using items table in database
+    // IDK the ID/Name yet so I just used these as placeholders, will adjust later -JH
+    public static void addItem(Connection db, Player player) {
+        try {
+            // query to look up item name and description by ID
+            PreparedStatement itemQuery = db.prepareStatement("SELECT name, description FROM items WHERE id = ?");
+
+            // Add Wood (ID: 1?, Quantity: 100)
+            itemQuery.setInt(1, 1);
+            ResultSet result = itemQuery.executeQuery();
+            if (result.next()) {
+                player.addToInventory(new Item(result.getString("name"), 1, result.getString("description"), 100));
+            }
+            result.close();
+
+            // Add Loot (ID: 2?, Quantity: 100)
+            itemQuery.setInt(1, 2);
+            result = itemQuery.executeQuery();
+            if (result.next()) {
+                player.addToInventory(new Item(result.getString("name"), 2, result.getString("description"), 100));
+            }
+            result.close();
+
+            // Add Food (ID: 3?, Quantity: 100)
+            itemQuery.setInt(1, 3);
+            result = itemQuery.executeQuery();
+            if (result.next()) {
+                player.addToInventory(new Item(result.getString("name"), 3, result.getString("description"), 100));
+            }
+            result.close();
+
+            itemQuery.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 }
