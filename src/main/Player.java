@@ -1,4 +1,7 @@
 package main;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Player {
 
@@ -7,6 +10,10 @@ public class Player {
     private int health;
     private int status;
     private int active;
+    private List<Item> inventory = new ArrayList<>();
+    private String inventoryDisplay;
+
+
 
     public Player ( String name, int id, int active) {
         this.name = name;
@@ -62,5 +69,56 @@ public class Player {
 
     public void healthGain(int change) {
         health += change;
+    }
+
+    public List<Item> getInventory() {return inventory;}
+
+    public String getInventoryDisplay() {return inventoryDisplay;}
+
+    // Adds item to player inventory
+    public void addToInventory(Item newItem) {
+        for (Item item : inventory) {
+            if (item.getId() == newItem.getId()) {
+                item.addItem(newItem.getAmount());  // Increase quantity if present
+                return;
+            }
+        }
+        inventory.add(newItem);  // add item if not present
+    }
+
+    // Removes quantity of item from inventory
+    public void removeFromInventory(int itemId, int amount) {
+        for (int i = 0; i < inventory.size(); i++) {
+            Item item = inventory.get(i);
+            if (item.getId() == itemId) {
+                item.removeItem(amount); // subtract amount given
+                if (item.getAmount() <= 0) {
+                    inventory.remove(i);  // remove item completely if empty
+                }
+                return;
+            }
+        }
+    }
+
+    // Stores a string of the player's inventory for potential display in JPanel
+    public String checkInventory() {
+        if (inventory.isEmpty()) {
+            inventoryDisplay = "Inventory is empty.\n";  // << MAKE SURE THIS HAS \n
+            return inventoryDisplay;
+        }
+
+        StringBuilder output = new StringBuilder("Current Inventory:\n");
+        for (Item item : inventory) {
+            output.append("- ")
+                    .append(item.getName())
+                    .append(": ")
+                    .append(item.getAmount())
+                    .append(" (")
+                    .append(item.getDescription())
+                    .append(")\n");
+        }
+
+        inventoryDisplay = output.toString();
+        return inventoryDisplay;
     }
 }
