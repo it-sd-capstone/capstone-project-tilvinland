@@ -121,6 +121,10 @@ public class Main {
 
     }
 
+    public static boolean run() {
+
+    }
+
     public static void decideEvent(int event, int mainEvent) {
         if (event % 4 == 0) {
             if (mainEvent == 0) {
@@ -166,21 +170,21 @@ public class Main {
         }
         playerName ="";//TODO read player2 name
         if (playerName.equals("")) {
-            party.add(new Player(playerName, 1, 0));
+            party.add(new Player(playerName, 2, 0));
         } else {
-            party.add(new Player(playerName, 1, 1));
+            party.add(new Player(playerName, 2, 1));
         }
         playerName ="";//TODO read player3 name
         if (playerName.equals("")) {
-            party.add(new Player(playerName, 1, 0));
+            party.add(new Player(playerName, 3, 0));
         } else {
-            party.add(new Player(playerName, 1, 1));
+            party.add(new Player(playerName, 3, 1));
         }
         playerName ="";//TODO read player4 name
         if (playerName.equals("")) {
-            party.add(new Player(playerName, 1, 0));
+            party.add(new Player(playerName, 3, 0));
         } else {
-            party.add(new Player(playerName, 1, 1));
+            party.add(new Player(playerName, 3, 1));
         }
 
     }
@@ -213,14 +217,14 @@ public class Main {
             // hunker down
             ship.removeHealth(10);
             if (ship.getHealth() <= 0) {
-                score = totalScore();
+                score = totalScore(createConnection());
                 //TODO move to Sank ship end screen
             }
         } else if (event == 8) {
             // push through rough waters
             ship.removeHealth(20);
             if (ship.getHealth() <= 0) {
-                score = totalScore();
+                score = totalScore(createConnection());
                 //TODO move to Sank ship end screen
             }
         } else if (event == 9) {
