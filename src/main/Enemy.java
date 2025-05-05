@@ -38,4 +38,8 @@ public class Enemy {
         }
 
     }
+
+    public void removeHealth(int amount) {
+        health -= amount;
+    }
 }

@@ -28,7 +28,7 @@ public class Ship {
     }
 
     public void addHealth(int lumber) {
-        int amountHeal = lumber * 4;
+        int amountHeal = lumber * 5;
         health += amountHeal;
         if (health > 100) {
             health = 100;
