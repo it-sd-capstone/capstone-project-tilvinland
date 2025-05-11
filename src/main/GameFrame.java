@@ -2,8 +2,10 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 
 public class GameFrame extends JFrame {
@@ -40,7 +42,10 @@ public class GameFrame extends JFrame {
     //ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
 
 
-    public GameFrame() {
+    public GameFrame() throws SQLException {
+        // Reference Main and Database
+        Main main = new Main();
+        Connection db = main.createConnection();
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -140,7 +145,7 @@ public class GameFrame extends JFrame {
         JLabel dbStatText = new JLabel();
         dbStatText.setText("Ship Status: " + debugShip.getStatus());
 
-        JButton hpUpButton = new JButton("+5 Lumber(20 HP)");
+        JButton hpUpButton = new JButton("+5 Lumber(25 HP)");
         hpUpButton.setPreferredSize(new Dimension(200,50));
         JButton hpDownButton = new JButton("-20 HP");
         hpDownButton.setPreferredSize(new Dimension(200,50));
@@ -173,7 +178,6 @@ public class GameFrame extends JFrame {
                 dbStatText.setText("Ship Status: " + debugShip.getStatus());
             }
         });
-
 
         /* ------------ Ship Status Panel ------------ */
         JPanel status = new JPanel();
@@ -228,8 +232,12 @@ public class GameFrame extends JFrame {
         JButton eventOptionFour = new JButton();
         eventOptionFour.setPreferredSize(new Dimension(200,50));
 
+        // Random generator for event name & description (Maybe needed to have them ref same ID)
+        Random rng = new Random();
+        int randomEvent = rng.nextInt(5) + 1;
+
         JLabel eventTitle = new JLabel();
-        eventTitle.setText("Placeholder");
+        eventTitle.setText(main.fetchEvent(db,"name", randomEvent));
         eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         eventTitle.setForeground(alertorange);
 
@@ -242,7 +250,7 @@ public class GameFrame extends JFrame {
         eventDescription.setFocusable(false);
         eventDescription.setBackground(transparent);
         eventDescription.setLineWrap(true);
-        eventDescription.setText("PLACEHOLDER DESCRIPTION");
+        eventDescription.setText(main.fetchEvent(db,"desc", randomEvent));
         eventDescription.setForeground(emerald);
 
         eventOptionOne.setText("Option One");
@@ -313,10 +321,27 @@ public class GameFrame extends JFrame {
                 } else { // The field has anything else entered or is blank (run with seed)
 
                 }
-
             }
         });
 
+        // Event Option Buttons
+        eventOptionOne.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {}
+        });
+
+        eventOptionTwo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {}
+        });
+
+        eventOptionThree.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {}
+        });
+
+        eventOptionFour.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {}
+        });
+
+        // See Ship Stats Button
         shipStatButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(deck, STATS);
