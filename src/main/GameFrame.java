@@ -323,8 +323,12 @@ public class GameFrame extends JFrame {
             }
         });
 
-        //TODO Should load the last game in progress
-        loadButton.addActionListener(e -> System.out.println("Error: No save game found"));
+        // Load button logic
+        loadButton.addActionListener(e -> {
+            Main.loadSave();
+            // auto switches to next screen after loading
+            cardLayout.show(deck, PLAY);
+        });
 
         // Add deck panel to the frame
         this.add(deck);
