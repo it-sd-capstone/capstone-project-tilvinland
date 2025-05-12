@@ -26,6 +26,7 @@ public class Main {
 
     private static final int TIMEOUT_STATEMENT_S = 5;
 
+    private static GameFrame gameFrame;
 
     private static Random rng;
     private static int eventTotal;
@@ -73,7 +74,7 @@ public class Main {
         System.out.println("Wattup");
 
         //Runs the main game window from the GameFrame.java class
-        GameFrame mainFrame = new GameFrame();
+        gameFrame = new GameFrame();
     }
 
     public static Connection createConnection() {
@@ -247,6 +248,7 @@ public class Main {
     public static void runEvent(int event) { // Noncombat events
         if (event == 1) {
             // Shop events 1 - 4
+            getGameFrame().switchToPanel(gameFrame.WELSHOP);
             //TODO open Shop window
         } else if (event == 2) {
             // Buy lumber
@@ -442,6 +444,10 @@ public class Main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static GameFrame getGameFrame() {
+        return gameFrame;
     }
 
 }
