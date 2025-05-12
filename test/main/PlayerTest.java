@@ -95,4 +95,26 @@ public class PlayerTest {
         assertEquals(1, finalOutput.size());
         assertEquals("Inventory is empty.", finalOutput.get(0));
     }
+    @Test
+    public void testHealthLoss() {
+        Player player = new Player("Test", 1, 1);
+        player.healthLoss(150); // Should go below zero
+        assertTrue(player.getHealth() <= 0, "Health should not be below zero");
+        assertEquals(-50, player.getHealth(), "Health should match expected value -50");
+    }
+
+    @Test
+    public void testStatus() {
+        Player player = new Player("StatusTest", 1, 1);
+
+        // Alive
+        player.setStatus(1);
+        assertEquals(1, player.getStatus(), "Status should be 1 (alive)");
+
+        // Deceased
+        player.setStatus(0);
+        assertEquals(0, player.getStatus(), "Status should be 0 (deceased)");
+    }
+
+
 }
