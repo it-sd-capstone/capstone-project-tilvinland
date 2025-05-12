@@ -20,6 +20,7 @@ public class GameFrame extends JFrame {
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
     String LOCATION = "Location";
+    CardLayout cardLayout = new CardLayout();
 
     //Custom Colors
     private Color emerald = new Color(105,220,158);
@@ -45,7 +46,6 @@ public class GameFrame extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // set CardLayout to the deck panel layout manager
-        CardLayout cardLayout = new CardLayout();
         deck.setLayout(cardLayout);
 
         /* ------------ Main Menu Panel ------------ */
