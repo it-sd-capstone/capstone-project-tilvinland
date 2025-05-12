@@ -525,7 +525,6 @@ public class Main {
             System.err.println("Load game failed!");
             e.printStackTrace();
         }
-
     }
 
     // Accessors for testing
@@ -535,6 +534,10 @@ public class Main {
 
     public static ArrayList<Item> getItems() {
         return items;
+    }
+
+    public static void removeItem(int id, int amount) {
+        items.get(id).removeItem(amount);
     }
 
     public static String getSeedUsed() {
