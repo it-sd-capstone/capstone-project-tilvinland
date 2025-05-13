@@ -21,10 +21,10 @@ public class GameFrame extends JFrame {
     private static String currentPanel = "Main Menu";
     private static String previousPanel = "Main Menu";
 
-    private static CardLayout cardLayout = new CardLayout();
+    CardLayout cardLayout = new CardLayout();
 
     // Deck Panels
-    static JPanel deck = new JPanel();
+    JPanel deck = new JPanel();
     String MAIN = "Main Menu";
     String WELCOME = "Welcome Menu";
     String WELSHOP = "Welcome Shop";

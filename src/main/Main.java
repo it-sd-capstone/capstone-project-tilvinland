@@ -28,7 +28,6 @@ public class Main {
 
     private static final int TIMEOUT_STATEMENT_S = 5;
 
-    private static GameFrame gameFrame;
 
     private static Random rng;
     private static int eventTotal;
@@ -39,6 +38,12 @@ public class Main {
     private static Enemy enemy;
     private static ArrayList<Player> party = new ArrayList<Player>();
     private static ArrayList<Item> items = new ArrayList<Item>();
+    private static int activePlayers;
+
+    //Runs the main game window from the GameFrame.java class
+    private static GameFrame mainFrame = new GameFrame();
+
+
 
     private static class InputFilter extends DocumentFilter {
         private static final int MAX_LENGTH = 10;
@@ -71,12 +76,8 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
-        // Test if application boots properly
-        System.out.println("Wattup");
-
-        //Runs the main game window from the GameFrame.java class
-        gameFrame = new GameFrame();
+    public static void main(String[] args) {
+        initializeLists();
     }
 
     public static Connection createConnection() {
@@ -119,33 +120,37 @@ public class Main {
 
             /* ------- Events Table ------- */
             command.executeUpdate("CREATE TABLE IF NOT EXISTS events (eventId INTEGER PRIMARY KEY AUTOINCREMENT, eventName TEXT NOT NULL, eventDesc TEXT NOT NULL, eventType TEXT NOT NULL)");
-            // Static event data 1-5
-            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName1', 'staticDesc1', 'staticType1')");
-            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName2', 'staticDesc2', 'staticDesc2')");
-            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName3', 'staticDesc3', 'staticDesc3')");
-            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName4', 'staticDesc4', 'staticDesc4')");
-            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('staticName5', 'staticDesc5', 'staticDesc5')");
 
             // Fills events table
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Start', 'We are about to make a long voyage across the seas. We better stock up on any supplies we will need for the long trip.', 'Shop')");
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Vinland', 'Fresh lands where we are going to settle. Time to set up a base camp so we can get working shelter and food so we can make it through the coming winter.', 'End')");
+            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Scotland', 'A Scottish Village can be seen on the coast and might not be keen to see you near their village. We can stop here to repair our ship or raid them for supplies. If we do raid " +
+                    "them for supplies it might be a challenge.', 'Land')");
+            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Iceland', 'An island village that welcomes you to their village. This might be a good time to restock on supplies or repair any damage that the ship has sustained.', 'Land')");
+            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Greenland', 'A rocky coast line where large animals can be seen from the shore. We could stock up on more food or repair our ship for the voyage ahead.', 'Land')");
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Calm Seas', 'With how calm the seas are today it seems like a good time to fish for some food or repair our ship.', 'Sea')");
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Rough Seas', 'Huge waves have made travel difficult. If we are not careful we might damage our ship or worse injure ourselves.', 'Sea')");
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Storm', 'A storm has rolled in. With the huge swells and rain, travel will be a challenge. We can push through and risk death or play it safe and sail another day.', 'Sea')");
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Village', 'A small coastal village that might have supplies we could use. How we acquire these supplies is up to you.', 'Land')");
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Forest', 'A wooded coastline that would be perfect for finding more food or getting some lumber for ship repairs.', 'Land')");
-            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Scotland', 'A Scottish Village can be seen on the coast and might not be keen to see you near their village. We can stop here to repair our ship or raid them for supplies. If we do raid " +
-                    "them for supplies it might be a challenge.', 'Land')");
-            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Iceland', 'An island village that welcomes you to their village. This might be a good time to restock on supplies or repair any damage that the ship has sustained.', 'Land')");
-            command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Greenland', 'A rocky coast line where large animals can be seen from the shore. We could stock up on more food or repair our ship for the voyage ahead.', 'Land')");
+
+            /* ------- Enemy Table ------- */
+            command.executeUpdate("CREATE TABLE IF NOT EXISTS enemy (enemyId INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(30) NOT NULL, health INT NOT NULL)");
+
+            // Fills enemy table
+            command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Knight', 150)"));
+            command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Village Man', 50)"));
+            command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Gaurd Captin', 100)"));
+            command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Bear', 100)"));
+            command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Thief', 70)"));
 
             /* ------- Saves & Score Table ------- */
             command.executeUpdate("CREATE TABLE IF NOT EXISTS saves (saveId INTEGER PRIMARY KEY AUTOINCREMENT, saveName TEXT NOT NULL, locationsId INTEGER NOT NULL, eventsId INTEGER NOT NULL, memberNum INTEGER NOT NULL, " +
                     "FOREIGN KEY (locationsId) REFERENCES locations(locationsId), FOREIGN KEY (eventsId) REFERENCES events(eventsId), FOREIGN KEY (memberNum) REFERENCES party(memberNum))");
-            command.executeUpdate("CREATE TABLE IF NOT EXISTS score (scoreId INTEGER PRIMARY KEY AUTOINCREMENT, player TEXT NULL, score INTEGER NOT NULL, time TEXT NOT NULL)");
+            command.executeUpdate("CREATE TABLE IF NOT EXISTS score (scoreId INTEGER PRIMARY KEY AUTOINCREMENT, score INT NOT NULL, time TEXT NOT NULL)");
 
             // Set SQL statement
-            statementScore = result.prepareStatement("INSERT INTO score (player, score, time) VALUES (?, ?, date())");
+            statementScore = result.prepareStatement("INSERT INTO score (score, time) VALUES (?, date())");
             statementNewMember = result.prepareStatement("INSERT INTO party (statusId, health, name) VALUES (1, 100, ?)");
             statementSave = result.prepareStatement("INSERT INTO saves (saveName, locationsId, eventsId, memberNum) VALUES (?, ?, ?, ?)");
             statementSaveOverwrite = result.prepareStatement("UPDATE saves SET saveName = ?, locationsId = ?, eventsId = ?, memberNum = ? WHERE saveId = ?");
@@ -179,90 +184,59 @@ public class Main {
 
     }
 
-    public static String fetchEvent(Connection db, String eventInfo, int num) throws SQLException {
-        ResultSet result;
-        rng = new Random();
-
-        if (eventInfo != null) {
-            String upCaseEventInfo = Character.toUpperCase(eventInfo.charAt(0)) + eventInfo.substring(1);
-            statementFetchEvent = db.prepareStatement("SELECT event" + upCaseEventInfo + " FROM events WHERE eventId = ?");
-
-            statementFetchEvent.setInt(1, num);
-
-            result = statementFetchEvent.executeQuery();
-
-            if (result.next()) {
-                return result.getString("event" + upCaseEventInfo);
-            }
-        }
-
-        return "No event " + eventInfo.toLowerCase() + " found";
-    }
-
-    public static boolean run() {
-        return true;
-    }
 
     public static void decideEvent(int event, int mainEvent) {
         if (event % 4 == 0) {
             if (mainEvent == 0) {
-                //TODO Change to Start Event panel
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
                 currentEvent = 1;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 1) {
-                //TODO Change to British Isle Event panel
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
                 currentEvent = 2;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 2) {
-                //TODO Change to Iceland Event panel
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
                 currentEvent = 3;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 3) {
-                //TODO Change to Greenland Event panel
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
                 currentEvent = 4;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 4) {
-                //TODO Change to End event panel
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
                 currentEvent = 5;
                 mainEventTotal++;
                 eventTotal++;
             }
         } else {
             currentEvent = Math.max(6, 5 + rng.nextInt(6));
-            //TODO Change to selected random event
+            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
             eventTotal++;
         }
     }
 
-    public static void createParty() {
+    public static void initializeLists() {
         party.clear();
-        String playerName ="";//TODO read player1 name
-        if (playerName.equals("")) {
-            party.add(new Player(playerName, 1, 0));
-        } else {
-            party.add(new Player(playerName, 1, 1));
-        }
-        playerName ="";//TODO read player2 name
-        if (playerName.equals("")) {
-            party.add(new Player(playerName, 2, 0));
-        } else {
-            party.add(new Player(playerName, 2, 1));
-        }
-        playerName ="";//TODO read player3 name
-        if (playerName.equals("")) {
-            party.add(new Player(playerName, 3, 0));
-        } else {
-            party.add(new Player(playerName, 3, 1));
-        }
-        playerName ="";//TODO read player4 name
-        if (playerName.equals("")) {
-            party.add(new Player(playerName, 4, 0));
-        } else {
-            party.add(new Player(playerName, 4, 1));
+        party.add(new Player("", 0, 0));
+        party.add(new Player("", 1, 0));
+        party.add(new Player("", 2, 0));
+        party.add(new Player("", 3, 0));
+
+        items.clear();
+        items.add(new Item("Gold", 0, "Used to trade for materials", 100));
+        items.add(new Item("Rations", 1, "Food", 100));
+        items.add(new Item("Lumber", 2, "Used to fix ships", 100));
+    }
+
+    public static void createParty(String name, int id, int active) {
+        if (name != null) {
+            party.get(id).setName(name);
+            party.get(id).setActive(active);
         }
 
     }
@@ -270,69 +244,69 @@ public class Main {
     public static void runEvent(int event) { // Noncombat events
         if (event == 1) {
             // Shop events 1 - 4
-            getGameFrame().switchToPanel(gameFrame.WELSHOP);
-            //TODO open Shop window
+            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.WELSHOP);
+            //TODO
         } else if (event == 2) {
             // Buy lumber
-            //TODO add lumber
-            //TODO take gold
+            addInventory(2, 5);
+            removeItem(0, 10);
         } else if (event == 3) {
             // buy Rations
-            //TODO add Rations
-            //TODO take gold
+            addInventory(1, 10);
+            removeItem(0, 10);
         } else if (event == 4) {
             // Return to event
-            //TODO swap back to current event
+            //TODO
         } else if (event == 5) {
             // Run next event
-            //TODO take rations from inventory
+            removeItem(1, activePlayers * 5);
             decideEvent(eventTotal, mainEventTotal);
         } else if (event == 6) {
             // fishing
             int itemTOAdd = rng.nextInt(10);
-            //TODO add Rations
-            //TODO move to panel showing added food // maybe
+            addInventory(1, 10);
+            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 7) {
             // hunker down
             ship.removeHealth(10);
             if (ship.getHealth() <= 0) {
-                score = totalScore(createConnection());
-                //TODO move to Sank ship end screen
+                score = totalScore(createConnection(), party, items, ship);
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
             }
         } else if (event == 8) {
             // push through rough waters
             ship.removeHealth(20);
             if (ship.getHealth() <= 0) {
-                score = totalScore(createConnection());
-                //TODO move to Sank ship end screen
+                score = totalScore(createConnection(), party, items, ship);
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
             }
         } else if (event == 9) {
             // push through heavy storm
             ship.removeHealth(30);
             if (ship.getHealth() <= 0) {
-                score = totalScore(createConnection());
-                //TODO move to Sank ship end screen
+                score = totalScore(createConnection(), party, items, ship);
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
             }
         } else if (event == 10) {
             // repair ship
-            //TODO change to ship repair menu
+            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 11) {
             ship.addHealth(1);
-            //TODO refresh window
+            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 12) {
             // hunt
             int itemTOAdd = rng.nextInt(10);
-            //TODO add Rations
-            //TODO move to panel showing added food // maybe
+            addInventory(1, 10);
+            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 13) {
             // CHopping wood
             int itemTOAdd = rng.nextInt(10);
-            //TODO add lumber
-            //TODO move to panel showing added lumber // maybe
+            addInventory(2, 10);
+            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 14) {
             // END
-            score = totalScore(createConnection());
-            //TODO move to win screen
+            score = totalScore(createConnection(), party, items, ship);
+            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 15) {
             // Start combat
             int enemyId = 0;
@@ -373,32 +347,39 @@ public class Main {
             enemy.removeHealth(10);
             if (enemy.isDefeated()) {
                 //TODO move to finish panel
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                //TODO ADD ITEMS TO PLAYERS INVENTORY
             } else {
                 //TODO refresh panel
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
             }
         } else if (winner == 0) {
 
             do {
                 partyMemberAtt = rng.nextInt(4) - 1;
-            } while (party.get(partyMemberAtt).getActive() != 1);
+            } while (party.get(partyMemberAtt).getActive() != 1 && party.get(partyMemberAtt).getStatus() != 1);
 
             party.get(partyMemberAtt).healthLoss(10);
-            if (party.get(partyMemberAtt).getHealth() < 0) {
+            if (party.get(partyMemberAtt).getHealth() <= 0) {
                 party.get(partyMemberAtt).setHealth(0);
+                party.get(partyMemberAtt).setStatus(2);
             }
-            if (partyWipe()) {
-                score = totalScore(createConnection());
+            if (partyWipe(party)) {
+                score = totalScore(createConnection(), party, items, ship);
                 //TODO move to party wipe panel
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
             } else {
                 //TODo refresh Screen
+                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
             }
         } else {
             // TODO refresh Screen
+            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         }
 
     }
 
-    public static boolean partyWipe() {
+    public static boolean partyWipe(ArrayList<Player> party) {
         boolean wipe = false;
         for (int i = 0; i < party.size(); i++) {
             if (party.get(i).getHealth() > 0) {
@@ -410,9 +391,10 @@ public class Main {
         return wipe;
     }
 
-    public static int totalScore(Connection db) {
+    public static int totalScore(Connection db, ArrayList<Player> party, ArrayList<Item> items, Ship ship) {
         int totalhealth = 0;
         int totalItems = 0;
+        int score = 0;
 
         for (int i = 0; i < party.size(); i++) {
             totalhealth += party.get(i).getHealth();
@@ -421,55 +403,56 @@ public class Main {
         for (int i = 0; i < items.size(); i++) {
             totalItems += items.get(i).getAmount();
         }
-
-        return (totalhealth * 5) + (totalItems * 4) + (ship.getHealth() * 10);
+        score = (totalhealth * 5) + (totalItems * 4) + (ship.getHealth() * 10);
+        try {
+            statementScore.setInt(1, score);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return score;
     }
 
     public static void startCombat(int enemyID, Connection db) {
-        //TODO update enemy to match at database id enemyID
+
+        try {
+            PreparedStatement enemyStmt = db.prepareStatement("SELECT * FROM enemy WHERE enemyId = ?");
+            enemyStmt.setInt(1, enemyID);
+
+            ResultSet rs = enemyStmt.executeQuery();
+
+            if (rs.next()) {
+                enemy.setName(rs.getString("name"));
+                enemy.setHealth(rs.getInt("health"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to start combat");
+            e.printStackTrace();
+        }
         //TODO change to combat panel
+        mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
     }
 
+    public static void saveGame() {
+        //TODO
+    }
+
+    public static void loadGame() {
+        //TODO
+    }
 
     // Adds starter items to player's inventory using items table in database
     // IDK the ID/Name yet so I just used these as placeholders, will adjust later -JH
-    public static void addItem(Connection db, Player player) {
-        try {
-            // query to look up item name and description by ID
-            PreparedStatement itemQuery = db.prepareStatement("SELECT name, description FROM items WHERE id = ?");
-
-            // Add Wood (ID: 1?, Quantity: 100)
-            itemQuery.setInt(1, 1);
-            ResultSet result = itemQuery.executeQuery();
-            if (result.next()) {
-                player.addToInventory(new Item(result.getString("name"), 1, result.getString("description"), 100));
-            }
-            result.close();
-
-            // Add Loot (ID: 2?, Quantity: 100)
-            itemQuery.setInt(1, 2);
-            result = itemQuery.executeQuery();
-            if (result.next()) {
-                player.addToInventory(new Item(result.getString("name"), 2, result.getString("description"), 100));
-            }
-            result.close();
-
-            // Add Food (ID: 3?, Quantity: 100)
-            itemQuery.setInt(1, 3);
-            result = itemQuery.executeQuery();
-            if (result.next()) {
-                player.addToInventory(new Item(result.getString("name"), 3, result.getString("description"), 100));
-            }
-            result.close();
-
-            itemQuery.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public static void addInventory(int id, int amount) {
+        items.get(id).addItem(amount);
     }
 
-    public static GameFrame getGameFrame() {
-        return gameFrame;
+
+    public static void removeItem(int id, int amount) {
+        items.get(id).removeItem(amount);
+    }
+
+    public static int checkInventory(int id) {
+        return items.get(id).getAmount();
     }
 
 }
