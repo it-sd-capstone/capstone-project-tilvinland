@@ -7,17 +7,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
+//TODO add a control panel to each side of the main control panels using border east and west for party and ship stats and save and load/main menu
+//TODO set up random event panel and play buttons to re-roll random events.
+//TODO
+//TODO
+//TODO First event
 
 public class GameFrame extends JFrame {
 
     // Vars
     Ship gameShip = new Ship();
     Ship debugShip = new Ship();
+    private static String currentPanel = "Main Menu";
+    private static String previousPanel = "Main Menu";
+
+    private static CardLayout cardLayout = new CardLayout();
 
     // Deck Panels
-    JPanel deck = new JPanel();
+    static JPanel deck = new JPanel();
     String MAIN = "Main Menu";
-    String PLAY = "Play Menu";
+    String WELCOME = "Welcome Menu";
+    String WELSHOP = "Welcome Shop";
     String STATS = "Ship Status";
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
@@ -41,7 +51,6 @@ public class GameFrame extends JFrame {
     //ImageIcon borderDecoTL = new ImageIcon("./resources/CornerTopLeft.png");
     //ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
 
-
     public GameFrame() throws SQLException {
         // Reference Main and Database
         Main main = new Main();
@@ -50,7 +59,6 @@ public class GameFrame extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // set CardLayout to the deck panel layout manager
-        CardLayout cardLayout = new CardLayout();
         deck.setLayout(cardLayout);
 
         /* ------------ Main Menu Panel ------------ */
@@ -187,29 +195,97 @@ public class GameFrame extends JFrame {
         JLabel statText = new JLabel();
         statText.setText("Ship Status: " + gameShip.getStatus());
 
-        /* ------------ MAIN PLAY SCREEN ------------ */
-        JPanel playPanel = new JPanel();
-        playPanel.setLayout(new BorderLayout());
+        status.add(createBackButton());
 
-        JButton shipStatButton = new JButton(shipIcon);
-        shipStatButton.setBounds(100,100,100,100);
-        //shipStatButton.setText("Ship");
-        //shipStatButton.setFont(new Font("Monospaced", Font.BOLD, 20));
-        shipStatButton.setForeground(emerald);
-        shipStatButton.setBackground(cerulean);
-        shipStatButton.setBorder(BorderFactory.createEtchedBorder());
-        shipStatButton.setPreferredSize(new Dimension(80,80));
+        /* ------------ WELCOME SCREEN ------------ */
+        JPanel welcomePanel = new JPanel(new BorderLayout());
 
-        JPanel playMenuContent = new JPanel();
+        JPanel welcomeContent = new JPanel(new GridBagLayout());
+        welcomeContent.setBackground(gunmetal);
 
-        JPanel playMenuControls = new JPanel();
-        playMenuControls.setBackground(cerulean);
-        playMenuControls.setPreferredSize(new Dimension(200,200));
+        JPanel welcomeControls = new JPanel(new GridBagLayout());
+        welcomeControls.setBackground(cerulean);
 
-        playPanel.add(playMenuContent);
-        playPanel.add(playMenuControls,BorderLayout.SOUTH);
+        JButton setSailButton = new JButton("Set Sail");
+        setSailButton.setPreferredSize(new Dimension(200,50));
+        setSailButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.decideEvent(4,0);
+            }
+        });
 
-        playMenuControls.add(shipStatButton);
+        JButton welcomeShopButton = new JButton("Shop");
+        welcomeShopButton.setPreferredSize(new Dimension(200,50));
+        welcomeShopButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runEvent(1);
+            }
+        });
+
+        JLabel welcomeTitle = new JLabel();
+        welcomeTitle.setText("TIL VINLAND");
+        welcomeTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        welcomeTitle.setForeground(alertorange);
+
+        JLabel welcomeImage = new JLabel();
+        //Add image icons later
+
+        JTextArea welcomeDescription = new JTextArea(5,40);
+        welcomeDescription.setEditable(false);
+        welcomeDescription.setHighlighter(null);
+        welcomeDescription.setFocusable(false);
+        welcomeDescription.setBackground(transparent);
+        welcomeDescription.setLineWrap(true);
+        welcomeDescription.setText("Set sail for the New Land or head into the Shop to grab supplies?");
+        welcomeDescription.setForeground(alertorange);
+        welcomeDescription.setFont(new Font("Monospaced", Font.BOLD, 20));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        welcomeContent.add(welcomeTitle, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        welcomeContent.add(welcomeDescription, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        welcomeContent.add(welcomeImage, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        welcomeControls.add(setSailButton, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        welcomeControls.add(welcomeShopButton, gbc);
+
+        welcomePanel.add(welcomeContent);
+        welcomePanel.add(welcomeControls, BorderLayout.SOUTH);
+
+        /* ------------ WELCOME SHOP SCREEN ------------ */
+        JPanel welcomeShopPanel = new JPanel(new BorderLayout());
+
+        JPanel wShopContent = new JPanel(new GridBagLayout());
+        wShopContent.setBackground(gunmetal);
+
+        JPanel wShopControls = new JPanel(new GridBagLayout());
+        wShopControls.setBackground(cerulean);
+        wShopControls.setPreferredSize(new Dimension(200,200));
+
+        JButton wShopRationsButton = new JButton("Buy Rations");
+        wShopRationsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runEvent(1);
+            }
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        wShopControls.add(wShopRationsButton, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        wShopControls.add(createBackButton());
+
+        welcomeShopPanel.add(wShopContent);
+        welcomeShopPanel.add(wShopControls, BorderLayout.SOUTH);
 
         /* ------------ RANDOM EVENT SCREEN ------------ */
         JPanel randEvent = new JPanel(new BorderLayout());
@@ -244,13 +320,15 @@ public class GameFrame extends JFrame {
         JLabel eventImage = new JLabel();
         //Add image icons later
 
-        JTextArea eventDescription = new JTextArea();
+        JTextArea eventDescription = new JTextArea(5,40);
         eventDescription.setEditable(false);
         eventDescription.setHighlighter(null);
         eventDescription.setFocusable(false);
         eventDescription.setBackground(transparent);
         eventDescription.setLineWrap(true);
+
         eventDescription.setText(main.fetchEvent(db,"desc", randomEvent));
+
         eventDescription.setForeground(emerald);
 
         eventOptionOne.setText("Option One");
@@ -261,7 +339,7 @@ public class GameFrame extends JFrame {
         eventControls.setPreferredSize(new Dimension(200,200));
         gbc.gridx = 0;
         gbc.gridy = 0;
-        eventControls.add(shipStatButton, gbc);
+        eventControls.add(createDefaultControls(), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         eventControls.add(eventOptionOne, gbc);
@@ -283,6 +361,7 @@ public class GameFrame extends JFrame {
         eventContent.add(eventImage, gbc);
         gbc.gridx = 0;
         gbc.gridy = 2;
+        gbc.gridwidth = 5;
         eventContent.add(eventDescription, gbc);
 
         randEvent.add(eventContent);
@@ -298,26 +377,26 @@ public class GameFrame extends JFrame {
 
         // Add cards to deck panel
         deck.add(mainMenu,MAIN);
-        deck.add(playPanel,PLAY);
+        deck.add(welcomePanel,WELCOME);
         deck.add(status, STATS);
         deck.add(randEvent, EVENT);
+        deck.add(welcomeShopPanel, WELSHOP);
 
         // Debug Panels
         deck.add(dbStats, DBSTATS);
 
         /* ------------ Event handling ------------ */
-        //playButton.addActionListener(e -> cardLayout.show(deck, PLAY));
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String seedInputText = seedField.getText();
 
                 if (seedInputText.equals("DEBUGSTATUS")) { //TODO Testing - remove after
-                    cardLayout.show(deck, DBSTATS);
+                    switchToPanel(DBSTATS);
                 } else if (seedInputText.equals("DEBUGEVENT")) { //TODO Testing - remove after
-                    cardLayout.show(deck, EVENT);
+                    switchToPanel(EVENT);
                 } else if (seedInputText.equals("")) { //User leaves the field blank
-                    //Temporary, should run the game
-                    cardLayout.show(deck, PLAY);
+                    //Temporary, should run the game - switch to the first game screen
+                    switchToPanel(WELCOME);
                 } else { // The field has anything else entered or is blank (run with seed)
 
                 }
@@ -358,4 +437,49 @@ public class GameFrame extends JFrame {
         this.setVisible(true);
 
     }
+
+    private JButton createBackButton() {
+        JButton back = new JButton("Back");
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                switchToPanel(previousPanel);
+            }
+        });
+        return back;
+    }
+
+    private JPanel createDefaultControls() {
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        JPanel defaultControls = new JPanel(new GridBagLayout());
+
+        JButton shipStatButton = new JButton(shipIcon);
+        shipStatButton.setBounds(100,100,100,100);
+        shipStatButton.setForeground(emerald);
+        shipStatButton.setBackground(cerulean);
+        shipStatButton.setBorder(BorderFactory.createEtchedBorder());
+        shipStatButton.setPreferredSize(new Dimension(80,80));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        defaultControls.add(shipStatButton, gbc);
+
+        shipStatButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                switchToPanel(STATS);
+            }
+        });
+
+        return defaultControls;
+    }
+
+    public void switchToPanel(String panelName) {
+        if (!panelName.equals(currentPanel)) {
+            previousPanel = currentPanel;
+            currentPanel = panelName;
+        }
+
+        cardLayout.show(deck, panelName);
+    }
+
 }
