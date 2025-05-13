@@ -420,18 +420,18 @@ public class GameFrame extends JFrame {
         });
 
         // See Ship Stats Button
-        shipStatButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(deck, STATS);
-            }
-        });
+//        shipStatButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                cardLayout.show(deck, STATS);
+//            }
+//        });
 
         // Load button logic
-        loadButton.addActionListener(e -> {
-            Main.loadSave();
-            // auto switches to next screen after loading
-            cardLayout.show(deck, PLAY);
-        });
+//        loadButton.addActionListener(e -> {
+//            Main.loadSave();
+//            // auto switches to next screen after loading
+//            cardLayout.show(deck, PLAY);
+//        });
 
         // Add deck panel to the frame
         this.add(deck);
