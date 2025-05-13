@@ -255,6 +255,7 @@ public class Main {
             //TODO
         } else if (event == 5) {
             // Run next event
+            getActivePlayers();
             removeItem(1, activePlayers * 5);
             decideEvent(eventTotal, mainEventTotal);
         } else if (event == 6) {
@@ -449,6 +450,15 @@ public class Main {
 
     public static int checkInventory(int id) {
         return items.get(id).getAmount();
+    }
+
+    public static void getActivePlayers() {
+        activePlayers = 0;
+        for (int i = 0; i < party.size(); i++) {
+            if (party.get(i).getActive() == 1) {
+                activePlayers++;
+            }
+        }
     }
 
 }
