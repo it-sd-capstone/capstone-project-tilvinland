@@ -37,6 +37,7 @@ public class Main {
     private static ArrayList<Player> party = new ArrayList<Player>();
     private static ArrayList<Item> items = new ArrayList<Item>();
     private static int activePlayers;
+    private static String seedUsed;
 
     //Runs the main game window from the GameFrame.java class
     private static GameFrame mainFrame;
@@ -177,7 +178,7 @@ public class Main {
         long seed = (long) input.hashCode();
         rng = new Random();
         rng.setSeed(seed);
-
+        seedUsed = input;
     }
 
     public static void decideEvent(int event, int mainEvent) {
@@ -428,12 +429,118 @@ public class Main {
         mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
     }
 
-    public static void saveGame() {
-        //TODO
+    // Save logic
+    public static void saveGame(String saveName) {
+        try (Connection db = createConnection()) {
+
+            // Prepare SQL statements
+            PreparedStatement saveStmt = db.prepareStatement(
+                    "INSERT INTO saves (saveName, currenteventID, totalEvents, totalMainEvents, " +
+                            "player1_status, player1_health, player2_status, player2_health, " +
+                            "player3_status, player3_health, player4_status, player4_health, " +
+                            "seed, gold, lumber, rations, shiphealth) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
+
+            // Save statements
+            saveStmt.setString(1, saveName);
+            saveStmt.setInt(2, currentEvent);
+            saveStmt.setInt(3, eventTotal);
+            saveStmt.setInt(4, mainEventTotal);
+            saveStmt.setInt(5, party.get(0).getStatus());    // player1_status
+            saveStmt.setInt(6, party.get(0).getHealth());    // player1_health
+            saveStmt.setInt(7, party.get(1).getStatus());    // player2_status
+            saveStmt.setInt(8, party.get(1).getHealth());    // player2_health
+            saveStmt.setInt(9, party.get(2).getStatus());    // player3_status
+            saveStmt.setInt(10, party.get(2).getHealth());   // player3_health
+            saveStmt.setInt(11, party.get(3).getStatus());   // player4_status
+            saveStmt.setInt(12, party.get(3).getHealth());   // player4_health
+            saveStmt.setString(13, seedUsed);
+
+            // Checks inventory for items
+            int gold = 0, lumber = 0, rations = 0;
+            for (Item item : items) {
+                switch (item.getId()) {
+                    case 1 -> lumber = item.getAmount();
+                    case 2 -> gold = item.getAmount();
+                    case 3 -> rations = item.getAmount();
+                }
+            }
+
+            // Moar save statements
+            saveStmt.setInt(14, gold);
+            saveStmt.setInt(15, lumber);
+            saveStmt.setInt(16, rations);
+            saveStmt.setInt(17, ship.getHealth());
+
+            // Execute save
+            saveStmt.executeUpdate();
+            System.out.println("Game saved!");
+
+        } catch (Exception e) {
+            System.err.println("Save game failed!");
+            e.printStackTrace();
+        }
     }
 
-    public static void loadGame() {
-        //TODO
+    // Load game logic
+    public static void loadSave() {
+        try (Connection db = createConnection()) {
+            Statement stmt = db.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM saves ORDER BY saveId DESC LIMIT 1");
+
+            if (rs.next()) {
+                // Adding event values
+                currentEvent = rs.getInt("currenteventID");
+                eventTotal = rs.getInt("totalEvents");
+                mainEventTotal = rs.getInt("totalMainEvents");
+                party.clear();
+
+                // Adding player values
+                Player p1 = new Player("Player 1", 1, 1);
+                p1.setStatus(rs.getInt("player1_status"));
+                p1.setHealth(rs.getInt("player1_health"));
+                party.add(p1);
+
+                Player p2 = new Player("Player 2", 2, 1);
+                p2.setStatus(rs.getInt("player2_status"));
+                p2.setHealth(rs.getInt("player2_health"));
+                party.add(p2);
+
+                Player p3 = new Player("Player 3", 3, 1);
+                p3.setStatus(rs.getInt("player3_status"));
+                p3.setHealth(rs.getInt("player3_health"));
+                party.add(p3);
+
+                Player p4 = new Player("Player 4", 4, 1);
+                p4.setStatus(rs.getInt("player4_status"));
+                p4.setHealth(rs.getInt("player4_health"));
+                party.add(p4);
+
+                // adding seed value
+                seedUsed = rs.getString("seed");
+
+                // adding inventory items
+                items.clear();
+                items.add(new Item("Lumber", 1, "Used to repair the ship", rs.getInt("lumber")));
+                items.add(new Item("Gold", 2, "Valuables raided from settlements", rs.getInt("gold")));
+                items.add(new Item("Rations", 3, "Food for your crew", rs.getInt("rations")));
+
+                // adding ship values
+                ship = new Ship();
+                ship.setHealth(rs.getInt("shiphealth"));
+
+
+                // output
+                System.out.println("Game loaded!");
+            } else {
+                System.out.println("No save game found!");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Load game failed!");
+            e.printStackTrace();
+        }
+
     }
 
     // Adds starter items to player's inventory using items table in database
@@ -441,7 +548,6 @@ public class Main {
     public static void addInventory(int id, int amount) {
         items.get(id).addItem(amount);
     }
-
 
     public static void removeItem(int id, int amount) {
         items.get(id).removeItem(amount);
@@ -458,6 +564,27 @@ public class Main {
                 activePlayers++;
             }
         }
+    }
+
+    // Accessors for testing
+    public static ArrayList<Player> getParty() {
+        return party;
+    }
+
+    public static ArrayList<Item> getItems() {
+        return items;
+    }
+
+    public static String getSeedUsed() {
+        return seedUsed;
+    }
+
+    public static void setShip(Ship newShip) {
+        ship = newShip;
+    }
+
+    public static Ship getShip() {
+        return ship;
     }
 
 }
