@@ -76,14 +76,21 @@ public class Player {
     public String getInventoryDisplay() {return inventoryDisplay;}
 
     // Adds item to player inventory
-    public void addToInventory(Item newItem) {
+    public void addToInventory(int itemId, int amount) {
         for (Item item : inventory) {
-            if (item.getId() == newItem.getId()) {
-                item.addItem(newItem.getAmount());  // Increase quantity if present
+            if (item.getId() == itemId) {
+                item.addItem(amount);
                 return;
             }
         }
-        inventory.add(newItem);  // add item if not present
+
+        // If item doesn't exist in inventory, add it
+        Item template = Item.itemTemplates.get(itemId);
+        if (template != null) {
+            inventory.add(new Item(template.getName(), template.getId(), template.getDescription(), amount));
+        } else {
+            System.out.println("Invalid item ID: " + itemId);
+        }
     }
 
     // Removes quantity of item from inventory
@@ -91,34 +98,29 @@ public class Player {
         for (int i = 0; i < inventory.size(); i++) {
             Item item = inventory.get(i);
             if (item.getId() == itemId) {
-                item.removeItem(amount); // subtract amount given
+                item.removeItem(amount);
                 if (item.getAmount() <= 0) {
-                    inventory.remove(i);  // remove item completely if empty
+                    inventory.remove(i);
                 }
                 return;
             }
         }
     }
 
-    // Stores a string of the player's inventory for potential display in JPanel
-    public String checkInventory() {
+    // Stores a list of the player's inventory for potential display
+    public List<String> checkInventory() {
+        List<String> inventoryList = new ArrayList<>();
+
         if (inventory.isEmpty()) {
-            inventoryDisplay = "Inventory is empty.\n";  // << MAKE SURE THIS HAS \n
-            return inventoryDisplay;
+            inventoryList.add("Inventory is empty.");
+            return inventoryList;
         }
 
-        StringBuilder output = new StringBuilder("Current Inventory:\n");
         for (Item item : inventory) {
-            output.append("- ")
-                    .append(item.getName())
-                    .append(": ")
-                    .append(item.getAmount())
-                    .append(" (")
-                    .append(item.getDescription())
-                    .append(")\n");
+            inventoryList.add(item.getName() + ": " + item.getAmount() + " (" + item.getDescription() + ")");
         }
 
-        inventoryDisplay = output.toString();
-        return inventoryDisplay;
+        return inventoryList;
     }
+
 }

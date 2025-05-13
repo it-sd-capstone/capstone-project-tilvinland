@@ -1,5 +1,8 @@
 package main;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Item {
 
     private String name;
@@ -14,6 +17,14 @@ public class Item {
         this.amount = amount;
     }
 
+    // Static item templates using HashMap
+    public static final Map<Integer, Item> itemTemplates = new HashMap<>();
+
+    static {
+        itemTemplates.put(1, new Item("Lumber", 1, "Used to repair the ship", 0));
+        itemTemplates.put(2, new Item("Gold", 2, "Valuables raided from settlements", 0));
+        itemTemplates.put(3, new Item("Rations", 3, "Food for your crew", 0));
+    }
 
     public String getName() {
         return name;

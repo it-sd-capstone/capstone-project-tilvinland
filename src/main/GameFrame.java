@@ -21,8 +21,6 @@ public class GameFrame extends JFrame {
     private static String currentPanel = "Main Menu";
     private static String previousPanel = "Main Menu";
 
-    CardLayout cardLayout = new CardLayout();
-
     // Deck Panels
     JPanel deck = new JPanel();
     String MAIN = "Main Menu";
@@ -32,6 +30,7 @@ public class GameFrame extends JFrame {
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
     String LOCATION = "Location";
+    CardLayout cardLayout = new CardLayout();
 
     //Custom Colors
     private Color emerald = new Color(105,220,158);
@@ -427,8 +426,12 @@ public class GameFrame extends JFrame {
             }
         });
 
-        //TODO Should load the last game in progress
-        loadButton.addActionListener(e -> System.out.println("Error: No save game found"));
+        // Load button logic
+        loadButton.addActionListener(e -> {
+            Main.loadSave();
+            // auto switches to next screen after loading
+            cardLayout.show(deck, PLAY);
+        });
 
         // Add deck panel to the frame
         this.add(deck);

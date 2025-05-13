@@ -23,6 +23,8 @@ public class Ship {
         return health;
     }
 
+    public void setHealth(int value) {this.health = Math.max(0, Math.min(value, 100));}
+
     public void removeHealth(int amount) {
         health -= amount;
     }
