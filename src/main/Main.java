@@ -23,6 +23,8 @@ public class Main {
     static PreparedStatement statementSaveOverwrite;
     static PreparedStatement statementSave;
     static PreparedStatement statementParty;
+    static PreparedStatement statementFetchEvent;
+    static PreparedStatement statementFetchEventName;
 
     private static final int TIMEOUT_STATEMENT_S = 5;
 
@@ -69,7 +71,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         // Test if application boots properly
         System.out.println("Wattup");
 
@@ -148,6 +150,7 @@ public class Main {
             statementSave = result.prepareStatement("INSERT INTO saves (saveName, locationsId, eventsId, memberNum) VALUES (?, ?, ?, ?)");
             statementSaveOverwrite = result.prepareStatement("UPDATE saves SET saveName = ?, locationsId = ?, eventsId = ?, memberNum = ? WHERE saveId = ?");
             statementParty = result.prepareStatement("UPDATE party SET health = ? WHERE memberNum = ?");
+            statementFetchEventName = result.prepareStatement("SELECT eventName FROM events WHERE eventId = ?");
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
@@ -176,6 +179,25 @@ public class Main {
 
     }
 
+    public static String fetchEvent(Connection db, String eventInfo, int num) throws SQLException {
+        ResultSet result;
+        rng = new Random();
+
+        if (eventInfo != null) {
+            String upCaseEventInfo = Character.toUpperCase(eventInfo.charAt(0)) + eventInfo.substring(1);
+            statementFetchEvent = db.prepareStatement("SELECT event" + upCaseEventInfo + " FROM events WHERE eventId = ?");
+
+            statementFetchEvent.setInt(1, num);
+
+            result = statementFetchEvent.executeQuery();
+
+            if (result.next()) {
+                return result.getString("event" + upCaseEventInfo);
+            }
+        }
+
+        return "No event " + eventInfo.toLowerCase() + " found";
+    }
 
     public static boolean run() {
         return true;
