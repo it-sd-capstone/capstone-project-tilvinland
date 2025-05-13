@@ -313,7 +313,7 @@ public class GameFrame extends JFrame {
         int randomEvent = rng.nextInt(5) + 1;
 
         JLabel eventTitle = new JLabel();
-        eventTitle.setText(main.fetchEvent(db,"name", randomEvent));
+        eventTitle.setText("Placeholder");
         eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         eventTitle.setForeground(alertorange);
 
@@ -327,7 +327,7 @@ public class GameFrame extends JFrame {
         eventDescription.setBackground(transparent);
         eventDescription.setLineWrap(true);
 
-        eventDescription.setText(main.fetchEvent(db,"desc", randomEvent));
+        eventDescription.setText("placeholder");
 
         eventDescription.setForeground(emerald);
 
