@@ -23,6 +23,8 @@ public class Main {
     static PreparedStatement statementSaveOverwrite;
     static PreparedStatement statementSave;
     static PreparedStatement statementParty;
+    static PreparedStatement statementFetchEvent;
+    static PreparedStatement statementFetchEventName;
 
     private static final int TIMEOUT_STATEMENT_S = 5;
 
@@ -153,6 +155,7 @@ public class Main {
             statementSave = result.prepareStatement("INSERT INTO saves (saveName, locationsId, eventsId, memberNum) VALUES (?, ?, ?, ?)");
             statementSaveOverwrite = result.prepareStatement("UPDATE saves SET saveName = ?, locationsId = ?, eventsId = ?, memberNum = ? WHERE saveId = ?");
             statementParty = result.prepareStatement("UPDATE party SET health = ? WHERE memberNum = ?");
+            statementFetchEventName = result.prepareStatement("SELECT eventName FROM events WHERE eventId = ?");
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
@@ -180,6 +183,7 @@ public class Main {
         rng.setSeed(seed);
 
     }
+
 
     public static void decideEvent(int event, int mainEvent) {
         if (event % 4 == 0) {
