@@ -18,6 +18,8 @@ public class Enemy {
         return name;
     }
 
+    public void setName(String name) {this.name = name;}
+
     public int getType() {
         return type;
     }
@@ -25,6 +27,8 @@ public class Enemy {
     public int getHealth() {
         return health;
     }
+
+    public void setHealth(int health) { this.health = health;}
 
     public boolean isDefeated() {
         return isDefeated;
