@@ -23,9 +23,12 @@ public class Main {
     static PreparedStatement statementSaveOverwrite;
     static PreparedStatement statementSave;
     static PreparedStatement statementParty;
+    static PreparedStatement statementFetchEvent;
+    static PreparedStatement statementFetchEventName;
 
     private static final int TIMEOUT_STATEMENT_S = 5;
 
+    private static GameFrame gameFrame;
 
     private static Random rng;
     private static int eventTotal;
@@ -69,12 +72,12 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         // Test if application boots properly
         System.out.println("Wattup");
 
         //Runs the main game window from the GameFrame.java class
-        GameFrame mainFrame = new GameFrame();
+        gameFrame = new GameFrame();
     }
 
     public static Connection createConnection() {
@@ -146,6 +149,7 @@ public class Main {
             statementScore = result.prepareStatement("INSERT INTO score (player, score, time) VALUES (?, ?, date())");
             statementNewMember = result.prepareStatement("INSERT INTO party (statusId, health, name) VALUES (1, 100, ?)");
             statementParty = result.prepareStatement("UPDATE party SET health = ? WHERE memberNum = ?");
+            statementFetchEventName = result.prepareStatement("SELECT eventName FROM events WHERE eventId = ?");
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
@@ -174,6 +178,25 @@ public class Main {
         seedUsed = input;
     }
 
+    public static String fetchEvent(Connection db, String eventInfo, int num) throws SQLException {
+        ResultSet result;
+        rng = new Random();
+
+        if (eventInfo != null) {
+            String upCaseEventInfo = Character.toUpperCase(eventInfo.charAt(0)) + eventInfo.substring(1);
+            statementFetchEvent = db.prepareStatement("SELECT event" + upCaseEventInfo + " FROM events WHERE eventId = ?");
+
+            statementFetchEvent.setInt(1, num);
+
+            result = statementFetchEvent.executeQuery();
+
+            if (result.next()) {
+                return result.getString("event" + upCaseEventInfo);
+            }
+        }
+
+        return "No event " + eventInfo.toLowerCase() + " found";
+    }
 
     public static boolean run() {
         return true;
@@ -246,6 +269,7 @@ public class Main {
     public static void runEvent(int event) { // Noncombat events
         if (event == 1) {
             // Shop events 1 - 4
+            getGameFrame().switchToPanel(gameFrame.WELSHOP);
             //TODO open Shop window
         } else if (event == 2) {
             // Buy lumber
@@ -527,7 +551,7 @@ public class Main {
         }
     }
 
-    // Accessors for testing
+        // Accessors for testing and UI
     public static ArrayList<Player> getParty() {
         return party;
     }
@@ -552,5 +576,8 @@ public class Main {
         return ship;
     }
 
+    public static GameFrame getGameFrame() {
+        return gameFrame;
+    }
 }
 
