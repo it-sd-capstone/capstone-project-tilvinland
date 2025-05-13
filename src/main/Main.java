@@ -41,14 +41,6 @@ public class Main {
     //Runs the main game window from the GameFrame.java class
     private static GameFrame mainFrame;
 
-    static {
-        try {
-            mainFrame = new GameFrame();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
     private static class InputFilter extends DocumentFilter {
         private static final int MAX_LENGTH = 10;

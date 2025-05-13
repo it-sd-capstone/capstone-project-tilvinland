@@ -2,10 +2,8 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
 
 //TODO add a control panel to each side of the main control panels using border east and west for party and ship stats and save and load/main menu
 //TODO set up random event panel and play buttons to re-roll random events.
@@ -21,8 +19,10 @@ public class GameFrame extends JFrame {
     private static String currentPanel = "Main Menu";
     private static String previousPanel = "Main Menu";
 
+    CardLayout cardLayout = new CardLayout();
+
     // Deck Panels
-    JPanel deck = new JPanel();
+    static JPanel deck = new JPanel();
     String MAIN = "Main Menu";
     String WELCOME = "Welcome Menu";
     String WELSHOP = "Welcome Shop";
@@ -30,7 +30,6 @@ public class GameFrame extends JFrame {
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
     String LOCATION = "Location";
-    CardLayout cardLayout = new CardLayout();
 
     //Custom Colors
     private Color emerald = new Color(105,220,158);
@@ -50,10 +49,7 @@ public class GameFrame extends JFrame {
     //ImageIcon borderDecoTL = new ImageIcon("./resources/CornerTopLeft.png");
     //ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
 
-    public GameFrame() throws SQLException {
-        // Reference Main and Database
-        Main main = new Main();
-        Connection db = main.createConnection();
+    public GameFrame() {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -152,7 +148,7 @@ public class GameFrame extends JFrame {
         JLabel dbStatText = new JLabel();
         dbStatText.setText("Ship Status: " + debugShip.getStatus());
 
-        JButton hpUpButton = new JButton("+5 Lumber(25 HP)");
+        JButton hpUpButton = new JButton("+5 Lumber(20 HP)");
         hpUpButton.setPreferredSize(new Dimension(200,50));
         JButton hpDownButton = new JButton("-20 HP");
         hpDownButton.setPreferredSize(new Dimension(200,50));
@@ -185,6 +181,7 @@ public class GameFrame extends JFrame {
                 dbStatText.setText("Ship Status: " + debugShip.getStatus());
             }
         });
+
 
         /* ------------ Ship Status Panel ------------ */
         JPanel status = new JPanel();
@@ -307,10 +304,6 @@ public class GameFrame extends JFrame {
         JButton eventOptionFour = new JButton();
         eventOptionFour.setPreferredSize(new Dimension(200,50));
 
-        // Random generator for event name & description (Maybe needed to have them ref same ID)
-        Random rng = new Random();
-        int randomEvent = rng.nextInt(5) + 1;
-
         JLabel eventTitle = new JLabel();
         eventTitle.setText("Placeholder");
         eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -325,9 +318,12 @@ public class GameFrame extends JFrame {
         eventDescription.setFocusable(false);
         eventDescription.setBackground(transparent);
         eventDescription.setLineWrap(true);
-
-        eventDescription.setText("placeholder");
-
+        eventDescription.setText("PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION " +
+                "PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION " +
+                "PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION " +
+                "PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION " +
+                "PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION " +
+                "PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION PLACEHOLDER DESCRIPTION ");
         eventDescription.setForeground(emerald);
 
         eventOptionOne.setText("Option One");
@@ -399,39 +395,12 @@ public class GameFrame extends JFrame {
                 } else { // The field has anything else entered or is blank (run with seed)
 
                 }
+
             }
         });
 
-        // Event Option Buttons
-        eventOptionOne.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {}
-        });
-
-        eventOptionTwo.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {}
-        });
-
-        eventOptionThree.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {}
-        });
-
-        eventOptionFour.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {}
-        });
-
-        // See Ship Stats Button
-        shipStatButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(deck, STATS);
-            }
-        });
-
-        // Load button logic
-        loadButton.addActionListener(e -> {
-            Main.loadSave();
-            // auto switches to next screen after loading
-            cardLayout.show(deck, PLAY);
-        });
+        //TODO Should load the last game in progress
+        loadButton.addActionListener(e -> System.out.println("Error: No save game found"));
 
         // Add deck panel to the frame
         this.add(deck);
