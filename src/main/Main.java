@@ -76,6 +76,12 @@ public class Main {
 
     public static void main(String[] args) {
         initializeLists();
+        enemy = new Enemy("1", 1, 100);
+        try {
+            mainFrame = new GameFrame();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Connection createConnection() {
@@ -133,7 +139,7 @@ public class Main {
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Forest', 'A wooded coastline that would be perfect for finding more food or getting some lumber for ship repairs.', 'Land')");
 
             /* ------- Enemy Table ------- */
-            command.executeUpdate("CREATE TABLE IF NOT EXISTS enemy (enemyId INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(30) NOT NULL, health INT NOT NULL)");
+            command.executeUpdate("CREATE TABLE IF NOT EXISTS enemy (enemyId INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(30) NOT NULL, health INT NOT NULL)");
 
             // Fills enemy table
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Knight', 150)"));
@@ -175,53 +181,58 @@ public class Main {
     }
 
     public static void setSeed(String input) {
-        long seed = (long) input.hashCode();
         rng = new Random();
-        rng.setSeed(seed);
-        seedUsed = input;
+        if (input != null) {
+            long seed = (long) input.hashCode();
+            rng.setSeed(seed);
+            seedUsed = input;
+        }
+
     }
 
     public static void decideEvent(int event, int mainEvent) {
         if (event % 4 == 0) {
             if (mainEvent == 0) {
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                //mainFrame.switchToPanel(mainFrame.START);
                 currentEvent = 1;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 1) {
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+               // mainFrame.switchToPanel(mainFrame.SCOTLAND);
                 currentEvent = 2;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 2) {
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                //mainFrame.switchToPanel(mainFrame.ICELAND);
                 currentEvent = 3;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 3) {
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                //mainFrame.switchToPanel(mainFrame.GREENLAND);
                 currentEvent = 4;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 4) {
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                //mainFrame.switchToPanel(mainFrame.VINLAND);
                 currentEvent = 5;
                 mainEventTotal++;
                 eventTotal++;
             }
         } else {
-            currentEvent = Math.max(6, 5 + rng.nextInt(6));
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            currentEvent = Math.max(5, 5 +rng.nextInt(6));
+            if (currentEvent == 5) {
+
+            }
             eventTotal++;
         }
     }
 
     public static void initializeLists() {
         party.clear();
-        party.add(new Player("", 0, 0));
-        party.add(new Player("", 1, 0));
-        party.add(new Player("", 2, 0));
-        party.add(new Player("", 3, 0));
+        party.add(new Player("1", 0, 1));
+        party.add(new Player("2", 1, 0));
+        party.add(new Player("3", 2, 0));
+        party.add(new Player("4", 3, 0));
 
         items.clear();
         items.add(new Item("Gold", 0, "Used to trade for materials", 100));
@@ -229,10 +240,10 @@ public class Main {
         items.add(new Item("Lumber", 2, "Used to fix ships", 100));
     }
 
-    public static void createParty(String name, int id, int active) {
+    public static void createParty(String name, int id) {
         if (name != null) {
             party.get(id).setName(name);
-            party.get(id).setActive(active);
+            party.get(id).setActive(1);
         }
 
     }
@@ -240,8 +251,7 @@ public class Main {
     public static void runEvent(int event) { // Noncombat events
         if (event == 1) {
             // Shop events 1 - 4
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.WELSHOP);
-            //TODO
+            mainFrame.switchToPanel(mainFrame.WELSHOP);
         } else if (event == 2) {
             // Buy lumber
             addInventory(2, 5);
@@ -251,8 +261,7 @@ public class Main {
             addInventory(1, 10);
             removeItem(0, 10);
         } else if (event == 4) {
-            // Return to event
-            //TODO
+
         } else if (event == 5) {
             // Run next event
             getActivePlayers();
@@ -260,57 +269,57 @@ public class Main {
             decideEvent(eventTotal, mainEventTotal);
         } else if (event == 6) {
             // fishing
-            int itemTOAdd = rng.nextInt(10);
+            int itemTOAdd = rng.nextInt(21);
             addInventory(1, 10);
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            // mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 7) {
             // hunker down
             ship.removeHealth(10);
             if (ship.getHealth() <= 0) {
                 score = totalScore(createConnection(), party, items, ship);
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                //mainFrame.switchToPanel(mainFrame.SANK);
             }
         } else if (event == 8) {
             // push through rough waters
             ship.removeHealth(20);
             if (ship.getHealth() <= 0) {
                 score = totalScore(createConnection(), party, items, ship);
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                //mainFrame.switchToPanel(mainFrame.SANK);
             }
         } else if (event == 9) {
             // push through heavy storm
             ship.removeHealth(30);
             if (ship.getHealth() <= 0) {
                 score = totalScore(createConnection(), party, items, ship);
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                //mainFrame.switchToPanel(mainFrame.SANK);
             }
         } else if (event == 10) {
             // repair ship
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 11) {
             ship.addHealth(1);
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 12) {
             // hunt
-            int itemTOAdd = rng.nextInt(10);
+            int itemTOAdd = rng.nextInt(21);
             addInventory(1, 10);
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 13) {
             // CHopping wood
             int itemTOAdd = rng.nextInt(10);
             addInventory(2, 10);
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 14) {
             // END
             score = totalScore(createConnection(), party, items, ship);
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            //.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 15) {
             // Start combat
             int enemyId = 0;
             if (mainEventTotal == 1 && eventTotal == 4) {
                 enemyId = 1;
             } else {
-                enemyId = 1 + rng.nextInt(10);
+                enemyId = 2 + rng.nextInt(4);
             }
             startCombat(enemyId, createConnection());
         }
@@ -321,8 +330,8 @@ public class Main {
         int winner = 0;
         int partyMemberAtt = 0;
         do {
-            computerChoice = rng.nextInt(3);
-        } while (computerChoice > 0 && computerChoice <= 3 );
+            computerChoice = rng.nextInt(4);
+        } while (computerChoice < 1 || computerChoice > 3 );
 
         if (computerChoice == 1 && choice == 2) {
             winner = 1;
@@ -343,12 +352,12 @@ public class Main {
         if (winner == 1) {
             enemy.removeHealth(10);
             if (enemy.isDefeated()) {
-                //TODO move to finish panel
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
-                //TODO ADD ITEMS TO PLAYERS INVENTORY
+                addInventory(0, 20);
+                addInventory(1, 40);
+                addInventory(2, 10);
+                mainFrame.switchToPanel(mainFrame.FCOMBAT);
             } else {
-                //TODO refresh panel
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                mainFrame.switchToPanel(mainFrame.COMBAT);
             }
         } else if (winner == 0) {
 
@@ -363,15 +372,12 @@ public class Main {
             }
             if (partyWipe(party)) {
                 score = totalScore(createConnection(), party, items, ship);
-                //TODO move to party wipe panel
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                //mainFrame.switchToPanel(mainFrame.WIPE);
             } else {
-                //TODo refresh Screen
-                mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+                mainFrame.switchToPanel(mainFrame.COMBAT);
             }
         } else {
-            // TODO refresh Screen
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            mainFrame.switchToPanel(mainFrame.COMBAT);
         }
 
     }
@@ -403,6 +409,7 @@ public class Main {
         score = (totalhealth * 5) + (totalItems * 4) + (ship.getHealth() * 10);
         try {
             statementScore.setInt(1, score);
+            statementScore.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -425,8 +432,7 @@ public class Main {
             System.err.println("Failed to start combat");
             e.printStackTrace();
         }
-        //TODO change to combat panel
-        mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+        mainFrame.switchToPanel(mainFrame.COMBAT);
     }
 
     // Save logic
@@ -585,6 +591,10 @@ public class Main {
 
     public static Ship getShip() {
         return ship;
+    }
+
+    public static Enemy getEnemy() {
+        return enemy;
     }
 
 }
