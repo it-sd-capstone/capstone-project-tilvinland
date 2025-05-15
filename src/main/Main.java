@@ -75,6 +75,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        mainFrame = new GameFrame();
+
         initializeLists();
     }
 
@@ -133,7 +135,7 @@ public class Main {
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Forest', 'A wooded coastline that would be perfect for finding more food or getting some lumber for ship repairs.', 'Land')");
 
             /* ------- Enemy Table ------- */
-            command.executeUpdate("CREATE TABLE IF NOT EXISTS enemy (enemyId INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(30) NOT NULL, health INT NOT NULL)");
+            command.executeUpdate("CREATE TABLE IF NOT EXISTS enemy (enemyId INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(30) NOT NULL, health INT NOT NULL)");
 
             // Fills enemy table
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Knight', 150)"));
