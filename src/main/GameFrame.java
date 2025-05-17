@@ -398,6 +398,8 @@ public class GameFrame extends JFrame {
                     switchToPanel(EVENT);
                 } else if (seedInputText.equals("DEBUGCALM")) { //TODO Testing - remove after
                     switchToPanel(CALM);
+                } else if (seedInputText.equals("DEBUGROUGH")) { //TODO Testing - remove after
+                    switchToPanel(ROUGH);
                 } else if (seedInputText.equals("")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(WELCOME);
@@ -453,9 +455,9 @@ public class GameFrame extends JFrame {
         calmControls.setBackground(cerulean);
         calmControls.setPreferredSize(new Dimension(200, 200));
 
-        // Custom GBC for spacing between buttons
+        // GBC for spacing between buttons
         GridBagConstraints controlGbc = new GridBagConstraints();
-        controlGbc.insets = new Insets(10, 30, 10, 30); // Padding: top, left, bottom, right
+        controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Calm Seas Title
         JLabel calmTitle = new JLabel("Calm Seas");
@@ -497,7 +499,7 @@ public class GameFrame extends JFrame {
         // Add controls to bottom calmControls
         controlGbc.gridx = 0;
         controlGbc.gridy = 0;
-        calmControls.add(createDefaultControls(), controlGbc); // ship stats
+        calmControls.add(createDefaultControls(), controlGbc);
         controlGbc.gridx = 1;
         calmControls.add(calmFish, controlGbc);
         controlGbc.gridx = 2;
@@ -509,11 +511,86 @@ public class GameFrame extends JFrame {
 
         // Add calmPanel to deck
         deck.add(calmPanel, CALM);
-
         /* -------------- End of Calm Seas Panel ------------ */
 
+        /* -------------- Rough Seas Panel ------------------ */
+        // Create Rough Seas panel
+        JPanel roughPanel = new JPanel(new BorderLayout());
+        roughPanel.setBackground(gunmetal);
 
+        JPanel roughContent = new JPanel(new GridBagLayout());
+        roughContent.setBackground(gunmetal);
 
+        JPanel roughControls = new JPanel(new GridBagLayout());
+        roughControls.setPreferredSize(new Dimension(200, 200));
+        roughControls.setBackground(cerulean); // match calm panel color
+
+        // GBC for spacing between buttons
+        controlGbc.insets = new Insets(10, 30, 10, 30);
+
+        // Rough Seas Title
+        JLabel roughTitle = new JLabel("Rough Seas");
+        roughTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        roughTitle.setForeground(alertorange);
+
+        // Rough Seas Text Area
+        JTextArea roughDesc = new JTextArea("The seas are rough! The Gods are angry today! Large waves attack your ship! Do you hunker down or press forward?");
+        roughDesc.setEditable(false);
+        roughDesc.setHighlighter(null);
+        roughDesc.setFocusable(false);
+        roughDesc.setBackground(transparent);
+        roughDesc.setLineWrap(true);
+        roughDesc.setWrapStyleWord(true);
+        roughDesc.setForeground(emerald);
+        roughDesc.setFont(new Font("Monospaced", Font.BOLD, 20));
+        roughDesc.setPreferredSize(new Dimension(600, 100));
+
+        // Rough Seas Buttons
+        JButton roughWait = new JButton("Hunker Down");
+        JButton roughSail = new JButton("Continue Sailing");
+        roughWait.setPreferredSize(new Dimension(200, 50));
+        roughSail.setPreferredSize(new Dimension(200, 50));
+
+        // Rough Seas Hunker Down Event
+        roughWait.addActionListener(e -> {
+            Main.getShip().removeHealth(10);
+            Main.runEvent(5);
+        });
+
+        // Rough Seas Continue Sailing Event
+        roughSail.addActionListener(e -> {
+            Main.getShip().removeHealth(20);
+            if (Main.getShip().getHealth() <= 0) {
+                Main.runEvent(14);
+            } else {
+                Main.runEvent(5);
+            }
+        });
+
+        // Add content to roughContent
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        roughContent.add(roughTitle, gbc);
+        gbc.gridy = 1;
+        roughContent.add(roughDesc, gbc);
+
+        // Add controls to roughControls
+        controlGbc.gridx = 0;
+        controlGbc.gridy = 0;
+        roughControls.add(createDefaultControls(), controlGbc);
+        controlGbc.gridx = 1;
+        roughControls.add(roughWait, controlGbc);
+        controlGbc.gridx = 2;
+        roughControls.add(roughSail, controlGbc);
+
+        // Assemble roughPanel
+        roughPanel.add(roughContent, BorderLayout.CENTER);
+        roughPanel.add(roughControls, BorderLayout.SOUTH);
+
+        // Add roughPanel to deck
+        deck.add(roughPanel, ROUGH);
+        /* -------------- End of Rough Seas Panel ------------ */
 
         /* !!! KEEP LAST !!! */
         this.setVisible(true);
