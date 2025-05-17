@@ -30,6 +30,9 @@ public class GameFrame extends JFrame {
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
     String LOCATION = "Location";
+    String CALM = "CALM";
+    String ROUGH = "ROUGH";
+    String STORM = "STORM";
     CardLayout cardLayout = new CardLayout();
 
     //Custom Colors
@@ -393,6 +396,8 @@ public class GameFrame extends JFrame {
                     switchToPanel(DBSTATS);
                 } else if (seedInputText.equals("DEBUGEVENT")) { //TODO Testing - remove after
                     switchToPanel(EVENT);
+                } else if (seedInputText.equals("DEBUGCALM")) { //TODO Testing - remove after
+                    switchToPanel(CALM);
                 } else if (seedInputText.equals("")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(WELCOME);
@@ -420,21 +425,95 @@ public class GameFrame extends JFrame {
         });
 
         // See Ship Stats Button
-        shipStatButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(deck, STATS);
-            }
-        });
+        // shipStatButton.addActionListener(new ActionListener() {
+        //    public void actionPerformed(ActionEvent e) {
+        //        cardLayout.show(deck, STATS);
+        //    }
+        // });
 
         // Load button logic
         loadButton.addActionListener(e -> {
             Main.loadSave();
             // auto switches to next screen after loading
-            cardLayout.show(deck, PLAY);
+            cardLayout.show(deck, WELCOME);
         });
 
         // Add deck panel to the frame
         this.add(deck);
+
+        /* -------------- Calm Seas Panel ------------ */
+        // Create Calm Seas Panel
+        JPanel calmPanel = new JPanel(new BorderLayout());
+        calmPanel.setBackground(gunmetal);
+
+        JPanel calmContent = new JPanel(new GridBagLayout());
+        calmContent.setBackground(gunmetal);
+
+        JPanel calmControls = new JPanel(new GridBagLayout());
+        calmControls.setBackground(cerulean);
+        calmControls.setPreferredSize(new Dimension(200, 200));
+
+        // Custom GBC for spacing between buttons
+        GridBagConstraints controlGbc = new GridBagConstraints();
+        controlGbc.insets = new Insets(10, 30, 10, 30); // Padding: top, left, bottom, right
+
+        // Calm Seas Title
+        JLabel calmTitle = new JLabel("Calm Seas");
+        calmTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        calmTitle.setForeground(alertorange);
+
+        // Calm Seas Text Area
+        JTextArea calmDesc = new JTextArea("The North Sea is calm today. A good time to fish, otherwise smooth sailing ahead!");
+        calmDesc.setEditable(false);
+        calmDesc.setHighlighter(null);
+        calmDesc.setFocusable(false);
+        calmDesc.setBackground(transparent);
+        calmDesc.setLineWrap(true);
+        calmDesc.setWrapStyleWord(true);
+        calmDesc.setForeground(emerald);
+        calmDesc.setFont(new Font("Monospaced", Font.BOLD, 20));
+        calmDesc.setPreferredSize(new Dimension(600, 100));
+
+        // Calm Seas Buttons
+        JButton calmFish = new JButton("Fish");
+        JButton calmSailing = new JButton("Continue Sailing");
+        calmFish.setPreferredSize(new Dimension(200, 50));
+        calmSailing.setPreferredSize(new Dimension(200, 50));
+
+        // Calm Seas Fishing event
+        calmFish.addActionListener(e -> Main.runEvent(6));
+
+        // Continue Sailing event
+        calmSailing.addActionListener(e -> Main.runEvent(5));
+
+        // Add content to calmContent
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        calmContent.add(calmTitle, gbc);
+        gbc.gridy = 1;
+        calmContent.add(calmDesc, gbc);
+
+        // Add controls to bottom calmControls
+        controlGbc.gridx = 0;
+        controlGbc.gridy = 0;
+        calmControls.add(createDefaultControls(), controlGbc); // ship stats
+        controlGbc.gridx = 1;
+        calmControls.add(calmFish, controlGbc);
+        controlGbc.gridx = 2;
+        calmControls.add(calmSailing, controlGbc);
+
+        // Assemble calmPanel
+        calmPanel.add(calmContent);
+        calmPanel.add(calmControls, BorderLayout.SOUTH);
+
+        // Add calmPanel to deck
+        deck.add(calmPanel, CALM);
+
+        /* -------------- End of Calm Seas Panel ------------ */
+
+
+
 
         /* !!! KEEP LAST !!! */
         this.setVisible(true);
@@ -484,5 +563,4 @@ public class GameFrame extends JFrame {
 
         cardLayout.show(deck, panelName);
     }
-
 }
