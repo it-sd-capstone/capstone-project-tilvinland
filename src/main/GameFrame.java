@@ -7,16 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
-//TODO add a control panel to each side of the main control panels using border east and west for party and ship stats and save and load/main menu
-//TODO set up random event panel and play buttons to re-roll random events.
-//TODO
-//TODO
-//TODO First event
+//TODO add party panel
+//TODO rework welcome shop to be a general use shop panel.
 
 public class GameFrame extends JFrame {
 
     // Vars
-    Ship gameShip = new Ship();
+    Ship ship = new Ship();
     Ship debugShip = new Ship();
     private static String currentPanel = "Main Menu";
     private static String previousPanel = "Main Menu";
@@ -30,6 +27,7 @@ public class GameFrame extends JFrame {
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
     String LOCATION = "Location";
+    String PARTY = "Party";
     CardLayout cardLayout = new CardLayout();
 
     //Custom Colors
@@ -43,12 +41,19 @@ public class GameFrame extends JFrame {
     private Color transparent = new Color(0,0,0,0);
 
     // Resources
+    ImageIcon bigLogo = new ImageIcon("./resources/logo.png");
+    ImageIcon smallLogo = new ImageIcon("./resources/logo_small.png");
     ImageIcon tinyLogo = new ImageIcon("./resources/logo_tiny.png");
     ImageIcon shipIcon = new ImageIcon("./resources/shipIcon.jpg");
 
+    ImageIcon partyOneLogo = new ImageIcon("./resources/PartyIcons/partyOne.png");
+    ImageIcon partyTwoLogo = new ImageIcon("./resources/PartyIcons/partyTwo.png");
+    ImageIcon partyThreeLogo = new ImageIcon("./resources/PartyIcons/partyThree.png");
+    ImageIcon partyFourLogo = new ImageIcon("./resources/PartyIcons/partyFour.png");
+
     //Boarder Decos need to be smaller
-    //ImageIcon borderDecoTL = new ImageIcon("./resources/CornerTopLeft.png");
-    //ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
+    ImageIcon borderDecoTL = new ImageIcon("./resources/CornerTopLeft.png");
+    ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
 
     public GameFrame() throws SQLException {
         // Reference Main and Database
@@ -56,6 +61,7 @@ public class GameFrame extends JFrame {
         Connection db = main.createConnection();
 
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         // set CardLayout to the deck panel layout manager
         deck.setLayout(cardLayout);
@@ -65,30 +71,39 @@ public class GameFrame extends JFrame {
         mainMenu.setLayout(new BorderLayout());
         mainMenu.setBackground(darkslate);
 
+        GridBagConstraints gbcMain = new GridBagConstraints();
+        gbcMain.insets = new Insets(10, 10, 10, 10);
+
         JPanel menuContent = new JPanel();
         menuContent.setLayout(new GridBagLayout());
         menuContent.setBackground(gunmetal);
 
-//        JLabel leftCornerDeco = new JLabel(borderDecoTL);
-//        gbc.gridx = 0;
-//        gbc.gridy = 0;
-//        menuContent.add(leftCornerDeco, gbc);
-//
-//        JLabel rightCornerDeco = new JLabel(borderDecoTR);
-//        gbc.gridx = 1;
-//        gbc.gridy = 0;
-//        menuContent.add(rightCornerDeco, gbc);
+        JLabel leftCornerDeco = new JLabel(borderDecoTL);
+        gbcMain.gridx = 0;
+        gbcMain.gridy = 0;
+        menuContent.add(leftCornerDeco, gbcMain);
+
+        JLabel rightCornerDeco = new JLabel(borderDecoTR);
+        gbcMain.gridx = 2;
+        gbcMain.gridy = 0;
+        menuContent.add(rightCornerDeco, gbcMain);
+
+        JLabel gameTitle = new JLabel("Til Vinland");
+        gameTitle.setForeground(alertorange);
+        gameTitle.setPreferredSize(new Dimension(400, 200));
+        gameTitle.setText("Til Vinland!");
+        gameTitle.setFont(new Font("Monospaced", Font.PLAIN, 50));
+        gameTitle.setForeground(columbiablue);
+        gameTitle.setVerticalAlignment(JLabel.CENTER);
+        gameTitle.setHorizontalAlignment(JLabel.CENTER);
+        gbcMain.gridx = 1;
+        gbcMain.gridy = 0;
+        menuContent.add(gameTitle, gbcMain);
 
         JPanel menuOptions = new JPanel();
         menuOptions.setLayout(new GridBagLayout());
-        gbc.insets = new Insets(10, 10, 10, 10);
-
-        JLabel mainText = new JLabel();
-        mainText.setText("Til Vinland!");
-        mainText.setFont(new Font("Monospaced", Font.PLAIN, 40));
-        mainText.setForeground(columbiablue);
-        mainText.setVerticalAlignment(JLabel.CENTER);
-        mainText.setHorizontalAlignment(JLabel.CENTER);
+        menuOptions.setBackground(cerulean);
+        menuOptions.setPreferredSize(new Dimension(200,200));
 
         JButton playButton = new JButton();
         playButton.setBounds(100,100,100,100);
@@ -116,27 +131,24 @@ public class GameFrame extends JFrame {
         seedField.setPreferredSize(new Dimension(400, 40));
         seedField.setToolTipText("Enter seed for game generation or leave blank for a random seed.");
 
-        menuOptions.setBackground(cerulean);
-        menuOptions.setPreferredSize(new Dimension(200,200));
-
         // Row 0: JTextField spanning 2 columns
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2; // Span across both button columns
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        menuOptions.add(seedField, gbc);
+        gbcMain.gridx = 0;
+        gbcMain.gridy = 0;
+        gbcMain.gridwidth = 2; // Span across both button columns
+        gbcMain.fill = GridBagConstraints.HORIZONTAL;
+        menuOptions.add(seedField, gbcMain);
 
         // Row 1, Column 0: Play
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1; // Reset width
-        gbc.fill = GridBagConstraints.NONE;
-        menuOptions.add(playButton, gbc);
+        gbcMain.gridx = 0;
+        gbcMain.gridy = 1;
+        gbcMain.gridwidth = 1; // Reset width
+        gbcMain.fill = GridBagConstraints.NONE;
+        menuOptions.add(playButton, gbcMain);
 
         // Row 1, Column 1: Load
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        menuOptions.add(loadButton, gbc);
+        gbcMain.gridx = 1;
+        gbcMain.gridy = 1;
+        menuOptions.add(loadButton, gbcMain);
 
         mainMenu.add(menuOptions,BorderLayout.SOUTH);
         mainMenu.add(menuContent,BorderLayout.CENTER);
@@ -186,15 +198,123 @@ public class GameFrame extends JFrame {
             }
         });
 
-        /* ------------ Ship Status Panel ------------ */
+        /* ------------ Ship/Party Status Panel ------------ */
+        //TODO add a ship repair button
+        //TODO add a heal party button??
+        //TODO add some art!
+        //TODO grab party names and stats
+        GridBagConstraints gbcStatus = new GridBagConstraints();
+        gbcStatus.insets = new Insets(10, 10, 10, 10);
+
         JPanel status = new JPanel();
-        JLabel healthText = new JLabel();
-        healthText.setText("Ship Health: " + gameShip.getHealth());
+        status.setLayout(new BorderLayout());
 
-        JLabel statText = new JLabel();
-        statText.setText("Ship Status: " + gameShip.getStatus());
+        JPanel statusContent = new JPanel();
+        statusContent.setLayout(new GridBagLayout());
+        statusContent.setBackground(gunmetal);
 
-        status.add(createBackButton());
+        JPanel statusControls = new JPanel();
+        statusControls.setLayout(new GridBagLayout());
+        statusControls.setBackground(cerulean);
+        statusControls.setPreferredSize(new Dimension(200,200));
+
+        JLabel shipHealthText = new JLabel();
+        shipHealthText.setText("Ship Health: " + ship.getHealth());
+
+        JLabel shipStatText = new JLabel();
+        shipStatText.setText("Ship Status: " + ship.getStatus());
+
+        gbcStatus.gridx = 0;
+        gbcStatus.gridy = 0;
+        statusControls.add(createBackButton());
+
+        status.add(statusControls,BorderLayout.SOUTH);
+        status.add(statusContent);
+
+        /* ------------ Party Creation Panel ------------ */
+        JPanel party = new JPanel();
+        party.setLayout(new BorderLayout());
+
+        GridBagConstraints gbcParty = new GridBagConstraints();
+        gbcParty.insets = new Insets(10, 30, 10, 30);
+
+        JPanel partyContent = new JPanel();
+        partyContent.setLayout(new GridBagLayout());
+        partyContent.setBackground(gunmetal);
+
+        JPanel partyControls = new JPanel();
+        partyControls.setLayout(new GridBagLayout());
+        partyControls.setBackground(cerulean);
+        partyControls.setPreferredSize(new Dimension(200,200));
+
+        JTextField partyOneField = new JTextField();
+        partyOneField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyTwoField = new JTextField();
+        partyTwoField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyThreeField = new JTextField();
+        partyThreeField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyFourField = new JTextField();
+        partyFourField.setPreferredSize(new Dimension(200, 24));
+
+        JLabel partyOneIcon = new JLabel(partyOneLogo);
+        JLabel partyTwoIcon = new JLabel(partyTwoLogo);
+        JLabel partyThreeIcon = new JLabel(partyThreeLogo);
+        JLabel partyFourIcon = new JLabel(partyFourLogo);
+
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 0;
+        partyContent.add(partyOneIcon, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 1;
+        partyContent.add(partyOneField, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 0;
+        partyContent.add(partyTwoIcon, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 1;
+        partyContent.add(partyTwoField, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 2;
+        partyContent.add(partyThreeIcon, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 3;
+        partyContent.add(partyThreeField, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 2;
+        partyContent.add(partyFourIcon, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 3;
+        partyContent.add(partyFourField, gbcParty);
+
+        JButton partyContinueButton = new JButton();
+        partyContinueButton.setText("Continue");
+        partyContinueButton.setPreferredSize(new Dimension(200,50));
+        partyContinueButton.setFont(new Font("Monospaced", Font.PLAIN, 20));
+        partyContinueButton.setForeground(alertorange);
+        partyContinueButton.setBackground(buttonbrown);
+        partyContinueButton.setBorder(BorderFactory.createEtchedBorder());
+
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 0;
+        partyControls.add(partyContinueButton, gbcParty);
+
+        party.add(partyControls, BorderLayout.SOUTH);
+        party.add(partyContent);
+
+        partyContinueButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String partyNameOneInput = partyOneField.getText();
+                String partyNameTwoInput = partyTwoField.getText();
+                String partyNameThreeInput = partyThreeField.getText();
+                String partyNameFourInput = partyFourField.getText();
+
+                //TODO take out active int w/ stevens code change to Main.createParty()
+                Main.createParty(partyNameOneInput, 0, 1);
+                Main.createParty(partyNameTwoInput, 0, 1);
+                Main.createParty(partyNameThreeInput, 0,1);
+                Main.createParty(partyNameFourInput,0, 1);
+            }
+        });
 
         /* ------------ WELCOME SCREEN ------------ */
         JPanel welcomePanel = new JPanel(new BorderLayout());
@@ -380,6 +500,7 @@ public class GameFrame extends JFrame {
         deck.add(status, STATS);
         deck.add(randEvent, EVENT);
         deck.add(welcomeShopPanel, WELSHOP);
+        deck.add(party, PARTY);
 
         // Debug Panels
         deck.add(dbStats, DBSTATS);
@@ -393,6 +514,8 @@ public class GameFrame extends JFrame {
                     switchToPanel(DBSTATS);
                 } else if (seedInputText.equals("DEBUGEVENT")) { //TODO Testing - remove after
                     switchToPanel(EVENT);
+                } else if (seedInputText.equals("DEBUGPARTY")) { //TODO Testing - remove after
+                    switchToPanel(PARTY);
                 } else if (seedInputText.equals("")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(WELCOME);
@@ -419,19 +542,12 @@ public class GameFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {}
         });
 
-        // See Ship Stats Button
-//        shipStatButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                cardLayout.show(deck, STATS);
-//            }
-//        });
-
         // Load button logic
-//        loadButton.addActionListener(e -> {
-//            Main.loadSave();
-//            // auto switches to next screen after loading
-//            cardLayout.show(deck, PLAY);
-//        });
+        loadButton.addActionListener(e -> {
+            Main.loadSave();
+            // auto switches to next screen after loading
+            switchToPanel(WELCOME);
+        });
 
         // Add deck panel to the frame
         this.add(deck);
