@@ -7,6 +7,8 @@ import javax.swing.text.*;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +40,8 @@ public class Main {
     private static ArrayList<Item> items = new ArrayList<Item>();
     private static int activePlayers;
     private static String seedUsed;
+    public static Map<Integer, String> eventTitles = new HashMap<>();
+    public static Map<Integer, String> eventDescriptions = new HashMap<>();
 
     //Runs the main game window from the GameFrame.java class
     private static GameFrame mainFrame;
@@ -141,7 +145,7 @@ public class Main {
             command.executeUpdate("INSERT INTO events (eventName, eventDesc, eventType) VALUES ('Forest', 'A wooded coastline that would be perfect for finding more food or getting some lumber for ship repairs.', 'Land')");
 
             /* ------- Enemy Table ------- */
-            command.executeUpdate("CREATE TABLE IF NOT EXISTS enemy (enemyId INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(30) NOT NULL, health INT NOT NULL)");
+            command.executeUpdate("CREATE TABLE IF NOT EXISTS enemy (enemyId INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(30) NOT NULL, health INT NOT NULL)");
 
             // Fills enemy table
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Knight', 150)"));
@@ -161,11 +165,24 @@ public class Main {
             statementSave = result.prepareStatement("INSERT INTO saves (saveName, locationsId, eventsId, memberNum) VALUES (?, ?, ?, ?)");
             statementSaveOverwrite = result.prepareStatement("UPDATE saves SET saveName = ?, locationsId = ?, eventsId = ?, memberNum = ? WHERE saveId = ?");
             statementParty = result.prepareStatement("UPDATE party SET health = ? WHERE memberNum = ?");
+
+            // Load event titles and descriptions from database
+            Statement fetchEvents = result.createStatement();
+            ResultSet rs = fetchEvents.executeQuery("SELECT eventId, eventName, eventDesc FROM events");
+
+            while (rs.next()) {
+                int id = rs.getInt("eventId");
+                eventTitles.put(id, rs.getString("eventName"));
+                eventDescriptions.put(id, rs.getString("eventDesc"));
+            }
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
+
+
+
         return result;
     }
 

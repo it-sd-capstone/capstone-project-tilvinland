@@ -400,6 +400,8 @@ public class GameFrame extends JFrame {
                     switchToPanel(CALM);
                 } else if (seedInputText.equals("DEBUGROUGH")) { //TODO Testing - remove after
                     switchToPanel(ROUGH);
+                } else if (seedInputText.equals("DEBUGSTORM")) { //TODO Testing - remove after
+                    switchToPanel(STORM);
                 } else if (seedInputText.equals("")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(WELCOME);
@@ -460,12 +462,12 @@ public class GameFrame extends JFrame {
         controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Calm Seas Title
-        JLabel calmTitle = new JLabel("Calm Seas");
+        JLabel calmTitle = new JLabel(Main.eventTitles.get(4));
         calmTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         calmTitle.setForeground(alertorange);
 
         // Calm Seas Text Area
-        JTextArea calmDesc = new JTextArea("The North Sea is calm today. A good time to fish, otherwise smooth sailing ahead!");
+        JTextArea calmDesc = new JTextArea(Main.eventDescriptions.get(4));
         calmDesc.setEditable(false);
         calmDesc.setHighlighter(null);
         calmDesc.setFocusable(false);
@@ -479,11 +481,22 @@ public class GameFrame extends JFrame {
         // Calm Seas Buttons
         JButton calmFish = new JButton("Fish");
         JButton calmSailing = new JButton("Continue Sailing");
+        JButton calmRepair = new JButton("Repair Ship");
         calmFish.setPreferredSize(new Dimension(200, 50));
         calmSailing.setPreferredSize(new Dimension(200, 50));
+        calmRepair.setPreferredSize(new Dimension(200, 50));
+        calmFish.setBackground(buttonbrown);
+        calmFish.setForeground(alertorange);
+        calmSailing.setBackground(buttonbrown);
+        calmSailing.setForeground(alertorange);
+        calmRepair.setBackground(buttonbrown);
+        calmRepair.setForeground(alertorange);
 
         // Calm Seas Fishing event
         calmFish.addActionListener(e -> Main.runEvent(6));
+
+        // Repair Ship event
+        calmRepair.addActionListener(e -> Main.runEvent(10));
 
         // Continue Sailing event
         calmSailing.addActionListener(e -> Main.runEvent(5));
@@ -503,6 +516,8 @@ public class GameFrame extends JFrame {
         controlGbc.gridx = 1;
         calmControls.add(calmFish, controlGbc);
         controlGbc.gridx = 2;
+        calmControls.add(calmRepair, controlGbc);
+        controlGbc.gridx = 3;
         calmControls.add(calmSailing, controlGbc);
 
         // Assemble calmPanel
@@ -523,18 +538,18 @@ public class GameFrame extends JFrame {
 
         JPanel roughControls = new JPanel(new GridBagLayout());
         roughControls.setPreferredSize(new Dimension(200, 200));
-        roughControls.setBackground(cerulean); // match calm panel color
+        roughControls.setBackground(cerulean);
 
         // GBC for spacing between buttons
         controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Rough Seas Title
-        JLabel roughTitle = new JLabel("Rough Seas");
+        JLabel roughTitle = new JLabel(Main.eventTitles.get(5));
         roughTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         roughTitle.setForeground(alertorange);
 
         // Rough Seas Text Area
-        JTextArea roughDesc = new JTextArea("The seas are rough! The Gods are angry today! Large waves attack your ship! Do you hunker down or press forward?");
+        JTextArea roughDesc = new JTextArea(Main.eventDescriptions.get(5));
         roughDesc.setEditable(false);
         roughDesc.setHighlighter(null);
         roughDesc.setFocusable(false);
@@ -548,24 +563,25 @@ public class GameFrame extends JFrame {
         // Rough Seas Buttons
         JButton roughWait = new JButton("Hunker Down");
         JButton roughSail = new JButton("Continue Sailing");
+        JButton roughFish = new JButton ("Fish");
         roughWait.setPreferredSize(new Dimension(200, 50));
         roughSail.setPreferredSize(new Dimension(200, 50));
+        roughFish.setPreferredSize(new Dimension(200, 50));
+        roughWait.setBackground(buttonbrown);
+        roughWait.setForeground(alertorange);
+        roughSail.setBackground(buttonbrown);
+        roughSail.setForeground(alertorange);
+        roughFish.setBackground(buttonbrown);
+        roughFish.setForeground(alertorange);
 
         // Rough Seas Hunker Down Event
-        roughWait.addActionListener(e -> {
-            Main.getShip().removeHealth(10);
-            Main.runEvent(5);
-        });
+        roughWait.addActionListener(e -> Main.runEvent(7));
+
+        // Rough Seas Fishing Event
+        roughFish.addActionListener(e -> Main.runEvent(6));
 
         // Rough Seas Continue Sailing Event
-        roughSail.addActionListener(e -> {
-            Main.getShip().removeHealth(20);
-            if (Main.getShip().getHealth() <= 0) {
-                Main.runEvent(14);
-            } else {
-                Main.runEvent(5);
-            }
-        });
+        roughSail.addActionListener(e -> Main.runEvent(8));
 
         // Add content to roughContent
         gbc.gridx = 0;
@@ -582,6 +598,8 @@ public class GameFrame extends JFrame {
         controlGbc.gridx = 1;
         roughControls.add(roughWait, controlGbc);
         controlGbc.gridx = 2;
+        roughControls.add(roughFish, controlGbc);
+        controlGbc.gridx = 3;
         roughControls.add(roughSail, controlGbc);
 
         // Assemble roughPanel
@@ -591,6 +609,77 @@ public class GameFrame extends JFrame {
         // Add roughPanel to deck
         deck.add(roughPanel, ROUGH);
         /* -------------- End of Rough Seas Panel ------------ */
+
+        /* ----------------- Storm Panel --------------------- */
+        JPanel stormPanel = new JPanel(new BorderLayout());
+        stormPanel.setBackground(gunmetal);
+
+        JPanel stormContent = new JPanel(new GridBagLayout());
+        stormContent.setBackground(gunmetal);
+
+        JPanel stormControls = new JPanel(new GridBagLayout());
+        stormControls.setPreferredSize(new Dimension(200, 200));
+        stormControls.setBackground(cerulean);
+
+        // GBC for spacing between buttons
+        controlGbc.insets = new Insets(10, 30, 10, 30);
+
+        // Storm Title
+        JLabel stormTitle = new JLabel(Main.eventTitles.get(6));
+        stormTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        stormTitle.setForeground(alertorange);
+
+        // Storm Text Area
+        JTextArea stormDesc = new JTextArea(Main.eventDescriptions.get(6));
+        stormDesc.setEditable(false);
+        stormDesc.setHighlighter(null);
+        stormDesc.setBackground(transparent);
+        stormDesc.setLineWrap(true);
+        stormDesc.setWrapStyleWord(true);
+        stormDesc.setForeground(emerald);
+        stormDesc.setFont(new Font("Monospaced", Font.BOLD, 20));
+        stormDesc.setPreferredSize(new Dimension(600, 100));
+
+        // Storm buttons
+        JButton stormWait = new JButton("Hunker Down");
+        JButton stormSail = new JButton("Continue Sailing");
+        stormWait.setPreferredSize(new Dimension(200, 50));
+        stormSail.setPreferredSize(new Dimension(200, 50));
+        stormWait.setBackground(buttonbrown);
+        stormWait.setForeground(alertorange);
+        stormSail.setBackground(buttonbrown);
+        stormSail.setForeground(alertorange);
+
+        // Storm Hunker Down Event
+        stormWait.addActionListener(e -> Main.runEvent(7));
+
+        // Storm Continue Sailing Event
+        stormSail.addActionListener(e -> Main.runEvent(9));
+
+        // Add content to stormContent
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        stormContent.add(stormTitle, gbc);
+        gbc.gridy = 1;
+        stormContent.add(stormDesc, gbc);
+
+        // Add controls to stormControls
+        controlGbc.gridx = 0;
+        controlGbc.gridy = 0;
+        stormControls.add(createDefaultControls(), controlGbc);
+        controlGbc.gridx = 1;
+        stormControls.add(stormWait, controlGbc);
+        controlGbc.gridx = 2;
+        stormControls.add(stormSail, controlGbc);
+
+        // Assemble stormPanel
+        stormPanel.add(stormContent, BorderLayout.CENTER);
+        stormPanel.add(stormControls, BorderLayout.SOUTH);
+
+        // Add stormPanel to deck
+        deck.add(stormPanel, STORM);
+        /* -------------- End of Storm Panel ----------------- */
 
         /* !!! KEEP LAST !!! */
         this.setVisible(true);

@@ -9,7 +9,7 @@ public class LoadTest {
     public void testSaveAndLoad() {
         // Setup state for testing
         Main.setSeed("unit_test_seed_v2");
-        Main.createParty();
+        // Main.createParty();
 
         // Set player conditions
         Main.getParty().get(0).setHealth(0);    // Dead
