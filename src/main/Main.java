@@ -1,8 +1,6 @@
 package main;
 
 import javax.swing.*;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.text.*;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
@@ -10,10 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static java.awt.SystemColor.text;
 import java.sql.*;
 
 public class Main {
@@ -558,7 +553,6 @@ public class Main {
                 ship = new Ship();
                 ship.setHealth(rs.getInt("shiphealth"));
 
-
                 // output
                 System.out.println("Game loaded!");
             } else {
@@ -573,7 +567,6 @@ public class Main {
     }
 
     // Adds starter items to player's inventory using items table in database
-    // IDK the ID/Name yet so I just used these as placeholders, will adjust later -JH
     public static void addInventory(int id, int amount) {
         items.get(id).addItem(amount);
     }
@@ -621,4 +614,3 @@ public class Main {
     }
 
 }
-

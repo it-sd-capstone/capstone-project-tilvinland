@@ -39,6 +39,8 @@ public class GameFrame extends JFrame {
     String CALM = "CALM";
     String ROUGH = "ROUGH";
     String STORM = "STORM";
+    String VILLAGE = "VILLAGE";
+    String FOREST = "FOREST";
 
     String WIPE = "Party Wipe";
     String SANK = "Ship Sank";
@@ -324,6 +326,7 @@ public class GameFrame extends JFrame {
                 String partyNameThreeInput = partyThreeField.getText();
                 String partyNameFourInput = partyFourField.getText();
 
+                //TODO take out active int w/ stevens code change to Main.createParty()
                 Main.createParty(partyNameOneInput, 0);
                 Main.createParty(partyNameTwoInput, 1);
                 Main.createParty(partyNameThreeInput, 2);
@@ -813,17 +816,17 @@ public class GameFrame extends JFrame {
         calmControls.setBackground(cerulean);
         calmControls.setPreferredSize(new Dimension(200, 200));
 
-        // Custom GBC for spacing between buttons
+        // GBC for spacing between buttons
         GridBagConstraints controlGbc = new GridBagConstraints();
-        controlGbc.insets = new Insets(10, 30, 10, 30); // Padding: top, left, bottom, right
+        controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Calm Seas Title
-        JLabel calmTitle = new JLabel("Calm Seas");
+        JLabel calmTitle = new JLabel(Main.eventTitles.get(4));
         calmTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         calmTitle.setForeground(alertorange);
 
         // Calm Seas Text Area
-        JTextArea calmDesc = new JTextArea("The North Sea is calm today. A good time to fish, otherwise smooth sailing ahead!");
+        JTextArea calmDesc = new JTextArea(Main.eventDescriptions.get(4));
         calmDesc.setEditable(false);
         calmDesc.setHighlighter(null);
         calmDesc.setFocusable(false);
@@ -836,22 +839,20 @@ public class GameFrame extends JFrame {
 
         // Calm Seas Buttons
         JButton calmFish = new JButton("Fish");
+        JButton calmRepair = new JButton("Repair Ship");
         JButton calmSailing = new JButton("Continue Sailing");
         calmFish.setPreferredSize(new Dimension(200, 50));
+        calmRepair.setPreferredSize(new Dimension(200, 50));
         calmSailing.setPreferredSize(new Dimension(200, 50));
-        //calmRepair.setPreferredSize(new Dimension(200, 50));
         calmFish.setBackground(buttonbrown);
-        calmFish.setForeground(alertorange);
+        calmRepair.setBackground(buttonbrown);
         calmSailing.setBackground(buttonbrown);
+        calmFish.setForeground(alertorange);
+        calmRepair.setForeground(alertorange);
         calmSailing.setForeground(alertorange);
-        //calmRepair.setBackground(buttonbrown);
-        //calmRepair.setForeground(alertorange);
-
-        // Calm Seas Fishing event
-        calmFish.addActionListener(e -> Main.runEvent(6));
-
-        // Continue Sailing event
-        calmSailing.addActionListener(e -> Main.runEvent(5));
+        calmFish.addActionListener(e -> Main.runEvent(6)); // fishing
+        calmRepair.addActionListener(e -> Main.runEvent(10)); // repair ship
+        calmSailing.addActionListener(e -> Main.runEvent(5)); // continue sailing
 
         // Add content to calmContent
         gbc.gridx = 0;
@@ -864,10 +865,12 @@ public class GameFrame extends JFrame {
         // Add controls to bottom calmControls
         controlGbc.gridx = 0;
         controlGbc.gridy = 0;
-        calmControls.add(createDefaultControls(), controlGbc); // ship stats
+        calmControls.add(createDefaultControls(), controlGbc);
         controlGbc.gridx = 1;
         calmControls.add(calmFish, controlGbc);
         controlGbc.gridx = 2;
+        calmControls.add(calmRepair, controlGbc);
+        controlGbc.gridx = 3;
         calmControls.add(calmSailing, controlGbc);
 
         // Assemble calmPanel
@@ -876,7 +879,6 @@ public class GameFrame extends JFrame {
 
         // Add calmPanel to deck
         deck.add(calmPanel, CALM);
-
         /* -------------- End of Calm Seas Panel ------------ */
 
         /* -------------- Rough Seas Panel ------------------ */
@@ -889,18 +891,18 @@ public class GameFrame extends JFrame {
 
         JPanel roughControls = new JPanel(new GridBagLayout());
         roughControls.setPreferredSize(new Dimension(200, 200));
-        roughControls.setBackground(cerulean); // match calm panel color
+        roughControls.setBackground(cerulean);
 
         // GBC for spacing between buttons
         controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Rough Seas Title
-        JLabel roughTitle = new JLabel("Rough Seas");
+        JLabel roughTitle = new JLabel(Main.eventTitles.get(5));
         roughTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         roughTitle.setForeground(alertorange);
 
         // Rough Seas Text Area
-        JTextArea roughDesc = new JTextArea("The seas are rough! The Gods are angry today! Large waves attack your ship! Do you hunker down or press forward?");
+        JTextArea roughDesc = new JTextArea(Main.eventDescriptions.get(5));
         roughDesc.setEditable(false);
         roughDesc.setHighlighter(null);
         roughDesc.setFocusable(false);
@@ -913,33 +915,20 @@ public class GameFrame extends JFrame {
 
         // Rough Seas Buttons
         JButton roughWait = new JButton("Hunker Down");
+        JButton roughFish = new JButton("Fish");
         JButton roughSail = new JButton("Continue Sailing");
-        JButton roughFish = new JButton ("Fish");
         roughWait.setPreferredSize(new Dimension(200, 50));
-        roughSail.setPreferredSize(new Dimension(200, 50));
         roughFish.setPreferredSize(new Dimension(200, 50));
+        roughSail.setPreferredSize(new Dimension(200, 50));
         roughWait.setBackground(buttonbrown);
-        roughWait.setForeground(alertorange);
-        roughSail.setBackground(buttonbrown);
-        roughSail.setForeground(alertorange);
         roughFish.setBackground(buttonbrown);
+        roughSail.setBackground(buttonbrown);
+        roughWait.setForeground(alertorange);
         roughFish.setForeground(alertorange);
-
-        // Rough Seas Hunker Down Event
-        roughWait.addActionListener(e -> {
-            Main.getShip().removeHealth(10);
-            Main.runEvent(5);
-        });
-
-        // Rough Seas Continue Sailing Event
-        roughSail.addActionListener(e -> {
-            Main.getShip().removeHealth(20);
-            if (Main.getShip().getHealth() <= 0) {
-                Main.runEvent(14);
-            } else {
-                Main.runEvent(5);
-            }
-        });
+        roughSail.setForeground(alertorange);
+        roughWait.addActionListener(e -> Main.runEvent(7)); // hunker down
+        roughFish.addActionListener(e -> Main.runEvent(6)); // fish
+        roughSail.addActionListener(e -> Main.runEvent(8)); // continue sailing
 
         // Add content to roughContent
         gbc.gridx = 0;
@@ -956,6 +945,8 @@ public class GameFrame extends JFrame {
         controlGbc.gridx = 1;
         roughControls.add(roughWait, controlGbc);
         controlGbc.gridx = 2;
+        roughControls.add(roughFish, controlGbc);
+        controlGbc.gridx = 3;
         roughControls.add(roughSail, controlGbc);
 
         // Assemble roughPanel
@@ -967,6 +958,7 @@ public class GameFrame extends JFrame {
         /* -------------- End of Rough Seas Panel ------------ */
 
         /* ----------------- Storm Panel --------------------- */
+        // Create Storm Panel
         JPanel stormPanel = new JPanel(new BorderLayout());
         stormPanel.setBackground(gunmetal);
 
@@ -1002,15 +994,11 @@ public class GameFrame extends JFrame {
         stormWait.setPreferredSize(new Dimension(200, 50));
         stormSail.setPreferredSize(new Dimension(200, 50));
         stormWait.setBackground(buttonbrown);
-        stormWait.setForeground(alertorange);
         stormSail.setBackground(buttonbrown);
+        stormWait.setForeground(alertorange);
         stormSail.setForeground(alertorange);
-
-        // Storm Hunker Down Event
-        stormWait.addActionListener(e -> Main.runEvent(7));
-
-        // Storm Continue Sailing Event
-        stormSail.addActionListener(e -> Main.runEvent(9));
+        stormWait.addActionListener(e -> Main.runEvent(7)); // hunker down
+        stormSail.addActionListener(e -> Main.runEvent(9)); // storm event
 
         // Add content to stormContent
         gbc.gridx = 0;
@@ -1035,6 +1023,159 @@ public class GameFrame extends JFrame {
 
         // Add stormPanel to deck
         deck.add(stormPanel, STORM);
+        /* -------------- End of Storm Panel ----------------- */
+
+        /*--------------- Village Panel ---------------------- */
+        // Create village panel
+        JPanel villagePanel = new JPanel(new BorderLayout());
+        villagePanel.setBackground(gunmetal);
+
+        JPanel villageContent = new JPanel(new GridBagLayout());
+        villageContent.setBackground(gunmetal);
+
+        JPanel villageControls = new JPanel(new GridBagLayout());
+        villageControls.setPreferredSize(new Dimension(200, 200));
+        villageControls.setBackground(cerulean);
+
+        // GBC for spacing between buttons
+        controlGbc.insets = new Insets(10, 30, 10, 30);
+
+        // Village Title
+        JLabel villageTitle = new JLabel(Main.eventTitles.get(8));
+        villageTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        villageTitle.setForeground(alertorange);
+
+        // Village Text area
+        JTextArea villageDesc = new JTextArea(Main.eventDescriptions.get(8));
+        villageDesc.setEditable(false);
+        villageDesc.setHighlighter(null);
+        villageDesc.setBackground(transparent);
+        villageDesc.setLineWrap(true);
+        villageDesc.setWrapStyleWord(true);
+        villageDesc.setForeground(emerald);
+        villageDesc.setFont(new Font("Monospaced", Font.BOLD, 20));
+        villageDesc.setPreferredSize(new Dimension(600, 100));
+
+        // Village Buttons
+        JButton villageShop = new JButton("Visit Shop");
+        JButton villageRepair = new JButton("Repair Ship");
+        JButton villageSail = new JButton("Continue Sailing");
+        villageShop.setPreferredSize(new Dimension(200, 50));
+        villageRepair.setPreferredSize(new Dimension(200, 50));
+        villageSail.setPreferredSize(new Dimension(200, 50));
+        villageShop.setBackground(buttonbrown);
+        villageRepair.setBackground(buttonbrown);
+        villageSail.setBackground(buttonbrown);
+        villageShop.setForeground(alertorange);
+        villageRepair.setForeground(alertorange);
+        villageSail.setForeground(alertorange);
+        villageShop.addActionListener(e -> Main.runEvent(1)); // shop
+        villageRepair.addActionListener(e -> Main.runEvent(10)); // repair?
+        villageSail.addActionListener(e -> Main.runEvent(5)); // continue sailing
+
+        // add content to villageContent
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        villageContent.add(villageTitle, gbc);
+        gbc.gridy = 1;
+        villageContent.add(villageDesc, gbc);
+
+        // Add controls to stormControls
+        controlGbc.gridx = 0;
+        controlGbc.gridy = 1;
+        villageControls.add(createDefaultControls(), controlGbc);
+        controlGbc.gridx = 1;
+        villageControls.add(villageShop, controlGbc);
+        controlGbc.gridx = 2;
+        villageControls.add(villageRepair, controlGbc);
+        controlGbc.gridx = 3;
+        villageControls.add(villageSail, controlGbc);
+
+        // Assemble villagePanel
+        villagePanel.add(villageContent, BorderLayout.CENTER);
+        villagePanel.add(villageControls, BorderLayout.SOUTH);
+
+        // Add villagePanel to deck
+        deck.add(villagePanel, STORM);
+        /*--------------- End of Village Panel ------------------ */
+
+        /* ----------------- Forest Panel --------------------- */
+        // Create Forest Panel
+        JPanel forestPanel = new JPanel(new BorderLayout());
+        forestPanel.setBackground(gunmetal);
+
+        JPanel forestContent = new JPanel(new GridBagLayout());
+        forestContent.setBackground(gunmetal);
+
+        JPanel forestControls = new JPanel(new GridBagLayout());
+        forestControls.setPreferredSize(new Dimension(200, 200));
+        forestControls.setBackground(cerulean);
+
+        // GBC for spacing between buttons
+        controlGbc.insets = new Insets(10, 30, 10, 30);
+
+        // Forest Title
+        JLabel forestTitle = new JLabel(Main.eventTitles.get(9));
+        forestTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        forestTitle.setForeground(alertorange);
+
+        // Forest Test Area
+        JTextArea forestDesc = new JTextArea(Main.eventDescriptions.get(9));
+        forestDesc.setEditable(false);
+        forestDesc.setHighlighter(null);
+        forestDesc.setBackground(transparent);
+        forestDesc.setLineWrap(true);
+        forestDesc.setWrapStyleWord(true);
+        forestDesc.setForeground(emerald);
+        forestDesc.setFont(new Font("Monospaced", Font.BOLD, 20));
+        forestDesc.setPreferredSize(new Dimension(600, 100));
+
+        // Forest Buttons
+        JButton forestWood = new JButton("Chop some Wood");
+        JButton forestHunt = new JButton("Hunt wild game");
+        JButton forestSail = new JButton("Continue Sailing");
+        forestWood.setPreferredSize(new Dimension(200, 50));
+        forestHunt.setPreferredSize(new Dimension(200, 50));
+        forestSail.setPreferredSize(new Dimension(200, 50));
+        forestWood.setBackground(buttonbrown);
+        forestHunt.setBackground(buttonbrown);
+        forestSail.setBackground(buttonbrown);
+        forestWood.setForeground(alertorange);
+        forestHunt.setForeground(alertorange);
+        forestSail.setForeground(alertorange);
+        forestWood.addActionListener(e -> Main.runEvent(13)); // Wood
+        forestHunt.addActionListener(e -> Main.runEvent(12)); // Hunt
+        forestSail.addActionListener(e -> Main.runEvent(5));  // Continue Sailing
+
+        // Add content to forestContent
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        forestContent.add(forestTitle, gbc);
+        gbc.gridy = 1;
+        forestContent.add(forestDesc, gbc);
+
+        // Add controls to forestControls
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        forestControls.add(createDefaultControls(), gbc);
+        gbc.gridx = 1;
+        forestControls.add(forestWood, gbc);
+        gbc.gridx = 2;
+        forestControls.add(forestHunt, gbc);
+        gbc.gridx = 3;
+        forestControls.add(forestSail, gbc);
+
+        // Assemble forestPanel
+        forestPanel.add(forestContent, BorderLayout.CENTER);
+        forestPanel.add(forestControls, BorderLayout.SOUTH);
+
+        // Add forestPanel to deck
+        deck.add(forestPanel, FOREST);
+
+
+
 
         /* ------------ Ship Sank Panel ------------ */
         JPanel shipSankPanel = new JPanel(new BorderLayout());
@@ -1141,6 +1282,16 @@ public class GameFrame extends JFrame {
                     switchToPanel(PARTY);
                 } else if (seedInputText.equals("DEBUGSTATUS2")) { //TODO Testing - remove after
                     switchToPanel(STATS);
+                } else if (seedInputText.equals("DEBUGCALM")) { //TODO Testing - remove after
+                    switchToPanel(CALM);
+                } else if (seedInputText.equals("DEBUGROUGH")) { //TODO Testing - remove after
+                    switchToPanel(ROUGH);
+                } else if (seedInputText.equals("DEBUGSTORM")) { //TODO Testing - remove after
+                    switchToPanel(STORM);
+                } else if (seedInputText.equals("DEBUGVILLAGE")) { //TODO Testing - remove after
+                    switchToPanel(VILLAGE);
+                } else if (seedInputText.equals("DEBUGFOREST")) { //TODO Testing - remove after
+                    switchToPanel(FOREST);
                 } else if (seedInputText.equals("DEBUGCOMBAT")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(COMBAT);
@@ -1212,7 +1363,6 @@ public class GameFrame extends JFrame {
 
         /* !!! KEEP LAST !!! */
         this.setVisible(true);
-
     }
 
     private JButton createBackButton() {
