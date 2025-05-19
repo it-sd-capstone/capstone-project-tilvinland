@@ -329,13 +329,12 @@ public class GameFrame extends JFrame {
                 String partyNameThreeInput = partyThreeField.getText();
                 String partyNameFourInput = partyFourField.getText();
 
-                //TODO take out active int w/ stevens code change to Main.createParty()
                 Main.createParty(partyNameOneInput, 0);
                 Main.createParty(partyNameTwoInput, 1);
                 Main.createParty(partyNameThreeInput, 2);
                 Main.createParty(partyNameFourInput,3);
 
-                switchToPanel(WELCOME);
+                Main.runEvent(5);
             }
         });
 
@@ -352,7 +351,7 @@ public class GameFrame extends JFrame {
         setSailButton.setPreferredSize(new Dimension(200,50));
         setSailButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Main.decideEvent(4,0);
+                Main.runEvent(5);
             }
         });
 
@@ -746,6 +745,7 @@ public class GameFrame extends JFrame {
         startContent.add(startEventDescription, gbc);
 
         startEvent.add(startContent);
+
         startEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
         // ScotLand Event ------------------------------
@@ -967,7 +967,7 @@ public class GameFrame extends JFrame {
         calmControls.add(calmSailing, controlGbc);
 
         // Assemble calmPanel
-        calmPanel.add(calmContent);
+        calmPanel.add(calmContent, BorderLayout.CENTER);
         calmPanel.add(calmControls, BorderLayout.SOUTH);
 
         // Add calmPanel to deck
@@ -1190,7 +1190,7 @@ public class GameFrame extends JFrame {
         villagePanel.add(villageControls, BorderLayout.SOUTH);
 
         // Add villagePanel to deck
-        deck.add(villagePanel, STORM);
+        deck.add(villagePanel, VILLAGE);
         /*--------------- End of Village Panel ------------------ */
 
         /* ----------------- Forest Panel --------------------- */
@@ -1329,7 +1329,7 @@ public class GameFrame extends JFrame {
 
         /* ------------ Resource Panel ------------ */
 
-        JPanel resourcesPanel = new JPanel();
+        JPanel resourcesPanel = new JPanel(new BorderLayout());
 
         JPanel resourcesContent = new JPanel(new GridBagLayout());
         resourcesContent.setBackground(gunmetal);
@@ -1419,11 +1419,10 @@ public class GameFrame extends JFrame {
                 } else if (seedInputText.equals("DEBUGCOMBAT")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(COMBAT);
-                } else if (seedInputText.equals("")) { //User leaves the field blank
+                } else { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
+                    Main.setSeed(seedInputText);
                     switchToPanel(PARTY);
-                } else { // The field has anything else entered or is blank (run with seed)
-
                 }
             }
         }); // End of playButton listener
@@ -1467,7 +1466,9 @@ public class GameFrame extends JFrame {
 
         eventOptionSail.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                switchToPanel(EVENT);
+
+                Main.runEvent(5); // Random Event?
+
             }
         });
 
@@ -1534,7 +1535,7 @@ public class GameFrame extends JFrame {
     public void switchToPanel(String panelName) {
         if (!panelName.equals(currentPanel)) {
             previousPanel = currentPanel;
-            //System.out.println("Switching to " + panelName + " from " + currentPanel + ", previous = " + previousPanel);
+            System.out.println("Switching to " + panelName + " from " + currentPanel + ", previous = " + previousPanel);
             currentPanel = panelName;
 
         }
