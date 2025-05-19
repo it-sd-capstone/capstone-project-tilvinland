@@ -257,7 +257,7 @@ public class Main {
         items.add(new Item("Lumber", 2, "Used to fix ships", 100));
     }
 
-    public static void createParty(String name, int id, int i) {
+    public static void createParty(String name, int id) {
         if (name != null) {
             party.get(id).setName(name);
             party.get(id).setActive(1);
@@ -552,7 +552,6 @@ public class Main {
                 ship = new Ship();
                 ship.setHealth(rs.getInt("shiphealth"));
 
-
                 // output
                 System.out.println("Game loaded!");
             } else {
@@ -567,7 +566,6 @@ public class Main {
     }
 
     // Adds starter items to player's inventory using items table in database
-    // IDK the ID/Name yet so I just used these as placeholders, will adjust later -JH
     public static void addInventory(int id, int amount) {
         items.get(id).addItem(amount);
     }
