@@ -289,48 +289,50 @@ public class Main {
         } else if (event == 6) {
             // fishing
             int itemTOAdd = rng.nextInt(21);
-            addInventory(1, 10);
-            // mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            addInventory(1, itemTOAdd);
+            mainFrame.resourceChanges("rations", 1);
+            mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 7) {
             // hunker down
             ship.removeHealth(10);
             if (ship.getHealth() <= 0) {
                 score = totalScore(createConnection(), party, items, ship);
-                //mainFrame.switchToPanel(mainFrame.SANK);
+                mainFrame.switchToPanel(mainFrame.SANK);
             }
         } else if (event == 8) {
             // push through rough waters
             ship.removeHealth(20);
             if (ship.getHealth() <= 0) {
                 score = totalScore(createConnection(), party, items, ship);
-                //mainFrame.switchToPanel(mainFrame.SANK);
+                mainFrame.switchToPanel(mainFrame.SANK);
             }
         } else if (event == 9) {
             // push through heavy storm
             ship.removeHealth(30);
             if (ship.getHealth() <= 0) {
                 score = totalScore(createConnection(), party, items, ship);
-                //mainFrame.switchToPanel(mainFrame.SANK);
+                mainFrame.switchToPanel(mainFrame.SANK);
             }
         } else if (event == 10) {
             //
         } else if (event == 11) {
             ship.addHealth(1);
-            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 12) {
             // hunt
             int itemTOAdd = rng.nextInt(21);
-            addInventory(1, 10);
-            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            addInventory(1, itemTOAdd);
+            mainFrame.resourceChanges("rations", 1);
+            mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 13) {
             // CHopping wood
             int itemTOAdd = rng.nextInt(10);
-            addInventory(2, 10);
+            addInventory(2, itemTOAdd);
+            mainFrame.resourceChanges("lumber", 2);
+            mainFrame.switchToPanel(mainFrame.CONFRIM);
             //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 14) {
             // END
             score = totalScore(createConnection(), party, items, ship);
-            //.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 15) {
             // Start combat
             int enemyId = 0;
