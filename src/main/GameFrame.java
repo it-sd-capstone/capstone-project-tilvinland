@@ -1398,6 +1398,7 @@ public class GameFrame extends JFrame {
 
         /* !!! KEEP LAST !!! */
         this.setVisible(true);
+        switchToPanel(MAIN);
     }
 
     private JButton createBackButton() {
