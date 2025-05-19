@@ -201,44 +201,56 @@ public class Main {
     public static void decideEvent(int event, int mainEvent) {
         if (event % 4 == 0) {
             if (mainEvent == 0) {
-                mainFrame.switchToPanel(mainFrame.START);
+                mainFrame.switchToPanel("START");
+                System.out.println("Start");
                 currentEvent = 0;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 1) {
-                mainFrame.switchToPanel(mainFrame.SCOTLAND);
+                mainFrame.switchToPanel("SCOTLAND");
+                System.out.println("Scotland");
                 currentEvent = 1;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 2) {
-                mainFrame.switchToPanel(mainFrame.ICELAND);
+                mainFrame.switchToPanel("ICELAND");
+                System.out.println("iceland");
                 currentEvent = 2;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 3) {
-                mainFrame.switchToPanel(mainFrame.GREENLAND);
+                mainFrame.switchToPanel("GREENLAND");
+                System.out.println("greenland");
                 currentEvent = 3;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 4) {
-                mainFrame.switchToPanel(mainFrame.VINLAND);
+                mainFrame.switchToPanel("VINLAND");
+                System.out.println("vinland");
                 currentEvent = 4;
                 mainEventTotal++;
                 eventTotal++;
             }
         } else {
             currentEvent = Math.max(5, 5 +rng.nextInt(6));
-            if (currentEvent == 5) {
-                mainFrame.switchToPanel(mainFrame.CALM);
-            } else if (currentEvent == 6) {
-                mainFrame.switchToPanel(mainFrame.ROUGH);
-            } else if (currentEvent == 7) {
-                mainFrame.switchToPanel(mainFrame.STORM);
-            } else if (currentEvent == 8) {
-                //mainFrame.switchToPanel(mainFrame.VILLAGE);
-            } else if (currentEvent == 9) {
-                //mainFrame.switchToPanel(mainFrame.FOREST);
-            }
+            do {
+                if (currentEvent == 5) {
+                    mainFrame.switchToPanel("CALM");
+                    System.out.println("Calm");
+                } else if (currentEvent == 6) {
+                    mainFrame.switchToPanel("ROUGH");
+                    System.out.println("Rough");
+                } else if (currentEvent == 7) {
+                    mainFrame.switchToPanel("STORM");
+                    System.out.println("Storm");
+                } else if (currentEvent == 8) {
+                    mainFrame.switchToPanel("VILLAGE");
+                    System.out.println("Village");
+                } else if (currentEvent == 9) {
+                    mainFrame.switchToPanel("FOREST");
+                    System.out.println("Forest");
+                }
+            } while (currentEvent < 5 || currentEvent > 9);
             eventTotal++;
         }
     }
@@ -256,6 +268,9 @@ public class Main {
         items.add(new Item("Lumber", 2, "Used to fix ships", 100));
 
         enemy = new Enemy("dummy",  0, 100);
+
+        mainEventTotal = 0;
+        eventTotal = 0;
     }
 
     public static void createParty(String name, int id) {
