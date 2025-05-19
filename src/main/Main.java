@@ -193,35 +193,43 @@ public class Main {
     public static void decideEvent(int event, int mainEvent) {
         if (event % 4 == 0) {
             if (mainEvent == 0) {
-                //mainFrame.switchToPanel(mainFrame.START);
-                currentEvent = 1;
+                mainFrame.switchToPanel(mainFrame.START);
+                currentEvent = 0;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 1) {
-               // mainFrame.switchToPanel(mainFrame.SCOTLAND);
-                currentEvent = 2;
+                mainFrame.switchToPanel(mainFrame.SCOTLAND);
+                currentEvent = 1;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 2) {
-                //mainFrame.switchToPanel(mainFrame.ICELAND);
-                currentEvent = 3;
+                mainFrame.switchToPanel(mainFrame.ICELAND);
+                currentEvent = 2;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 3) {
-                //mainFrame.switchToPanel(mainFrame.GREENLAND);
-                currentEvent = 4;
+                mainFrame.switchToPanel(mainFrame.GREENLAND);
+                currentEvent = 3;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 4) {
-                //mainFrame.switchToPanel(mainFrame.VINLAND);
-                currentEvent = 5;
+                mainFrame.switchToPanel(mainFrame.VINLAND);
+                currentEvent = 4;
                 mainEventTotal++;
                 eventTotal++;
             }
         } else {
             currentEvent = Math.max(5, 5 +rng.nextInt(6));
             if (currentEvent == 5) {
-
+                mainFrame.switchToPanel(mainFrame.CALM);
+            } else if (currentEvent == 6) {
+                mainFrame.switchToPanel(mainFrame.ROUGH);
+            } else if (currentEvent == 7) {
+                mainFrame.switchToPanel(mainFrame.STORM);
+            } else if (currentEvent == 8) {
+                mainFrame.switchToPanel(mainFrame.VILLAGE);
+            } else if (currentEvent == 9) {
+                mainFrame.switchToPanel(mainFrame.FOREST);
             }
             eventTotal++;
         }
@@ -229,7 +237,7 @@ public class Main {
 
     public static void initializeLists() {
         party.clear();
-        party.add(new Player("1", 0, 1));
+        party.add(new Player("1", 0, 0));
         party.add(new Player("2", 1, 0));
         party.add(new Player("3", 2, 0));
         party.add(new Player("4", 3, 0));
