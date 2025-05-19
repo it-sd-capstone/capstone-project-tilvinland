@@ -22,7 +22,7 @@ public class GameFrame extends JFrame {
     JPanel deck = new JPanel();
     String MAIN = "Main Menu";
     String WELCOME = "Welcome Menu";
-    String WELSHOP = "Welcome Shop";
+    String SHOP = "Shop";
     String STATS = "Ship Status";
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
@@ -51,9 +51,10 @@ public class GameFrame extends JFrame {
     ImageIcon partyThreeLogo = new ImageIcon("./resources/PartyIcons/partyThree.png");
     ImageIcon partyFourLogo = new ImageIcon("./resources/PartyIcons/partyFour.png");
 
-    //Boarder Decos need to be smaller
     ImageIcon borderDecoTL = new ImageIcon("./resources/CornerTopLeft.png");
     ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
+
+    ImageIcon lumberIcon = new ImageIcon("./resources/lumberPile.png");
 
     public GameFrame() throws SQLException {
         // Reference Main and Database
@@ -200,7 +201,7 @@ public class GameFrame extends JFrame {
 
         /* ------------ Ship/Party Status Panel ------------ */
         //TODO add a ship repair button
-        //TODO add a heal party button??
+        //TODO add a heal party button?? (-rations)
         //TODO add some art!
         //TODO grab party names and stats
         GridBagConstraints gbcStatus = new GridBagConstraints();
@@ -313,6 +314,8 @@ public class GameFrame extends JFrame {
                 Main.createParty(partyNameTwoInput, 0, 1);
                 Main.createParty(partyNameThreeInput, 0,1);
                 Main.createParty(partyNameFourInput,0, 1);
+
+                switchToPanel(WELCOME);
             }
         });
 
@@ -379,32 +382,54 @@ public class GameFrame extends JFrame {
         welcomePanel.add(welcomeContent);
         welcomePanel.add(welcomeControls, BorderLayout.SOUTH);
 
-        /* ------------ WELCOME SHOP SCREEN ------------ */
-        JPanel welcomeShopPanel = new JPanel(new BorderLayout());
+        /* ------------ SHOP SCREEN ------------ */
+        JPanel shopPanel = new JPanel(new BorderLayout());
 
-        JPanel wShopContent = new JPanel(new GridBagLayout());
-        wShopContent.setBackground(gunmetal);
+        GridBagConstraints gbcShop = new GridBagConstraints();
+        gbcShop.insets = new Insets(10, 10, 10, 10);
 
-        JPanel wShopControls = new JPanel(new GridBagLayout());
-        wShopControls.setBackground(cerulean);
-        wShopControls.setPreferredSize(new Dimension(200,200));
+        JPanel shopContent = new JPanel(new GridBagLayout());
+        shopContent.setBackground(gunmetal);
 
-        JButton wShopRationsButton = new JButton("Buy Rations");
-        wShopRationsButton.addActionListener(new ActionListener() {
+        JPanel shopControls = new JPanel(new GridBagLayout());
+        shopControls.setBackground(cerulean);
+        shopControls.setPreferredSize(new Dimension(200,200));
+
+        JButton shopRationsButton = new JButton("Buy Rations");
+        shopRationsButton.setPreferredSize(new Dimension(200,50));
+        shopRationsButton.setFont(new Font("Monospaced", Font.BOLD, 20));
+        shopRationsButton.setForeground(alertorange);
+        shopRationsButton.setBackground(buttonbrown);
+        shopRationsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Main.runEvent(1);
+                Main.runEvent(3);
+                JOptionPane.showMessageDialog(null, "Full parameter test from GameFrame", "Full Test", JOptionPane.INFORMATION_MESSAGE, lumberIcon);
             }
         });
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        wShopControls.add(wShopRationsButton, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        wShopControls.add(createBackButton());
+        JButton shopWoodButton = new JButton("Buy Wood");
+        shopWoodButton.setPreferredSize(new Dimension(200,50));
+        shopWoodButton.setFont(new Font("Monospaced", Font.BOLD, 20));
+        shopWoodButton.setForeground(alertorange);
+        shopWoodButton.setBackground(buttonbrown);
+        shopWoodButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runEvent(2);
+            }
+        });
 
-        welcomeShopPanel.add(wShopContent);
-        welcomeShopPanel.add(wShopControls, BorderLayout.SOUTH);
+        gbcShop.gridx = 0;
+        gbcShop.gridy = 0;
+        shopControls.add(shopRationsButton, gbcShop);
+        gbcShop.gridx = 1;
+        gbcShop.gridy = 0;
+        shopControls.add(shopWoodButton, gbcShop);
+        gbcShop.gridx = 1;
+        gbcShop.gridy = 1;
+        shopControls.add(createBackButton(), gbcShop);
+
+        shopPanel.add(shopContent);
+        shopPanel.add(shopControls, BorderLayout.SOUTH);
 
         /* ------------ RANDOM EVENT SCREEN ------------ */
         JPanel randEvent = new JPanel(new BorderLayout());
@@ -499,7 +524,7 @@ public class GameFrame extends JFrame {
         deck.add(welcomePanel,WELCOME);
         deck.add(status, STATS);
         deck.add(randEvent, EVENT);
-        deck.add(welcomeShopPanel, WELSHOP);
+        deck.add(shopPanel, SHOP);
         deck.add(party, PARTY);
 
         // Debug Panels
@@ -516,9 +541,11 @@ public class GameFrame extends JFrame {
                     switchToPanel(EVENT);
                 } else if (seedInputText.equals("DEBUGPARTY")) { //TODO Testing - remove after
                     switchToPanel(PARTY);
-                } else if (seedInputText.equals("")) { //User leaves the field blank
+                } else if (seedInputText.equals("DEBUGSTATUS2")) { //TODO Testing - remove after
+                    switchToPanel(STATS);
+                }else if (seedInputText.equals("")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
-                    switchToPanel(WELCOME);
+                    switchToPanel(PARTY);
                 } else { // The field has anything else entered or is blank (run with seed)
 
                 }
@@ -559,9 +586,15 @@ public class GameFrame extends JFrame {
 
     private JButton createBackButton() {
         JButton back = new JButton("Back");
+        back.setPreferredSize(new Dimension(200, 50));
+        back.setFont(new Font("Monospaced", Font.BOLD, 20));
+        back.setForeground(columbiablue);
+        back.setBackground(darkslate);
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                //isGoingBack = true;
                 switchToPanel(previousPanel);
+                //isGoingBack = false;
             }
         });
         return back;
@@ -571,6 +604,8 @@ public class GameFrame extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
 
         JPanel defaultControls = new JPanel(new GridBagLayout());
+        defaultControls.setPreferredSize(new Dimension(200, 200));
+        defaultControls.setBackground(transparent);
 
         JButton shipStatButton = new JButton(shipIcon);
         shipStatButton.setBounds(100,100,100,100);
@@ -595,10 +630,13 @@ public class GameFrame extends JFrame {
     public void switchToPanel(String panelName) {
         if (!panelName.equals(currentPanel)) {
             previousPanel = currentPanel;
+            //System.out.println("Switching to " + panelName + " from " + currentPanel + ", previous = " + previousPanel);
             currentPanel = panelName;
+
         }
 
         cardLayout.show(deck, panelName);
+
     }
 
 }

@@ -248,12 +248,13 @@ public class Main {
     public static void runEvent(int event) { // Noncombat events
         if (event == 1) {
             // Shop events 1 - 4
-            mainFrame.cardLayout.show(mainFrame.deck, mainFrame.WELSHOP);
+            mainFrame.switchToPanel(mainFrame.SHOP);
             //TODO
         } else if (event == 2) {
             // Buy lumber
             addInventory(2, 5);
             removeItem(0, 10);
+            JOptionPane.showMessageDialog(null, "Purchase wood test from Main");
         } else if (event == 3) {
             // buy Rations
             addInventory(1, 10);
