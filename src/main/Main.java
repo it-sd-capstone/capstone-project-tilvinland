@@ -302,8 +302,7 @@ public class Main {
                 //mainFrame.switchToPanel(mainFrame.SANK);
             }
         } else if (event == 10) {
-            // repair ship
-            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            //
         } else if (event == 11) {
             ship.addHealth(1);
             //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
