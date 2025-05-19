@@ -370,38 +370,41 @@ public class GameFrame extends JFrame {
         JPanel startEvent = new JPanel(new BorderLayout());
 
         JPanel eventLocationControls = new JPanel(new GridBagLayout());
-        eventControls.setBackground(cerulean);
+        eventLocationControls.setBackground(cerulean);
 
-        JButton eventOptionShop = new JButton();
-        eventOptionOne.setPreferredSize(new Dimension(200,50));
+        JPanel startContent = new JPanel(new GridBagLayout());
+        startContent.setBackground(gunmetal);
 
-        JButton eventOptionInv = new JButton();
-        eventOptionTwo.setPreferredSize(new Dimension(200,50));
+        JButton eventOptionShop = new JButton("Shop");
+        eventOptionShop.setPreferredSize(new Dimension(200,50));
 
-        JButton eventOptionMembers = new JButton();
-        eventOptionThree.setPreferredSize(new Dimension(200,50));
+        JButton eventOptionInv = new JButton("Check Inventory");
+        eventOptionInv.setPreferredSize(new Dimension(200,50));
 
-        JButton eventOptionTil = new JButton();
-        eventOptionFour.setPreferredSize(new Dimension(200,50));
+        JButton eventOptionMembers = new JButton("Check Members");
+        eventOptionMembers.setPreferredSize(new Dimension(200,50));
 
-        eventTitle.setText("Start Area"); // Change start area name?
+        JButton eventOptionTil = new JButton("Til Vinland");
+        eventOptionTil.setPreferredSize(new Dimension(200,50));
 
-//        JLabel eventImage = new JLabel();
+        JLabel startEventTitle = new JLabel("Start Area"); // Change start area name?
+        startEventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        startEventTitle.setForeground(alertorange);
+
+        JLabel startEventImage = new JLabel();
         //Add image icons later
 
-        eventDescription.setText("We are about to make a long voyage across the seas. " +
+        JTextArea startEventDescription = new JTextArea(10,44);
+        startEventDescription.setEditable(false);
+        startEventDescription.setHighlighter(null);
+        startEventDescription.setFocusable(false);
+        startEventDescription.setBackground(transparent);
+        startEventDescription.setLineWrap(true);
+        startEventDescription.setText("We are about to make a long voyage across the seas. " +
                 "We better stock up on any supplies we will need for the long trip.");
-        eventDescription.setPreferredSize(new Dimension(100,100));
-
-        eventOptionShop.setText("Shop");
-        eventOptionInv.setText("Check Inventory");
-        eventOptionMembers.setText("Chek Members");
-        eventOptionTil.setText("Til Vinland");
+        startEventDescription.setForeground(emerald);
 
         eventLocationControls.setPreferredSize(new Dimension(200,200));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        eventLocationControls.add(createDefaultControls(), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         eventLocationControls.add(eventOptionShop, gbc);
@@ -415,74 +418,167 @@ public class GameFrame extends JFrame {
         gbc.gridy = 1;
         eventLocationControls.add(eventOptionTil, gbc);
 
-        startEvent.add(eventContent);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        startContent.add(startEventTitle, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        startContent.add(startEventImage, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 5;
+        startContent.add(startEventDescription, gbc);
+
+        startEvent.add(startContent);
         startEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
         // ScotLand Event
         JPanel scotEvent = new JPanel(new BorderLayout());
 
-        eventTitle.setText("Scotland"); // Change start area name?
+        JPanel scotContent = new JPanel(new GridBagLayout());
+        scotContent.setBackground(gunmetal);
 
-//        JLabel eventImage = new JLabel();
+        JLabel scotTitle = new JLabel("Scotland");
+        scotTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        scotTitle.setForeground(alertorange);
+
+        JLabel scotEventImage = new JLabel();
         //Add image icons later
 
-        eventDescription.setText("A Scottish Village can be seen on the coast and might " +
+        JTextArea scotDescription = new JTextArea(10,44);
+        scotDescription.setEditable(false);
+        scotDescription.setHighlighter(null);
+        scotDescription.setFocusable(false);
+        scotDescription.setBackground(transparent);
+        scotDescription.setLineWrap(true);
+        scotDescription.setText("A Scottish Village can be seen on the coast and might " +
                 "not be keen to see you near their village. We can stop here to repair our " +
                 "ship or raid them for supplies. If we do raid them for supplies it might be a challenge.");
-        eventDescription.setPreferredSize(new Dimension(150,150));
+        scotDescription.setForeground(emerald);
 
-        scotEvent.add(eventContent);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        scotContent.add(scotTitle, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        scotContent.add(scotEventImage, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 5;
+        scotContent.add(scotDescription, gbc);
+
+        scotEvent.add(scotContent);
         scotEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
         // Iceland Event
         JPanel iceEvent = new JPanel(new BorderLayout());
 
-        eventTitle.setText("Iceland"); // Change start area name?
-        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
-        eventTitle.setForeground(alertorange);
+        JPanel iceContent = new JPanel(new GridBagLayout());
+        iceContent.setBackground(gunmetal);
 
-//        JLabel eventImage = new JLabel();
+        JLabel iceTitle = new JLabel("Iceland");
+        iceTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        iceTitle.setForeground(alertorange);
+
+        JLabel iceEventImage = new JLabel();
         //Add image icons later
 
-        eventDescription.setText("An island village that welcomes you to their village. " +
+        JTextArea iceDescription = new JTextArea(10,44);
+        iceDescription.setEditable(false);
+        iceDescription.setHighlighter(null);
+        iceDescription.setFocusable(false);
+        iceDescription.setBackground(transparent);
+        iceDescription.setLineWrap(true);
+        iceDescription.setText("An island village that welcomes you to their village. " +
                 "This might be a good time to restock on supplies or repair any damage that the ship has sustained.");
-        eventDescription.setPreferredSize(new Dimension(100,100));
+        iceDescription.setForeground(emerald);
 
-        iceEvent.add(eventContent);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        iceContent.add(iceTitle, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        iceContent.add(iceEventImage, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 5;
+        iceContent.add(iceDescription, gbc);
+
+        iceEvent.add(iceContent);
         iceEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
         // Greenland Event
         JPanel greenEvent = new JPanel(new BorderLayout());
 
-        eventTitle.setText("Greenland"); // Change start area name?
-        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
-        eventTitle.setForeground(alertorange);
+        JPanel greenContent = new JPanel(new GridBagLayout());
+        greenContent.setBackground(gunmetal);
 
-//        JLabel eventImage = new JLabel();
+        JLabel greenTitle = new JLabel("Greenland");
+        greenTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        greenTitle.setForeground(alertorange);
+
+        JLabel greenEventImage = new JLabel();
         //Add image icons later
 
-        eventDescription.setText("A rocky coast line where large animals can be seen from " +
+        JTextArea greenDescription = new JTextArea(10,44);
+        greenDescription.setEditable(false);
+        greenDescription.setHighlighter(null);
+        greenDescription.setFocusable(false);
+        greenDescription.setBackground(transparent);
+        greenDescription.setLineWrap(true);
+        greenDescription.setText("A rocky coast line where large animals can be seen from " +
                 "the shore. We could stock up on more food or repair our ship for the voyage ahead.");
-//        eventDescription.setPreferredSize(new Dimension(100,100));
+        greenDescription.setForeground(emerald);
 
-        greenEvent.add(eventContent);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        greenContent.add(greenTitle, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        greenContent.add(greenEventImage, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 5;
+        greenContent.add(greenDescription, gbc);
+
+        greenEvent.add(greenContent);
         greenEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
         // Vinland Event
         JPanel vinEvent = new JPanel(new BorderLayout());
 
-        eventTitle.setText("Vinland"); // Change start area name?
-        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
-        eventTitle.setForeground(alertorange);
+        JPanel vinContent = new JPanel(new GridBagLayout());
+        vinContent.setBackground(gunmetal);
 
-//        JLabel eventImage = new JLabel();
+        JLabel vinTitle = new JLabel("Vinland");
+        vinTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        vinTitle.setForeground(alertorange);
+
+        JLabel vinEventImage = new JLabel();
         //Add image icons later
 
-        eventDescription.setText("Fresh lands where we are going to settle. Time to set " +
+        JTextArea vinDescription = new JTextArea(10,44);
+        vinDescription.setEditable(false);
+        vinDescription.setHighlighter(null);
+        vinDescription.setFocusable(false);
+        vinDescription.setBackground(transparent);
+        vinDescription.setLineWrap(true);
+        vinDescription.setText("Fresh lands where we are going to settle. Time to set " +
                 "up a base camp so we can get working shelter and food so we can make it through the coming winter.");
-//        eventDescription.setPreferredSize(new Dimension(100,100));
+        vinDescription.setForeground(emerald);
 
-        vinEvent.add(eventContent);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        vinContent.add(vinTitle, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        vinContent.add(vinEventImage, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 5;
+        vinContent.add(vinDescription, gbc);
+
+        vinEvent.add(vinContent);
         vinEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
         /* ------------ Frame Parameters ------------ */
@@ -519,6 +615,8 @@ public class GameFrame extends JFrame {
                     switchToPanel(DBSTATS);
                 } else if (seedInputText.equals("DEBUGEVENT")) { //TODO Testing - remove after
                     switchToPanel(EVENT);
+                } else if (seedInputText.equals("DEBUGSTART")) {
+                    switchToPanel(VINLAND);
                 } else if (seedInputText.equals("")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(WELCOME);
@@ -548,7 +646,7 @@ public class GameFrame extends JFrame {
         // Location Event Options
         eventOptionShop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                switchToPanel(WELSHOP);
+//                switchToPanel(SHOP);
             }
         });
 
@@ -560,7 +658,7 @@ public class GameFrame extends JFrame {
 
         eventOptionMembers.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//                switchToPanel(MEMBERS);
+//                switchToPanel(PARTY);
             }
         });
 
@@ -582,7 +680,6 @@ public class GameFrame extends JFrame {
 
         /* !!! KEEP LAST !!! */
         this.setVisible(true);
-
     }
 
     private JButton createBackButton() {
