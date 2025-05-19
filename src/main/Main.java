@@ -1,8 +1,6 @@
 package main;
 
 import javax.swing.*;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.text.*;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
@@ -10,10 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static java.awt.SystemColor.text;
 import java.sql.*;
 
 public class Main {
@@ -618,4 +613,3 @@ public class Main {
     }
 
 }
-
