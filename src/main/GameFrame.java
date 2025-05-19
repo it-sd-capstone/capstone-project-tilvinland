@@ -725,5 +725,4 @@ public class GameFrame extends JFrame {
 
         cardLayout.show(deck, panelName);
     }
-
 }
