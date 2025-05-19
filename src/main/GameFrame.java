@@ -705,7 +705,7 @@ public class GameFrame extends JFrame {
 
         eventTitle.setText("Start Area"); // Change start area name?
 
-//        JLabel eventImage = new JLabel();
+        //JLabel eventImage = new JLabel();
         //Add image icons later
 
         eventDescription.setText("We are about to make a long voyage across the seas. " +
@@ -742,7 +742,7 @@ public class GameFrame extends JFrame {
 
         eventTitle.setText("Scotland"); // Change start area name?
 
-//        JLabel eventImage = new JLabel();
+        //JLabel eventImage = new JLabel();
         //Add image icons later
 
         eventDescription.setText("A Scottish Village can be seen on the coast and might " +
@@ -760,7 +760,7 @@ public class GameFrame extends JFrame {
         eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         eventTitle.setForeground(alertorange);
 
-//        JLabel eventImage = new JLabel();
+        //JLabel eventImage = new JLabel();
         //Add image icons later
 
         eventDescription.setText("An island village that welcomes you to their village. " +
@@ -777,12 +777,12 @@ public class GameFrame extends JFrame {
         eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         eventTitle.setForeground(alertorange);
 
-//        JLabel eventImage = new JLabel();
+        //JLabel eventImage = new JLabel();
         //Add image icons later
 
         eventDescription.setText("A rocky coast line where large animals can be seen from " +
                 "the shore. We could stock up on more food or repair our ship for the voyage ahead.");
-//        eventDescription.setPreferredSize(new Dimension(100,100));
+        //eventDescription.setPreferredSize(new Dimension(100,100));
 
         greenEvent.add(eventContent);
         greenEvent.add(eventLocationControls,BorderLayout.SOUTH);
@@ -794,12 +794,12 @@ public class GameFrame extends JFrame {
         eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         eventTitle.setForeground(alertorange);
 
-//        JLabel eventImage = new JLabel();
+        //JLabel eventImage = new JLabel();
         //Add image icons later
 
         eventDescription.setText("Fresh lands where we are going to settle. Time to set " +
                 "up a base camp so we can get working shelter and food so we can make it through the coming winter.");
-//        eventDescription.setPreferredSize(new Dimension(100,100));
+        //eventDescription.setPreferredSize(new Dimension(100,100));
 
         vinEvent.add(eventContent);
         vinEvent.add(eventLocationControls,BorderLayout.SOUTH);
@@ -876,9 +876,6 @@ public class GameFrame extends JFrame {
         // Assemble calmPanel
         calmPanel.add(calmContent);
         calmPanel.add(calmControls, BorderLayout.SOUTH);
-
-        // Add calmPanel to deck
-        deck.add(calmPanel, CALM);
         /* -------------- End of Calm Seas Panel ------------ */
 
         /* -------------- Rough Seas Panel ------------------ */
@@ -952,9 +949,6 @@ public class GameFrame extends JFrame {
         // Assemble roughPanel
         roughPanel.add(roughContent, BorderLayout.CENTER);
         roughPanel.add(roughControls, BorderLayout.SOUTH);
-
-        // Add roughPanel to deck
-        deck.add(roughPanel, ROUGH);
         /* -------------- End of Rough Seas Panel ------------ */
 
         /* ----------------- Storm Panel --------------------- */
@@ -1020,9 +1014,6 @@ public class GameFrame extends JFrame {
         // Assemble stormPanel
         stormPanel.add(stormContent, BorderLayout.CENTER);
         stormPanel.add(stormControls, BorderLayout.SOUTH);
-
-        // Add stormPanel to deck
-        deck.add(stormPanel, STORM);
         /* -------------- End of Storm Panel ----------------- */
 
         /*--------------- Village Panel ---------------------- */
@@ -1041,12 +1032,12 @@ public class GameFrame extends JFrame {
         controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Village Title
-        JLabel villageTitle = new JLabel(Main.eventTitles.get(8));
+        JLabel villageTitle = new JLabel(Main.eventTitles.get(7));
         villageTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         villageTitle.setForeground(alertorange);
 
         // Village Text area
-        JTextArea villageDesc = new JTextArea(Main.eventDescriptions.get(8));
+        JTextArea villageDesc = new JTextArea(Main.eventDescriptions.get(7));
         villageDesc.setEditable(false);
         villageDesc.setHighlighter(null);
         villageDesc.setBackground(transparent);
@@ -1095,9 +1086,6 @@ public class GameFrame extends JFrame {
         // Assemble villagePanel
         villagePanel.add(villageContent, BorderLayout.CENTER);
         villagePanel.add(villageControls, BorderLayout.SOUTH);
-
-        // Add villagePanel to deck
-        deck.add(villagePanel, STORM);
         /*--------------- End of Village Panel ------------------ */
 
         /* ----------------- Forest Panel --------------------- */
@@ -1116,12 +1104,12 @@ public class GameFrame extends JFrame {
         controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Forest Title
-        JLabel forestTitle = new JLabel(Main.eventTitles.get(9));
+        JLabel forestTitle = new JLabel(Main.eventTitles.get(8));
         forestTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         forestTitle.setForeground(alertorange);
 
         // Forest Test Area
-        JTextArea forestDesc = new JTextArea(Main.eventDescriptions.get(9));
+        JTextArea forestDesc = new JTextArea(Main.eventDescriptions.get(8));
         forestDesc.setEditable(false);
         forestDesc.setHighlighter(null);
         forestDesc.setBackground(transparent);
@@ -1157,25 +1145,20 @@ public class GameFrame extends JFrame {
         forestContent.add(forestDesc, gbc);
 
         // Add controls to forestControls
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        forestControls.add(createDefaultControls(), gbc);
-        gbc.gridx = 1;
-        forestControls.add(forestWood, gbc);
-        gbc.gridx = 2;
-        forestControls.add(forestHunt, gbc);
-        gbc.gridx = 3;
-        forestControls.add(forestSail, gbc);
+        controlGbc.gridx = 0;
+        controlGbc.gridy = 0;
+        forestControls.add(createDefaultControls(), controlGbc);
+        controlGbc.gridx = 1;
+        forestControls.add(forestWood, controlGbc);
+        controlGbc.gridx = 2;
+        forestControls.add(forestHunt, controlGbc);
+        controlGbc.gridx = 3;
+        forestControls.add(forestSail, controlGbc);
 
         // Assemble forestPanel
         forestPanel.add(forestContent, BorderLayout.CENTER);
         forestPanel.add(forestControls, BorderLayout.SOUTH);
-
-        // Add forestPanel to deck
-        deck.add(forestPanel, FOREST);
-
-
-
+        /* ----------------- End of Forest Panel --------------------- */
 
         /* ------------ Ship Sank Panel ------------ */
         JPanel shipSankPanel = new JPanel(new BorderLayout());
@@ -1254,6 +1237,11 @@ public class GameFrame extends JFrame {
         deck.add(party, PARTY);
         deck.add(combatEvent, COMBAT);
         deck.add(endCombat, FCOMBAT);
+        deck.add(forestPanel, FOREST);
+        deck.add(villagePanel, VILLAGE);
+        deck.add(stormPanel, STORM);
+        deck.add(roughPanel, ROUGH);
+        deck.add(calmPanel, CALM);
 
         // Location Based Events
         deck.add(startEvent, START);
