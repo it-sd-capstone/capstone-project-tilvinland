@@ -41,6 +41,7 @@ public class GameFrame extends JFrame {
     String STORM = "STORM";
     String VILLAGE = "VILLAGE";
     String FOREST = "FOREST";
+    String CONFRIM = "Resource Confirmed";
 
     String WIPE = "Party Wipe";
     String SANK = "Ship Sank";
@@ -72,6 +73,8 @@ public class GameFrame extends JFrame {
     ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
 
     ImageIcon lumberIcon = new ImageIcon("./resources/lumberPile.png");
+
+    private String rescourceLabel = "";
 
     public GameFrame() {
         // Reference Main and Database
@@ -1237,6 +1240,37 @@ public class GameFrame extends JFrame {
         partyWipePanel.add(wipeContent, BorderLayout.CENTER);
         partyWipePanel.add(wipeControls, BorderLayout.SOUTH);
 
+        /* ------------ Resource Panel ------------ */
+
+        JPanel resourcesPanel = new JPanel();
+
+        JPanel resourcesContent = new JPanel(new GridBagLayout());
+        resourcesContent.setBackground(gunmetal);
+
+        JPanel resourcesControls = new JPanel(new GridBagLayout());
+        resourcesControls.setPreferredSize(new Dimension(200, 200));
+        resourcesControls.setBackground(cerulean);
+
+        GridBagConstraints gbcResources = new GridBagConstraints();
+
+        JLabel resourcesDesc = new JLabel(rescourceLabel);
+
+        JButton resourcesButton = new JButton("Set Sail");
+
+        gbcResources.gridx = 0;
+        gbcResources.gridy = 0;
+        resourcesContent.add(resourcesDesc, gbcResources);
+        gbcResources.gridy = 0;
+        gbcResources.gridx = 0;
+        resourcesControls.add(resourcesButton, gbcResources);
+
+        resourcesButton.addActionListener(e -> Main.runEvent(5));
+
+        resourcesPanel.add(resourcesContent, BorderLayout.CENTER);
+        resourcesPanel.add(resourcesControls, BorderLayout.SOUTH);
+
+
+
         /* ------------ Frame Parameters ------------ */
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1280, 720);
@@ -1254,6 +1288,7 @@ public class GameFrame extends JFrame {
         deck.add(party, PARTY);
         deck.add(combatEvent, COMBAT);
         deck.add(endCombat, FCOMBAT);
+        deck.add(resourcesContent, CONFRIM);
 
         // Location Based Events
         deck.add(startEvent, START);
@@ -1418,6 +1453,10 @@ public class GameFrame extends JFrame {
 
         cardLayout.show(deck, panelName);
 
+    }
+
+    public void resourceChanges(String resourceName, int itemID) {
+        rescourceLabel = "After gathering you now have " + Main.getItems().get(itemID).getAmount() + " " + resourceName;
     }
 
 }
