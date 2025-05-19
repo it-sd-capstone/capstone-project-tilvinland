@@ -79,8 +79,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        mainFrame = new GameFrame();
-
+        //mainFrame = new GameFrame();
         initializeLists();
         mainFrame = new GameFrame();
     }
@@ -241,9 +240,9 @@ public class Main {
             } else if (currentEvent == 7) {
                 mainFrame.switchToPanel(mainFrame.STORM);
             } else if (currentEvent == 8) {
-                mainFrame.switchToPanel(mainFrame.VILLAGE);
+                //mainFrame.switchToPanel(mainFrame.VILLAGE);
             } else if (currentEvent == 9) {
-                mainFrame.switchToPanel(mainFrame.FOREST);
+                //mainFrame.switchToPanel(mainFrame.FOREST);
             }
             eventTotal++;
         }
@@ -260,6 +259,8 @@ public class Main {
         items.add(new Item("Gold", 0, "Used to trade for materials", 100));
         items.add(new Item("Rations", 1, "Food", 100));
         items.add(new Item("Lumber", 2, "Used to fix ships", 100));
+
+        enemy = new Enemy("dummy",  0, 100);
     }
 
     public static void createParty(String name, int id) {

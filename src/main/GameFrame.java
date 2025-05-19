@@ -40,6 +40,9 @@ public class GameFrame extends JFrame {
     String ROUGH = "ROUGH";
     String STORM = "STORM";
 
+    String WIPE = "Party Wipe";
+    String SANK = "Ship Sank";
+
     CardLayout cardLayout = new CardLayout();
 
     //Custom Colors
@@ -70,8 +73,8 @@ public class GameFrame extends JFrame {
 
     public GameFrame() {
         // Reference Main and Database
-        Main main = new Main();
-        Connection db = main.createConnection();
+        //Main main = new Main();
+        Connection db = Main.createConnection();
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -474,36 +477,36 @@ public class GameFrame extends JFrame {
         JPanel combatContent = new JPanel(new GridBagLayout());
         eventContent.setBackground(gunmetal);
         String labelText = "";
-        if (main.getParty().get(0).getActive() == 1) {
-            labelText = "<html>" + main.getParty().get(0).getName() + "<br/>Health: " + main.getParty().get(0).getHealth() + "</html>";
+        if (Main.getParty().get(0).getActive() == 1) {
+            labelText = "<html>" + Main.getParty().get(0).getName() + "<br/>Health: " + Main.getParty().get(0).getHealth() + "</html>";
         }
         JLabel p1Status = new JLabel();
         p1Status.setText(labelText);
         p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
-        if (main.getParty().get(1).getActive() == 1) {
-            labelText = "<html>" + main.getParty().get(1).getName() + "<br/>Health: " + main.getParty().get(1).getHealth() + "</html>";
+        if (Main.getParty().get(1).getActive() == 1) {
+            labelText = "<html>" + Main.getParty().get(1).getName() + "<br/>Health: " + Main.getParty().get(1).getHealth() + "</html>";
         }
         JLabel p2Status = new JLabel();
         p2Status.setText(labelText);
         p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JLabel p3Status = new JLabel();
-        if (main.getParty().get(2).getActive() == 1) {
-            labelText = "<html>" + main.getParty().get(2).getName() + "<br/>Health: " + main.getParty().get(2).getHealth() + "</html>";
+        if (Main.getParty().get(2).getActive() == 1) {
+            labelText = "<html>" + Main.getParty().get(2).getName() + "<br/>Health: " + Main.getParty().get(2).getHealth() + "</html>";
             p3Status.setText(labelText);
         }
         p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JLabel p4Status = new JLabel();
-        if (main.getParty().get(3).getActive() == 1) {
-            labelText = "<html>" + main.getParty().get(3).getName() + "<br/>Health: " + main.getParty().get(3).getHealth() + "</html>";
+        if (Main.getParty().get(3).getActive() == 1) {
+            labelText = "<html>" + Main.getParty().get(3).getName() + "<br/>Health: " + Main.getParty().get(3).getHealth() + "</html>";
             p4Status.setText(labelText);
         }
 
         p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
-        labelText = "<html>" + main.getEnemy().getName() + "<br/>Health: " + main.getEnemy().getHealth() + "</html>";
+        labelText = "<html>" + Main.getEnemy().getName() + "<br/>Health: " + Main.getEnemy().getHealth() + "</html>";
 
         JLabel enemyStatus = new JLabel();
         enemyStatus.setText(labelText);
@@ -594,7 +597,7 @@ public class GameFrame extends JFrame {
         endCombatControl.setBackground(gunmetal);
 
         JLabel combatResolution = new JLabel();
-        combatResolution.setText("<html>You defeated " + main.getEnemy().getName() + "!<br/>" +
+        combatResolution.setText("<html>You defeated " + Main.getEnemy().getName() + "!<br/>" +
                                 " You gained 20 gold, 40 rations, and 10 lumber</html>");
 
         JButton endCombatButton = new JButton("Continue Adventure");
@@ -708,7 +711,7 @@ public class GameFrame extends JFrame {
 
         eventOptionShop.setText("Shop");
         eventOptionInv.setText("Check Inventory");
-        eventOptionMembers.setText("Chek Members");
+        eventOptionMembers.setText("Check Members");
         eventOptionTil.setText("Til Vinland");
 
         eventLocationControls.setPreferredSize(new Dimension(200,200));
@@ -836,13 +839,13 @@ public class GameFrame extends JFrame {
         JButton calmSailing = new JButton("Continue Sailing");
         calmFish.setPreferredSize(new Dimension(200, 50));
         calmSailing.setPreferredSize(new Dimension(200, 50));
-        calmRepair.setPreferredSize(new Dimension(200, 50));
+        //calmRepair.setPreferredSize(new Dimension(200, 50));
         calmFish.setBackground(buttonbrown);
         calmFish.setForeground(alertorange);
         calmSailing.setBackground(buttonbrown);
         calmSailing.setForeground(alertorange);
-        calmRepair.setBackground(buttonbrown);
-        calmRepair.setForeground(alertorange);
+        //calmRepair.setBackground(buttonbrown);
+        //calmRepair.setForeground(alertorange);
 
         // Calm Seas Fishing event
         calmFish.addActionListener(e -> Main.runEvent(6));
@@ -1033,6 +1036,66 @@ public class GameFrame extends JFrame {
         // Add stormPanel to deck
         deck.add(stormPanel, STORM);
 
+        /* ------------ Ship Sank Panel ------------ */
+        JPanel shipSankPanel = new JPanel(new BorderLayout());
+
+        JPanel sankContent = new JPanel(new GridBagLayout());
+        sankContent.setBackground(gunmetal);
+
+        JPanel sankControls = new JPanel(new GridBagLayout());
+        sankControls.setPreferredSize(new Dimension(200, 200));
+        sankControls.setBackground(cerulean);
+
+        GridBagConstraints gbcSank = new GridBagConstraints();
+
+        //TODO add JLabel to display final score
+
+        JLabel sankTitle = new JLabel("Your ship has sank");
+
+        JTextArea sankDesc = new JTextArea("Your ship took much damage and rests with the Kraken.");
+
+        JButton sankRestart = new JButton("Play Again?");
+        JButton sankQuit = new JButton("Quit");
+
+        // Brings player back to main menu panel
+        sankRestart.addActionListener(e -> switchToPanel(MAIN));
+        // Closes the program
+        sankQuit.addActionListener(e -> this.dispose());
+
+        // Build Sank Panel
+        shipSankPanel.add(sankContent, BorderLayout.CENTER);
+        shipSankPanel.add(sankControls, BorderLayout.SOUTH);
+
+        /* ------------ Party Wipe Panel ------------ */
+        JPanel partyWipePanel = new JPanel();
+
+        JPanel wipeContent = new JPanel(new GridBagLayout());
+        wipeContent.setBackground(gunmetal);
+
+        JPanel wipeControls = new JPanel(new GridBagLayout());
+        wipeControls.setPreferredSize(new Dimension(200, 200));
+        wipeControls.setBackground(cerulean);
+
+        GridBagConstraints gbcWipe = new GridBagConstraints();
+
+        //TODO add JLabel to display final score
+
+        JLabel wipeTitle = new JLabel("Party defeated");
+
+        JTextArea wipeDesc = new JTextArea("Your party has been slain.\nMay their souls find peace in Valhalla");
+
+        JButton wipeRestart = new JButton("Play Again?");
+        JButton wipeQuit = new JButton("Quit");
+
+        // Brings player back to main menu panel
+        wipeRestart.addActionListener(e -> switchToPanel(MAIN));
+        // Closes the program
+        wipeQuit.addActionListener(e -> this.dispose());
+
+        // Build Wipe Panel
+        partyWipePanel.add(wipeContent, BorderLayout.CENTER);
+        partyWipePanel.add(wipeControls, BorderLayout.SOUTH);
+
         /* ------------ Frame Parameters ------------ */
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1280, 720);
@@ -1057,6 +1120,10 @@ public class GameFrame extends JFrame {
         deck.add(iceEvent, ICELAND);
         deck.add(greenEvent, GREENLAND);
         deck.add(vinEvent, VINLAND);
+
+        //Defeat screens
+        deck.add(shipSankPanel, SANK);
+        deck.add(partyWipePanel, WIPE);
 
         // Debug Panels
         deck.add(dbStats, DBSTATS);
