@@ -626,13 +626,7 @@ public class GameFrame extends JFrame {
         endCombat.add(endCombatStatus,BorderLayout.CENTER);
         endCombat.add(endCombatControl,BorderLayout.SOUTH);
 
-
-
-        // Random generator for event name & description (Maybe needed to have them ref same ID)
-        Random rng = new Random();
-        int randomEvent = rng.nextInt(5) + 1;
-
-
+        /* ------------ PLACEHOLDER EVENT SCREEN ------------ */
         JLabel eventTitle = new JLabel();
         eventTitle.setText("Placeholder");
         eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -706,8 +700,8 @@ public class GameFrame extends JFrame {
         JButton eventOptionMembers = new JButton("Check Members");
         eventOptionMembers.setPreferredSize(new Dimension(200,50));
 
-        JButton eventOptionTil = new JButton("Til Vinland");
-        eventOptionTil.setPreferredSize(new Dimension(200,50));
+        JButton eventOptionSail = new JButton("Set Sail");
+        eventOptionSail.setPreferredSize(new Dimension(200,50));
 
         JLabel startEventTitle = new JLabel("Start Area"); // Change start area name?
         startEventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -738,7 +732,7 @@ public class GameFrame extends JFrame {
         eventLocationControls.add(eventOptionMembers, gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
-        eventLocationControls.add(eventOptionTil, gbc);
+        eventLocationControls.add(eventOptionSail, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -1273,9 +1267,6 @@ public class GameFrame extends JFrame {
         // Add forestPanel to deck
         deck.add(forestPanel, FOREST);
 
-
-
-
         /* ------------ Ship Sank Panel ------------ */
         JPanel shipSankPanel = new JPanel(new BorderLayout());
 
@@ -1409,6 +1400,8 @@ public class GameFrame extends JFrame {
                     switchToPanel(DBSTATS);
                 } else if (seedInputText.equals("DEBUGEVENT")) { //TODO Testing - remove after
                     switchToPanel(EVENT);
+                } else if (seedInputText.equals("DEBUGSTART")) { //TODO Testing - remove after
+                    switchToPanel(VINLAND);
                 } else if (seedInputText.equals("DEBUGPARTY")) { //TODO Testing - remove after
                     switchToPanel(PARTY);
                 } else if (seedInputText.equals("DEBUGSTATUS2")) { //TODO Testing - remove after
@@ -1468,13 +1461,13 @@ public class GameFrame extends JFrame {
 
         eventOptionMembers.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//                switchToPanel(MEMBERS);
+                switchToPanel(PARTY);
             }
         });
 
-        eventOptionTil.addActionListener(new ActionListener() {
+        eventOptionSail.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                switchToPanel(EVENT); // Random Event?
+                switchToPanel(EVENT);
             }
         });
 
