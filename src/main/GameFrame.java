@@ -620,13 +620,7 @@ public class GameFrame extends JFrame {
         endCombat.add(endCombatStatus,BorderLayout.CENTER);
         endCombat.add(endCombatControl,BorderLayout.SOUTH);
 
-
-
-        // Random generator for event name & description (Maybe needed to have them ref same ID)
-        Random rng = new Random();
-        int randomEvent = rng.nextInt(5) + 1;
-
-
+        /* ------------ DEBUG EVENT SCREEN ------------ */
         JLabel eventTitle = new JLabel();
         eventTitle.setText("Placeholder");
         eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -682,7 +676,7 @@ public class GameFrame extends JFrame {
 
 
         /* ------------ LOCATION EVENT SCREEN ------------ */
-        // Start Area Event
+        // Start Area Event ------------------------------
         JPanel startEvent = new JPanel(new BorderLayout());
 
         JPanel eventLocationControls = new JPanel(new GridBagLayout());
@@ -748,7 +742,7 @@ public class GameFrame extends JFrame {
         startEvent.add(startContent);
         startEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
-        // ScotLand Event
+        // ScotLand Event ------------------------------
         JPanel scotEvent = new JPanel(new BorderLayout());
 
         JPanel scotContent = new JPanel(new GridBagLayout());
@@ -786,7 +780,7 @@ public class GameFrame extends JFrame {
         scotEvent.add(scotContent);
         scotEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
-        // Iceland Event
+        // Iceland Event ------------------------------
         JPanel iceEvent = new JPanel(new BorderLayout());
 
         JPanel iceContent = new JPanel(new GridBagLayout());
@@ -823,7 +817,7 @@ public class GameFrame extends JFrame {
         iceEvent.add(iceContent);
         iceEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
-        // Greenland Event
+        // Greenland Event ------------------------------
         JPanel greenEvent = new JPanel(new BorderLayout());
 
         JPanel greenContent = new JPanel(new GridBagLayout());
@@ -860,7 +854,7 @@ public class GameFrame extends JFrame {
         greenEvent.add(greenContent);
         greenEvent.add(eventLocationControls,BorderLayout.SOUTH);
 
-        // Vinland Event
+        // Vinland Event ------------------------------
         JPanel vinEvent = new JPanel(new BorderLayout());
 
         JPanel vinContent = new JPanel(new GridBagLayout());
@@ -950,7 +944,7 @@ public class GameFrame extends JFrame {
 
                 }
             }
-        });
+        }); // End of playButton listener
 
         // Event Option Buttons
         eventOptionOne.addActionListener(new ActionListener() {
@@ -999,8 +993,6 @@ public class GameFrame extends JFrame {
         loadButton.addActionListener(e -> {
             Main.loadSave();
             // auto switches to next screen after loading
-
-//            cardLayout.show(deck, PLAY);
 
             switchToPanel(WELCOME);
 
@@ -1066,7 +1058,5 @@ public class GameFrame extends JFrame {
         }
 
         cardLayout.show(deck, panelName);
-
-    }
-
-}
+    } // Switch Panel Func
+} // End of GameFrame.java
