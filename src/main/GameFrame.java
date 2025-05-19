@@ -1278,12 +1278,21 @@ public class GameFrame extends JFrame {
         sankControls.setBackground(cerulean);
 
         GridBagConstraints gbcSank = new GridBagConstraints();
+        gbcSank.insets = new Insets(10, 10, 10, 10);
 
         //TODO add JLabel to display final score
 
-        JLabel sankTitle = new JLabel("Your ship has sank");
+        JLabel sankSpacer = new JLabel(" ");
+        sankSpacer.setPreferredSize(new Dimension(50, 50));
 
-        JTextArea sankDesc = new JTextArea("Your ship took much damage and rests with the Kraken.");
+        JLabel sankTitle = new JLabel("Your ship has sank");
+        sankTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        sankTitle.setForeground(alertorange);
+
+        JTextArea sankDesc = new JTextArea("Your ship took too much damage and rests with the Kraken.");
+        sankDesc.setEditable(false);
+        sankDesc.setBackground(transparent);
+        sankDesc.setForeground(emerald);
 
         JButton sankRestart = new JButton("Play Again?");
         JButton sankQuit = new JButton("Quit");
@@ -1292,6 +1301,19 @@ public class GameFrame extends JFrame {
         sankRestart.addActionListener(e -> switchToPanel(MAIN));
         // Closes the program
         sankQuit.addActionListener(e -> this.dispose());
+
+        gbcSank.gridx = 0;
+        gbcSank.gridy = 0;
+        sankContent.add(sankTitle, gbcSank);
+        gbcSank.gridy = 1;
+        sankContent.add(sankSpacer, gbcSank);
+        gbcSank.gridy = 2;
+        sankContent.add(sankDesc, gbcSank);
+
+        gbcSank.gridy = 0;
+        sankControls.add(sankRestart, gbcSank);
+        gbcSank.gridx = 1;
+        sankControls.add(sankQuit, gbcSank);
 
         // Build Sank Panel
         shipSankPanel.add(sankContent, BorderLayout.CENTER);
@@ -1308,6 +1330,7 @@ public class GameFrame extends JFrame {
         wipeControls.setBackground(cerulean);
 
         GridBagConstraints gbcWipe = new GridBagConstraints();
+        gbcWipe.insets = new Insets(10, 10, 10, 10);
 
         //TODO add JLabel to display final score
 
@@ -1419,6 +1442,12 @@ public class GameFrame extends JFrame {
                 } else if (seedInputText.equals("DEBUGCOMBAT")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(COMBAT);
+                } else if (seedInputText.equals("DEBUGWIPE")) {
+                    switchToPanel(WIPE);
+                } else if (seedInputText.equals("DEBUGTESTEVENT5")) {
+                    Main.runEvent(5);
+                } else if (seedInputText.equals("DEBUGSANK")) {
+                    switchToPanel(SANK);
                 } else { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     Main.setSeed(seedInputText);
