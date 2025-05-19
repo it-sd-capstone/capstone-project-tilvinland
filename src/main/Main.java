@@ -75,6 +75,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        mainFrame = new GameFrame();
+
         initializeLists();
         enemy = new Enemy("1", 1, 100);
         try {

@@ -26,6 +26,12 @@ public class GameFrame extends JFrame {
     String STATS = "Ship Status";
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
+
+    String START = "Start Area";
+    String SCOTLAND = "Scotland";
+    String ICELAND = "Iceland";
+    String GREENLAND = "Greenland";
+    String VINLAND = "Vinland End";
     String LOCATION = "Location";
     String PARTY = "Party";
     String COMBAT = "Combat";
@@ -59,7 +65,7 @@ public class GameFrame extends JFrame {
 
     ImageIcon lumberIcon = new ImageIcon("./resources/lumberPile.png");
 
-    public GameFrame() throws SQLException {
+    public GameFrame() {
         // Reference Main and Database
         Main main = new Main();
         Connection db = main.createConnection();
@@ -455,6 +461,7 @@ public class GameFrame extends JFrame {
         JButton eventOptionFour = new JButton();
         eventOptionFour.setPreferredSize(new Dimension(200,50));
 
+
         /* ------------ COMBAT EVENT SCREEN ------------ */
         JPanel combatEvent = new JPanel(new BorderLayout());
 
@@ -614,6 +621,7 @@ public class GameFrame extends JFrame {
         Random rng = new Random();
         int randomEvent = rng.nextInt(5) + 1;
 
+
         JLabel eventTitle = new JLabel();
         eventTitle.setText("Placeholder");
         eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -628,9 +636,7 @@ public class GameFrame extends JFrame {
         eventDescription.setFocusable(false);
         eventDescription.setBackground(transparent);
         eventDescription.setLineWrap(true);
-
         eventDescription.setText("placeholder");
-
         eventDescription.setForeground(emerald);
 
         eventOptionOne.setText("Option One");
@@ -669,6 +675,127 @@ public class GameFrame extends JFrame {
         randEvent.add(eventContent);
         randEvent.add(eventControls,BorderLayout.SOUTH);
 
+
+        /* ------------ LOCATION EVENT SCREEN ------------ */
+        // Start Area Event
+        JPanel startEvent = new JPanel(new BorderLayout());
+
+        JPanel eventLocationControls = new JPanel(new GridBagLayout());
+        eventControls.setBackground(cerulean);
+
+        JButton eventOptionShop = new JButton();
+        eventOptionOne.setPreferredSize(new Dimension(200,50));
+
+        JButton eventOptionInv = new JButton();
+        eventOptionTwo.setPreferredSize(new Dimension(200,50));
+
+        JButton eventOptionMembers = new JButton();
+        eventOptionThree.setPreferredSize(new Dimension(200,50));
+
+        JButton eventOptionTil = new JButton();
+        eventOptionFour.setPreferredSize(new Dimension(200,50));
+
+        eventTitle.setText("Start Area"); // Change start area name?
+
+//        JLabel eventImage = new JLabel();
+        //Add image icons later
+
+        eventDescription.setText("We are about to make a long voyage across the seas. " +
+                "We better stock up on any supplies we will need for the long trip.");
+        eventDescription.setPreferredSize(new Dimension(100,100));
+
+        eventOptionShop.setText("Shop");
+        eventOptionInv.setText("Check Inventory");
+        eventOptionMembers.setText("Chek Members");
+        eventOptionTil.setText("Til Vinland");
+
+        eventLocationControls.setPreferredSize(new Dimension(200,200));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        eventLocationControls.add(createDefaultControls(), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        eventLocationControls.add(eventOptionShop, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        eventLocationControls.add(eventOptionInv, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        eventLocationControls.add(eventOptionMembers, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        eventLocationControls.add(eventOptionTil, gbc);
+
+        startEvent.add(eventContent);
+        startEvent.add(eventLocationControls,BorderLayout.SOUTH);
+
+        // ScotLand Event
+        JPanel scotEvent = new JPanel(new BorderLayout());
+
+        eventTitle.setText("Scotland"); // Change start area name?
+
+//        JLabel eventImage = new JLabel();
+        //Add image icons later
+
+        eventDescription.setText("A Scottish Village can be seen on the coast and might " +
+                "not be keen to see you near their village. We can stop here to repair our " +
+                "ship or raid them for supplies. If we do raid them for supplies it might be a challenge.");
+        eventDescription.setPreferredSize(new Dimension(150,150));
+
+        scotEvent.add(eventContent);
+        scotEvent.add(eventLocationControls,BorderLayout.SOUTH);
+
+        // Iceland Event
+        JPanel iceEvent = new JPanel(new BorderLayout());
+
+        eventTitle.setText("Iceland"); // Change start area name?
+        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        eventTitle.setForeground(alertorange);
+
+//        JLabel eventImage = new JLabel();
+        //Add image icons later
+
+        eventDescription.setText("An island village that welcomes you to their village. " +
+                "This might be a good time to restock on supplies or repair any damage that the ship has sustained.");
+        eventDescription.setPreferredSize(new Dimension(100,100));
+
+        iceEvent.add(eventContent);
+        iceEvent.add(eventLocationControls,BorderLayout.SOUTH);
+
+        // Greenland Event
+        JPanel greenEvent = new JPanel(new BorderLayout());
+
+        eventTitle.setText("Greenland"); // Change start area name?
+        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        eventTitle.setForeground(alertorange);
+
+//        JLabel eventImage = new JLabel();
+        //Add image icons later
+
+        eventDescription.setText("A rocky coast line where large animals can be seen from " +
+                "the shore. We could stock up on more food or repair our ship for the voyage ahead.");
+//        eventDescription.setPreferredSize(new Dimension(100,100));
+
+        greenEvent.add(eventContent);
+        greenEvent.add(eventLocationControls,BorderLayout.SOUTH);
+
+        // Vinland Event
+        JPanel vinEvent = new JPanel(new BorderLayout());
+
+        eventTitle.setText("Vinland"); // Change start area name?
+        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        eventTitle.setForeground(alertorange);
+
+//        JLabel eventImage = new JLabel();
+        //Add image icons later
+
+        eventDescription.setText("Fresh lands where we are going to settle. Time to set " +
+                "up a base camp so we can get working shelter and food so we can make it through the coming winter.");
+//        eventDescription.setPreferredSize(new Dimension(100,100));
+
+        vinEvent.add(eventContent);
+        vinEvent.add(eventLocationControls,BorderLayout.SOUTH);
+
         /* ------------ Frame Parameters ------------ */
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1280, 720);
@@ -686,6 +813,13 @@ public class GameFrame extends JFrame {
         deck.add(party, PARTY);
         deck.add(combatEvent, COMBAT);
         deck.add(endCombat, FCOMBAT);
+
+        // Location Based Events
+        deck.add(startEvent, START);
+        deck.add(scotEvent, SCOTLAND);
+        deck.add(iceEvent, ICELAND);
+        deck.add(greenEvent, GREENLAND);
+        deck.add(vinEvent, VINLAND);
 
         // Debug Panels
         deck.add(dbStats, DBSTATS);
@@ -732,11 +866,41 @@ public class GameFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {}
         });
 
+
+        // Location Event Options
+        eventOptionShop.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                switchToPanel(WELSHOP);
+            }
+        });
+
+        eventOptionInv.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+//                switchToPanel(INV);
+            }
+        });
+
+        eventOptionMembers.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+//                switchToPanel(MEMBERS);
+            }
+        });
+
+        eventOptionTil.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                switchToPanel(EVENT); // Random Event?
+            }
+        });
+
         // Load button logic
         loadButton.addActionListener(e -> {
             Main.loadSave();
             // auto switches to next screen after loading
+
+//            cardLayout.show(deck, PLAY);
+
             switchToPanel(WELCOME);
+
         });
 
         // Add deck panel to the frame
