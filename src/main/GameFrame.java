@@ -837,7 +837,7 @@ public class GameFrame extends JFrame {
                     switchToPanel(PARTY);
                 } else if (seedInputText.equals("DEBUGSTATUS2")) { //TODO Testing - remove after
                     switchToPanel(STATS);
-                 else if (seedInputText.equals("DEBUGCOMBAT")) { //User leaves the field blank
+                } else if (seedInputText.equals("DEBUGCOMBAT")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(COMBAT);
                 } else if (seedInputText.equals("")) { //User leaves the field blank
