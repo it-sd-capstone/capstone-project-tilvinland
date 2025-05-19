@@ -7,16 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
-//TODO add a control panel to each side of the main control panels using border east and west for party and ship stats and save and load/main menu
-//TODO set up random event panel and play buttons to re-roll random events.
-//TODO
-//TODO
-//TODO First event
+//TODO add party panel
+//TODO rework welcome shop to be a general use shop panel.
 
 public class GameFrame extends JFrame {
 
     // Vars
-    Ship gameShip = new Ship();
+    Ship ship = new Ship();
     Ship debugShip = new Ship();
     private static String currentPanel = "Main Menu";
     private static String previousPanel = "Main Menu";
@@ -25,15 +22,26 @@ public class GameFrame extends JFrame {
     JPanel deck = new JPanel();
     String MAIN = "Main Menu";
     String WELCOME = "Welcome Menu";
-    String WELSHOP = "Welcome Shop";
+    String SHOP = "Shop";
     String STATS = "Ship Status";
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
+
     String START = "Start Area";
     String SCOTLAND = "Scotland";
     String ICELAND = "Iceland";
     String GREENLAND = "Greenland";
     String VINLAND = "Vinland End";
+    String LOCATION = "Location";
+    String PARTY = "Party";
+    String COMBAT = "Combat";
+    String FCOMBAT = "Finish Combat";
+    String CALM = "CALM";
+    String ROUGH = "ROUGH";
+    String STORM = "STORM";
+    String VILLAGE = "VILLAGE";
+    String FOREST = "FOREST";
+
     CardLayout cardLayout = new CardLayout();
 
     //Custom Colors
@@ -47,12 +55,20 @@ public class GameFrame extends JFrame {
     private Color transparent = new Color(0,0,0,0);
 
     // Resources
+    ImageIcon bigLogo = new ImageIcon("./resources/logo.png");
+    ImageIcon smallLogo = new ImageIcon("./resources/logo_small.png");
     ImageIcon tinyLogo = new ImageIcon("./resources/logo_tiny.png");
     ImageIcon shipIcon = new ImageIcon("./resources/shipIcon.jpg");
 
-    //Boarder Decos need to be smaller
-    //ImageIcon borderDecoTL = new ImageIcon("./resources/CornerTopLeft.png");
-    //ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
+    ImageIcon partyOneLogo = new ImageIcon("./resources/PartyIcons/partyOne.png");
+    ImageIcon partyTwoLogo = new ImageIcon("./resources/PartyIcons/partyTwo.png");
+    ImageIcon partyThreeLogo = new ImageIcon("./resources/PartyIcons/partyThree.png");
+    ImageIcon partyFourLogo = new ImageIcon("./resources/PartyIcons/partyFour.png");
+
+    ImageIcon borderDecoTL = new ImageIcon("./resources/CornerTopLeft.png");
+    ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
+
+    ImageIcon lumberIcon = new ImageIcon("./resources/lumberPile.png");
 
     public GameFrame() {
         // Reference Main and Database
@@ -60,6 +76,7 @@ public class GameFrame extends JFrame {
         Connection db = main.createConnection();
 
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         // set CardLayout to the deck panel layout manager
         deck.setLayout(cardLayout);
@@ -69,30 +86,39 @@ public class GameFrame extends JFrame {
         mainMenu.setLayout(new BorderLayout());
         mainMenu.setBackground(darkslate);
 
+        GridBagConstraints gbcMain = new GridBagConstraints();
+        gbcMain.insets = new Insets(10, 10, 10, 10);
+
         JPanel menuContent = new JPanel();
         menuContent.setLayout(new GridBagLayout());
         menuContent.setBackground(gunmetal);
 
-//        JLabel leftCornerDeco = new JLabel(borderDecoTL);
-//        gbc.gridx = 0;
-//        gbc.gridy = 0;
-//        menuContent.add(leftCornerDeco, gbc);
-//
-//        JLabel rightCornerDeco = new JLabel(borderDecoTR);
-//        gbc.gridx = 1;
-//        gbc.gridy = 0;
-//        menuContent.add(rightCornerDeco, gbc);
+        JLabel leftCornerDeco = new JLabel(borderDecoTL);
+        gbcMain.gridx = 0;
+        gbcMain.gridy = 0;
+        menuContent.add(leftCornerDeco, gbcMain);
+
+        JLabel rightCornerDeco = new JLabel(borderDecoTR);
+        gbcMain.gridx = 2;
+        gbcMain.gridy = 0;
+        menuContent.add(rightCornerDeco, gbcMain);
+
+        JLabel gameTitle = new JLabel("Til Vinland");
+        gameTitle.setForeground(alertorange);
+        gameTitle.setPreferredSize(new Dimension(400, 200));
+        gameTitle.setText("Til Vinland!");
+        gameTitle.setFont(new Font("Monospaced", Font.PLAIN, 50));
+        gameTitle.setForeground(columbiablue);
+        gameTitle.setVerticalAlignment(JLabel.CENTER);
+        gameTitle.setHorizontalAlignment(JLabel.CENTER);
+        gbcMain.gridx = 1;
+        gbcMain.gridy = 0;
+        menuContent.add(gameTitle, gbcMain);
 
         JPanel menuOptions = new JPanel();
         menuOptions.setLayout(new GridBagLayout());
-        gbc.insets = new Insets(10, 10, 10, 10);
-
-        JLabel mainText = new JLabel();
-        mainText.setText("Til Vinland!");
-        mainText.setFont(new Font("Monospaced", Font.PLAIN, 40));
-        mainText.setForeground(columbiablue);
-        mainText.setVerticalAlignment(JLabel.CENTER);
-        mainText.setHorizontalAlignment(JLabel.CENTER);
+        menuOptions.setBackground(cerulean);
+        menuOptions.setPreferredSize(new Dimension(200,200));
 
         JButton playButton = new JButton();
         playButton.setBounds(100,100,100,100);
@@ -120,27 +146,24 @@ public class GameFrame extends JFrame {
         seedField.setPreferredSize(new Dimension(400, 40));
         seedField.setToolTipText("Enter seed for game generation or leave blank for a random seed.");
 
-        menuOptions.setBackground(cerulean);
-        menuOptions.setPreferredSize(new Dimension(200,200));
-
         // Row 0: JTextField spanning 2 columns
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2; // Span across both button columns
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        menuOptions.add(seedField, gbc);
+        gbcMain.gridx = 0;
+        gbcMain.gridy = 0;
+        gbcMain.gridwidth = 2; // Span across both button columns
+        gbcMain.fill = GridBagConstraints.HORIZONTAL;
+        menuOptions.add(seedField, gbcMain);
 
         // Row 1, Column 0: Play
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1; // Reset width
-        gbc.fill = GridBagConstraints.NONE;
-        menuOptions.add(playButton, gbc);
+        gbcMain.gridx = 0;
+        gbcMain.gridy = 1;
+        gbcMain.gridwidth = 1; // Reset width
+        gbcMain.fill = GridBagConstraints.NONE;
+        menuOptions.add(playButton, gbcMain);
 
         // Row 1, Column 1: Load
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        menuOptions.add(loadButton, gbc);
+        gbcMain.gridx = 1;
+        gbcMain.gridy = 1;
+        menuOptions.add(loadButton, gbcMain);
 
         mainMenu.add(menuOptions,BorderLayout.SOUTH);
         mainMenu.add(menuContent,BorderLayout.CENTER);
@@ -190,15 +213,125 @@ public class GameFrame extends JFrame {
             }
         });
 
-        /* ------------ Ship Status Panel ------------ */
+        /* ------------ Ship/Party Status Panel ------------ */
+        //TODO add a ship repair button
+        //TODO add a heal party button?? (-rations)
+        //TODO add some art!
+        //TODO grab party names and stats
+        GridBagConstraints gbcStatus = new GridBagConstraints();
+        gbcStatus.insets = new Insets(10, 10, 10, 10);
+
         JPanel status = new JPanel();
-        JLabel healthText = new JLabel();
-        healthText.setText("Ship Health: " + gameShip.getHealth());
+        status.setLayout(new BorderLayout());
 
-        JLabel statText = new JLabel();
-        statText.setText("Ship Status: " + gameShip.getStatus());
+        JPanel statusContent = new JPanel();
+        statusContent.setLayout(new GridBagLayout());
+        statusContent.setBackground(gunmetal);
 
-        status.add(createBackButton());
+        JPanel statusControls = new JPanel();
+        statusControls.setLayout(new GridBagLayout());
+        statusControls.setBackground(cerulean);
+        statusControls.setPreferredSize(new Dimension(200,200));
+
+        JLabel shipHealthText = new JLabel();
+        shipHealthText.setText("Ship Health: " + ship.getHealth());
+
+        JLabel shipStatText = new JLabel();
+        shipStatText.setText("Ship Status: " + ship.getStatus());
+
+        gbcStatus.gridx = 0;
+        gbcStatus.gridy = 0;
+        statusControls.add(createBackButton());
+
+        status.add(statusControls,BorderLayout.SOUTH);
+        status.add(statusContent);
+
+        /* ------------ Party Creation Panel ------------ */
+        JPanel party = new JPanel();
+        party.setLayout(new BorderLayout());
+
+        GridBagConstraints gbcParty = new GridBagConstraints();
+        gbcParty.insets = new Insets(10, 30, 10, 30);
+
+        JPanel partyContent = new JPanel();
+        partyContent.setLayout(new GridBagLayout());
+        partyContent.setBackground(gunmetal);
+
+        JPanel partyControls = new JPanel();
+        partyControls.setLayout(new GridBagLayout());
+        partyControls.setBackground(cerulean);
+        partyControls.setPreferredSize(new Dimension(200,200));
+
+        JTextField partyOneField = new JTextField();
+        partyOneField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyTwoField = new JTextField();
+        partyTwoField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyThreeField = new JTextField();
+        partyThreeField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyFourField = new JTextField();
+        partyFourField.setPreferredSize(new Dimension(200, 24));
+
+        JLabel partyOneIcon = new JLabel(partyOneLogo);
+        JLabel partyTwoIcon = new JLabel(partyTwoLogo);
+        JLabel partyThreeIcon = new JLabel(partyThreeLogo);
+        JLabel partyFourIcon = new JLabel(partyFourLogo);
+
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 0;
+        partyContent.add(partyOneIcon, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 1;
+        partyContent.add(partyOneField, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 0;
+        partyContent.add(partyTwoIcon, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 1;
+        partyContent.add(partyTwoField, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 2;
+        partyContent.add(partyThreeIcon, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 3;
+        partyContent.add(partyThreeField, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 2;
+        partyContent.add(partyFourIcon, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 3;
+        partyContent.add(partyFourField, gbcParty);
+
+        JButton partyContinueButton = new JButton();
+        partyContinueButton.setText("Continue");
+        partyContinueButton.setPreferredSize(new Dimension(200,50));
+        partyContinueButton.setFont(new Font("Monospaced", Font.PLAIN, 20));
+        partyContinueButton.setForeground(alertorange);
+        partyContinueButton.setBackground(buttonbrown);
+        partyContinueButton.setBorder(BorderFactory.createEtchedBorder());
+
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 0;
+        partyControls.add(partyContinueButton, gbcParty);
+
+        party.add(partyControls, BorderLayout.SOUTH);
+        party.add(partyContent);
+
+        partyContinueButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String partyNameOneInput = partyOneField.getText();
+                String partyNameTwoInput = partyTwoField.getText();
+                String partyNameThreeInput = partyThreeField.getText();
+                String partyNameFourInput = partyFourField.getText();
+
+                //TODO take out active int w/ stevens code change to Main.createParty()
+                Main.createParty(partyNameOneInput, 0, 1);
+                Main.createParty(partyNameTwoInput, 0, 1);
+                Main.createParty(partyNameThreeInput, 0,1);
+                Main.createParty(partyNameFourInput,0, 1);
+
+                switchToPanel(WELCOME);
+            }
+        });
 
         /* ------------ WELCOME SCREEN ------------ */
         JPanel welcomePanel = new JPanel(new BorderLayout());
@@ -263,32 +396,54 @@ public class GameFrame extends JFrame {
         welcomePanel.add(welcomeContent);
         welcomePanel.add(welcomeControls, BorderLayout.SOUTH);
 
-        /* ------------ WELCOME SHOP SCREEN ------------ */
-        JPanel welcomeShopPanel = new JPanel(new BorderLayout());
+        /* ------------ SHOP SCREEN ------------ */
+        JPanel shopPanel = new JPanel(new BorderLayout());
 
-        JPanel wShopContent = new JPanel(new GridBagLayout());
-        wShopContent.setBackground(gunmetal);
+        GridBagConstraints gbcShop = new GridBagConstraints();
+        gbcShop.insets = new Insets(10, 10, 10, 10);
 
-        JPanel wShopControls = new JPanel(new GridBagLayout());
-        wShopControls.setBackground(cerulean);
-        wShopControls.setPreferredSize(new Dimension(200,200));
+        JPanel shopContent = new JPanel(new GridBagLayout());
+        shopContent.setBackground(gunmetal);
 
-        JButton wShopRationsButton = new JButton("Buy Rations");
-        wShopRationsButton.addActionListener(new ActionListener() {
+        JPanel shopControls = new JPanel(new GridBagLayout());
+        shopControls.setBackground(cerulean);
+        shopControls.setPreferredSize(new Dimension(200,200));
+
+        JButton shopRationsButton = new JButton("Buy Rations");
+        shopRationsButton.setPreferredSize(new Dimension(200,50));
+        shopRationsButton.setFont(new Font("Monospaced", Font.BOLD, 20));
+        shopRationsButton.setForeground(alertorange);
+        shopRationsButton.setBackground(buttonbrown);
+        shopRationsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Main.runEvent(1);
+                Main.runEvent(3);
+                JOptionPane.showMessageDialog(null, "Full parameter test from GameFrame", "Full Test", JOptionPane.INFORMATION_MESSAGE, lumberIcon);
             }
         });
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        wShopControls.add(wShopRationsButton, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        wShopControls.add(createBackButton());
+        JButton shopWoodButton = new JButton("Buy Wood");
+        shopWoodButton.setPreferredSize(new Dimension(200,50));
+        shopWoodButton.setFont(new Font("Monospaced", Font.BOLD, 20));
+        shopWoodButton.setForeground(alertorange);
+        shopWoodButton.setBackground(buttonbrown);
+        shopWoodButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runEvent(2);
+            }
+        });
 
-        welcomeShopPanel.add(wShopContent);
-        welcomeShopPanel.add(wShopControls, BorderLayout.SOUTH);
+        gbcShop.gridx = 0;
+        gbcShop.gridy = 0;
+        shopControls.add(shopRationsButton, gbcShop);
+        gbcShop.gridx = 1;
+        gbcShop.gridy = 0;
+        shopControls.add(shopWoodButton, gbcShop);
+        gbcShop.gridx = 1;
+        gbcShop.gridy = 1;
+        shopControls.add(createBackButton(), gbcShop);
+
+        shopPanel.add(shopContent);
+        shopPanel.add(shopControls, BorderLayout.SOUTH);
 
         /* ------------ RANDOM EVENT SCREEN ------------ */
         JPanel randEvent = new JPanel(new BorderLayout());
@@ -310,6 +465,167 @@ public class GameFrame extends JFrame {
 
         JButton eventOptionFour = new JButton();
         eventOptionFour.setPreferredSize(new Dimension(200,50));
+
+
+        /* ------------ COMBAT EVENT SCREEN ------------ */
+        JPanel combatEvent = new JPanel(new BorderLayout());
+
+        JPanel combatControls = new JPanel(new GridBagLayout());
+        combatControls.setBackground(cerulean);
+        combatControls.setPreferredSize(new Dimension(200,200));
+
+        JPanel combatContent = new JPanel(new GridBagLayout());
+        eventContent.setBackground(gunmetal);
+        String labelText = "";
+        if (main.getParty().get(0).getActive() == 1) {
+            labelText = "<html>" + main.getParty().get(0).getName() + "<br/>Health: " + main.getParty().get(0).getHealth() + "</html>";
+        }
+        JLabel p1Status = new JLabel();
+        p1Status.setText(labelText);
+        p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        if (main.getParty().get(1).getActive() == 1) {
+            labelText = "<html>" + main.getParty().get(1).getName() + "<br/>Health: " + main.getParty().get(1).getHealth() + "</html>";
+        }
+        JLabel p2Status = new JLabel();
+        p2Status.setText(labelText);
+        p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        JLabel p3Status = new JLabel();
+        if (main.getParty().get(2).getActive() == 1) {
+            labelText = "<html>" + main.getParty().get(2).getName() + "<br/>Health: " + main.getParty().get(2).getHealth() + "</html>";
+            p3Status.setText(labelText);
+        }
+        p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        JLabel p4Status = new JLabel();
+        if (main.getParty().get(3).getActive() == 1) {
+            labelText = "<html>" + main.getParty().get(3).getName() + "<br/>Health: " + main.getParty().get(3).getHealth() + "</html>";
+            p4Status.setText(labelText);
+        }
+
+        p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        labelText = "<html>" + main.getEnemy().getName() + "<br/>Health: " + main.getEnemy().getHealth() + "</html>";
+
+        JLabel enemyStatus = new JLabel();
+        enemyStatus.setText(labelText);
+        enemyStatus.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        JButton blockButton = new JButton("Block");
+        blockButton.setPreferredSize(new Dimension(200,100));
+        JButton parryButton = new JButton("Parry");
+        parryButton.setPreferredSize(new Dimension(200,100));
+        JButton attackButton = new JButton("Attack");
+        attackButton.setPreferredSize(new Dimension(200,100));
+
+        JLabel blankCombat = new JLabel();
+        blankCombat.setPreferredSize(new Dimension(200,50));
+        JLabel blankCombat1 = new JLabel();
+        blankCombat1.setPreferredSize(new Dimension(50,50));
+        JLabel blankCombat2 = new JLabel();
+        blankCombat2.setPreferredSize(new Dimension(50,50));
+
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        combatContent.add(p1Status, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        combatContent.add(p2Status, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        combatContent.add(p3Status, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        combatContent.add(p4Status, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        combatContent.add(blankCombat, gbc);
+        gbc.gridx = 4;
+        gbc.gridy = 0;
+        combatContent.add(enemyStatus, gbc);
+
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        combatControls.add(blockButton, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        combatControls.add(blankCombat1, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        combatControls.add(parryButton, gbc);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        combatControls.add(blankCombat2, gbc);
+        gbc.gridx = 4;
+        gbc.gridy = 0;
+        combatControls.add(attackButton, gbc);
+
+        blockButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runCombat(1);
+            }
+        });
+
+        parryButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runCombat(2);
+            }
+        });
+
+        attackButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runCombat(3);
+            }
+        });
+
+        combatEvent.add(combatControls,BorderLayout.SOUTH);
+        combatEvent.add(combatContent,BorderLayout.CENTER);
+
+        // -- END COMBAT EVENT SCREEN --
+
+        JPanel endCombat = new JPanel(new BorderLayout());
+
+        JPanel endCombatStatus = new JPanel(new GridBagLayout());
+        endCombatStatus.setBackground(cerulean);
+        combatControls.setPreferredSize(new Dimension(200,200));
+
+        JPanel endCombatControl = new JPanel();
+        endCombatControl.setLayout(new GridBagLayout());
+        endCombatControl.setBackground(gunmetal);
+
+        JLabel combatResolution = new JLabel();
+        combatResolution.setText("<html>You defeated " + main.getEnemy().getName() + "!<br/>" +
+                                " You gained 20 gold, 40 rations, and 10 lumber</html>");
+
+        JButton endCombatButton = new JButton("Continue Adventure");
+        endCombatButton.setPreferredSize(new Dimension(200,100));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        endCombatStatus.add(combatResolution, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        endCombatControl.add(endCombatButton, gbc);
+
+        attackButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runEvent(5);
+            }
+        });
+
+        endCombat.add(endCombatStatus,BorderLayout.CENTER);
+        endCombat.add(endCombatControl,BorderLayout.SOUTH);
+
+
+
+        // Random generator for event name & description (Maybe needed to have them ref same ID)
+        Random rng = new Random();
+        int randomEvent = rng.nextInt(5) + 1;
+
 
         JLabel eventTitle = new JLabel();
         eventTitle.setText("Placeholder");
@@ -594,7 +910,10 @@ public class GameFrame extends JFrame {
         deck.add(welcomePanel,WELCOME);
         deck.add(status, STATS);
         deck.add(randEvent, EVENT);
-        deck.add(welcomeShopPanel, WELSHOP);
+        deck.add(shopPanel, SHOP);
+        deck.add(party, PARTY);
+        deck.add(combatEvent, COMBAT);
+        deck.add(endCombat, FCOMBAT);
 
         // Location Based Events
         deck.add(startEvent, START);
@@ -617,9 +936,16 @@ public class GameFrame extends JFrame {
                     switchToPanel(EVENT);
                 } else if (seedInputText.equals("DEBUGSTART")) {
                     switchToPanel(VINLAND);
+                } else if (seedInputText.equals("DEBUGPARTY")) { //TODO Testing - remove after
+                    switchToPanel(PARTY);
+                } else if (seedInputText.equals("DEBUGSTATUS2")) { //TODO Testing - remove after
+                    switchToPanel(STATS);
+                } else if (seedInputText.equals("DEBUGCOMBAT")) { //User leaves the field blank
+                    //Temporary, should run the game - switch to the first game screen
+                    switchToPanel(COMBAT);
                 } else if (seedInputText.equals("")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
-                    switchToPanel(WELCOME);
+                    switchToPanel(PARTY);
                 } else { // The field has anything else entered or is blank (run with seed)
 
                 }
@@ -643,10 +969,11 @@ public class GameFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {}
         });
 
+
         // Location Event Options
         eventOptionShop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//                switchToPanel(SHOP);
+                switchToPanel(SHOP);
             }
         });
 
@@ -658,7 +985,7 @@ public class GameFrame extends JFrame {
 
         eventOptionMembers.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//                switchToPanel(PARTY);
+                switchToPanel(PARTY);
             }
         });
 
@@ -672,7 +999,11 @@ public class GameFrame extends JFrame {
         loadButton.addActionListener(e -> {
             Main.loadSave();
             // auto switches to next screen after loading
+
 //            cardLayout.show(deck, PLAY);
+
+            switchToPanel(WELCOME);
+
         });
 
         // Add deck panel to the frame
@@ -680,13 +1011,20 @@ public class GameFrame extends JFrame {
 
         /* !!! KEEP LAST !!! */
         this.setVisible(true);
+
     }
 
     private JButton createBackButton() {
         JButton back = new JButton("Back");
+        back.setPreferredSize(new Dimension(200, 50));
+        back.setFont(new Font("Monospaced", Font.BOLD, 20));
+        back.setForeground(columbiablue);
+        back.setBackground(darkslate);
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                //isGoingBack = true;
                 switchToPanel(previousPanel);
+                //isGoingBack = false;
             }
         });
         return back;
@@ -696,6 +1034,8 @@ public class GameFrame extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
 
         JPanel defaultControls = new JPanel(new GridBagLayout());
+        defaultControls.setPreferredSize(new Dimension(200, 200));
+        defaultControls.setBackground(transparent);
 
         JButton shipStatButton = new JButton(shipIcon);
         shipStatButton.setBounds(100,100,100,100);
@@ -720,9 +1060,13 @@ public class GameFrame extends JFrame {
     public void switchToPanel(String panelName) {
         if (!panelName.equals(currentPanel)) {
             previousPanel = currentPanel;
+            //System.out.println("Switching to " + panelName + " from " + currentPanel + ", previous = " + previousPanel);
             currentPanel = panelName;
+
         }
 
         cardLayout.show(deck, panelName);
+
     }
+
 }
