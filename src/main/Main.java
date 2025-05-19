@@ -557,7 +557,6 @@ public class Main {
                 ship = new Ship();
                 ship.setHealth(rs.getInt("shiphealth"));
 
-
                 // output
                 System.out.println("Game loaded!");
             } else {
@@ -572,7 +571,6 @@ public class Main {
     }
 
     // Adds starter items to player's inventory using items table in database
-    // IDK the ID/Name yet so I just used these as placeholders, will adjust later -JH
     public static void addInventory(int id, int amount) {
         items.get(id).addItem(amount);
     }
