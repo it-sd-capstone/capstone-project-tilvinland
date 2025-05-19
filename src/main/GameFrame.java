@@ -28,6 +28,9 @@ public class GameFrame extends JFrame {
     String EVENT = "Event";
     String LOCATION = "Location";
     String PARTY = "Party";
+    String COMBAT = "Combat";
+    String FCOMBAT = "Finish Combat";
+
     CardLayout cardLayout = new CardLayout();
 
     //Custom Colors
@@ -452,6 +455,161 @@ public class GameFrame extends JFrame {
         JButton eventOptionFour = new JButton();
         eventOptionFour.setPreferredSize(new Dimension(200,50));
 
+        /* ------------ COMBAT EVENT SCREEN ------------ */
+        JPanel combatEvent = new JPanel(new BorderLayout());
+
+        JPanel combatControls = new JPanel(new GridBagLayout());
+        combatControls.setBackground(cerulean);
+        combatControls.setPreferredSize(new Dimension(200,200));
+
+        JPanel combatContent = new JPanel(new GridBagLayout());
+        eventContent.setBackground(gunmetal);
+        String labelText = "";
+        if (main.getParty().get(0).getActive() == 1) {
+            labelText = "<html>" + main.getParty().get(0).getName() + "<br/>Health: " + main.getParty().get(0).getHealth() + "</html>";
+        }
+        JLabel p1Status = new JLabel();
+        p1Status.setText(labelText);
+        p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        if (main.getParty().get(1).getActive() == 1) {
+            labelText = "<html>" + main.getParty().get(1).getName() + "<br/>Health: " + main.getParty().get(1).getHealth() + "</html>";
+        }
+        JLabel p2Status = new JLabel();
+        p2Status.setText(labelText);
+        p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        JLabel p3Status = new JLabel();
+        if (main.getParty().get(2).getActive() == 1) {
+            labelText = "<html>" + main.getParty().get(2).getName() + "<br/>Health: " + main.getParty().get(2).getHealth() + "</html>";
+            p3Status.setText(labelText);
+        }
+        p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        JLabel p4Status = new JLabel();
+        if (main.getParty().get(3).getActive() == 1) {
+            labelText = "<html>" + main.getParty().get(3).getName() + "<br/>Health: " + main.getParty().get(3).getHealth() + "</html>";
+            p4Status.setText(labelText);
+        }
+
+        p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        labelText = "<html>" + main.getEnemy().getName() + "<br/>Health: " + main.getEnemy().getHealth() + "</html>";
+
+        JLabel enemyStatus = new JLabel();
+        enemyStatus.setText(labelText);
+        enemyStatus.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+        JButton blockButton = new JButton("Block");
+        blockButton.setPreferredSize(new Dimension(200,100));
+        JButton parryButton = new JButton("Parry");
+        parryButton.setPreferredSize(new Dimension(200,100));
+        JButton attackButton = new JButton("Attack");
+        attackButton.setPreferredSize(new Dimension(200,100));
+
+        JLabel blankCombat = new JLabel();
+        blankCombat.setPreferredSize(new Dimension(200,50));
+        JLabel blankCombat1 = new JLabel();
+        blankCombat1.setPreferredSize(new Dimension(50,50));
+        JLabel blankCombat2 = new JLabel();
+        blankCombat2.setPreferredSize(new Dimension(50,50));
+
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        combatContent.add(p1Status, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        combatContent.add(p2Status, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        combatContent.add(p3Status, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        combatContent.add(p4Status, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        combatContent.add(blankCombat, gbc);
+        gbc.gridx = 4;
+        gbc.gridy = 0;
+        combatContent.add(enemyStatus, gbc);
+
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        combatControls.add(blockButton, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        combatControls.add(blankCombat1, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        combatControls.add(parryButton, gbc);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        combatControls.add(blankCombat2, gbc);
+        gbc.gridx = 4;
+        gbc.gridy = 0;
+        combatControls.add(attackButton, gbc);
+
+        blockButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runCombat(1);
+            }
+        });
+
+        parryButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runCombat(2);
+            }
+        });
+
+        attackButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runCombat(3);
+            }
+        });
+
+        combatEvent.add(combatControls,BorderLayout.SOUTH);
+        combatEvent.add(combatContent,BorderLayout.CENTER);
+
+        // -- END COMBAT EVENT SCREEN --
+
+        JPanel endCombat = new JPanel(new BorderLayout());
+
+        JPanel endCombatStatus = new JPanel(new GridBagLayout());
+        endCombatStatus.setBackground(cerulean);
+        combatControls.setPreferredSize(new Dimension(200,200));
+
+        JPanel endCombatControl = new JPanel();
+        endCombatControl.setLayout(new GridBagLayout());
+        endCombatControl.setBackground(gunmetal);
+
+        JLabel combatResolution = new JLabel();
+        combatResolution.setText("<html>You defeated " + main.getEnemy().getName() + "!<br/>" +
+                                " You gained 20 gold, 40 rations, and 10 lumber</html>");
+
+        JButton endCombatButton = new JButton("Continue Adventure");
+        endCombatButton.setPreferredSize(new Dimension(200,100));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        endCombatStatus.add(combatResolution, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        endCombatControl.add(endCombatButton, gbc);
+
+        attackButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Main.runEvent(5);
+            }
+        });
+
+        endCombat.add(endCombatStatus,BorderLayout.CENTER);
+        endCombat.add(endCombatControl,BorderLayout.SOUTH);
+
+
+
         // Random generator for event name & description (Maybe needed to have them ref same ID)
         Random rng = new Random();
         int randomEvent = rng.nextInt(5) + 1;
@@ -526,6 +684,8 @@ public class GameFrame extends JFrame {
         deck.add(randEvent, EVENT);
         deck.add(shopPanel, SHOP);
         deck.add(party, PARTY);
+        deck.add(combatEvent, COMBAT);
+        deck.add(endCombat, FCOMBAT);
 
         // Debug Panels
         deck.add(dbStats, DBSTATS);
@@ -543,7 +703,10 @@ public class GameFrame extends JFrame {
                     switchToPanel(PARTY);
                 } else if (seedInputText.equals("DEBUGSTATUS2")) { //TODO Testing - remove after
                     switchToPanel(STATS);
-                }else if (seedInputText.equals("")) { //User leaves the field blank
+                 else if (seedInputText.equals("DEBUGCOMBAT")) { //User leaves the field blank
+                    //Temporary, should run the game - switch to the first game screen
+                    switchToPanel(COMBAT);
+                } else if (seedInputText.equals("")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(PARTY);
                 } else { // The field has anything else entered or is blank (run with seed)
