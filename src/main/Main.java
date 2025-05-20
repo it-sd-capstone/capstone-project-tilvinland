@@ -33,6 +33,7 @@ public class Main {
     private static Enemy enemy;
     private static ArrayList<Player> party = new ArrayList<Player>();
     private static ArrayList<Item> items = new ArrayList<Item>();
+    private static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private static int activePlayers;
     private static String seedUsed;
     public static Map<Integer, String> eventTitles = new HashMap<>();
@@ -257,7 +258,28 @@ public class Main {
         items.add(new Item("Rations", 1, "Food", 100));
         items.add(new Item("Lumber", 2, "Used to fix ships", 100));
 
-        enemy = new Enemy("dummy",  0, 100);
+        enemies.clear();
+        try {
+            Connection db = createConnection();  // or use an existing cached connection
+            ResultSet rs = queryRaw(db, "SELECT * FROM enemy");
+            while (rs.next()) {
+                String name = rs.getString("name");
+                int id = rs.getInt("enemyId");
+                int health = rs.getInt("health");
+                enemies.add(new Enemy(name, id, health));
+            }
+            rs.close();
+            db.close();
+        } catch (Exception e) {
+            System.err.println("Error loading enemies: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        if (!enemies.isEmpty()) {
+            enemy = enemies.get(0);
+        } else {
+            enemy = new Enemy("null", 0, 1);
+        }
 
         mainEventTotal = 0;
         eventTotal = 0;
