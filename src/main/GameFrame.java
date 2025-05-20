@@ -27,7 +27,7 @@ public class GameFrame extends JFrame {
     String DBSTATS = "Debug Status";
     String EVENT = "Event";
 
-    String START = "Start Area";
+    String START = "Start";
     String SCOTLAND = "Scotland";
     String ICELAND = "Iceland";
     String GREENLAND = "Greenland";
@@ -684,8 +684,8 @@ public class GameFrame extends JFrame {
         // Start Area Event ------------------------------
         JPanel startEvent = new JPanel(new BorderLayout());
 
-        JPanel eventLocationControls = new JPanel(new GridBagLayout());
-        eventLocationControls.setBackground(cerulean);
+        JPanel startControls = new JPanel(new GridBagLayout());
+        startControls.setBackground(cerulean);
 
         JPanel startContent = new JPanel(new GridBagLayout());
         startContent.setBackground(gunmetal);
@@ -706,7 +706,7 @@ public class GameFrame extends JFrame {
         startEventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         startEventTitle.setForeground(alertorange);
 
-        JLabel startEventImage = new JLabel();
+        //JLabel startEventImage = new JLabel();
         //Add image icons later
 
         JTextArea startEventDescription = new JTextArea(10,44);
@@ -719,40 +719,43 @@ public class GameFrame extends JFrame {
                 "We better stock up on any supplies we will need for the long trip.");
         startEventDescription.setForeground(emerald);
 
-        eventLocationControls.setPreferredSize(new Dimension(200,200));
+        startControls.setPreferredSize(new Dimension(200,200));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        startControls.add(eventOptionShop, gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        eventLocationControls.add(eventOptionShop, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        eventLocationControls.add(eventOptionInv, gbc);
+        startControls.add(eventOptionInv, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        startControls.add(eventOptionMembers, gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        eventLocationControls.add(eventOptionMembers, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        eventLocationControls.add(eventOptionSail, gbc);
+        startControls.add(eventOptionSail, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         startContent.add(startEventTitle, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        startContent.add(startEventImage, gbc);
+        //gbc.gridx = 0;
+        //gbc.gridy = 1;
+        //startContent.add(startEventImage, gbc);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 5;
         startContent.add(startEventDescription, gbc);
 
-        startEvent.add(startContent);
+        startEvent.add(startContent, BorderLayout.CENTER);
 
-        startEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        startEvent.add(startControls,BorderLayout.SOUTH);
 
         // ScotLand Event ------------------------------
         JPanel scotEvent = new JPanel(new BorderLayout());
 
         JPanel scotContent = new JPanel(new GridBagLayout());
         scotContent.setBackground(gunmetal);
+
+        JPanel scotControls = new JPanel(new GridBagLayout());
+        scotContent.setBackground(cerulean);
 
         JLabel scotTitle = new JLabel("Scotland");
         scotTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -772,6 +775,17 @@ public class GameFrame extends JFrame {
                 "ship or raid them for supplies. If we do raid them for supplies it might be a challenge.");
         scotDescription.setForeground(emerald);
 
+        JButton scotCombat = new JButton("Raid village");
+        JButton scotLumber = new JButton("Gather lumber");
+        scotCombat.setPreferredSize(new Dimension(200, 50));
+        scotLumber.setPreferredSize(new Dimension(200, 50));
+        scotCombat.setBackground(buttonbrown);
+        scotLumber.setBackground(buttonbrown);
+        scotCombat.setForeground(alertorange);
+        scotLumber.setForeground(alertorange);
+        scotCombat.addActionListener(e -> Main.runEvent(15)); // hunker down
+        scotLumber.addActionListener(e -> Main.runEvent(13));
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         scotContent.add(scotTitle, gbc);
@@ -783,14 +797,24 @@ public class GameFrame extends JFrame {
         gbc.gridwidth = 5;
         scotContent.add(scotDescription, gbc);
 
-        scotEvent.add(scotContent);
-        scotEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        scotControls.add(scotCombat, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        scotControls.add(scotLumber, gbc);
+
+        scotEvent.add(scotContent, BorderLayout.CENTER);
+        scotEvent.add(scotControls,BorderLayout.SOUTH);
 
         // Iceland Event ------------------------------
         JPanel iceEvent = new JPanel(new BorderLayout());
 
         JPanel iceContent = new JPanel(new GridBagLayout());
         iceContent.setBackground(gunmetal);
+
+        JPanel iceControls = new JPanel(new GridBagLayout());
+        iceContent.setBackground(cerulean);
 
         JLabel iceTitle = new JLabel("Iceland");
         iceTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -809,6 +833,17 @@ public class GameFrame extends JFrame {
                 "This might be a good time to restock on supplies or repair any damage that the ship has sustained.");
         iceDescription.setForeground(emerald);
 
+        JButton iceShop = new JButton("Shop");
+        JButton iceFish = new JButton("Fish");
+        iceShop.setPreferredSize(new Dimension(200, 50));
+        iceFish.setPreferredSize(new Dimension(200, 50));
+        iceShop.setBackground(buttonbrown);
+        iceFish.setBackground(buttonbrown);
+        iceShop.setForeground(alertorange);
+        iceFish.setForeground(alertorange);
+        iceShop.addActionListener(e -> Main.runEvent(1)); // hunker down
+        iceFish.addActionListener(e -> Main.runEvent(6));
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         iceContent.add(iceTitle, gbc);
@@ -820,14 +855,25 @@ public class GameFrame extends JFrame {
         gbc.gridwidth = 5;
         iceContent.add(iceDescription, gbc);
 
-        iceEvent.add(iceContent);
-        iceEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        iceControls.add(iceShop, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        iceControls.add(iceFish, gbc);
+
+
+        iceEvent.add(iceContent, BorderLayout.CENTER);
+        iceEvent.add(iceControls,BorderLayout.SOUTH);
 
         // Greenland Event ------------------------------
         JPanel greenEvent = new JPanel(new BorderLayout());
 
         JPanel greenContent = new JPanel(new GridBagLayout());
         greenContent.setBackground(gunmetal);
+
+        JPanel greenControls = new JPanel(new GridBagLayout());
+        greenControls.setBackground(cerulean);
 
         JLabel greenTitle = new JLabel("Greenland");
         greenTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -846,6 +892,17 @@ public class GameFrame extends JFrame {
                 "the shore. We could stock up on more food or repair our ship for the voyage ahead.");
         greenDescription.setForeground(emerald);
 
+        JButton greenHunt = new JButton("Hunt for food");
+        JButton greenLumber = new JButton("Gather lumber");
+        greenHunt.setPreferredSize(new Dimension(200, 50));
+        greenLumber.setPreferredSize(new Dimension(200, 50));
+        greenHunt.setBackground(buttonbrown);
+        greenLumber.setBackground(buttonbrown);
+        greenHunt.setForeground(alertorange);
+        greenLumber.setForeground(alertorange);
+        greenHunt.addActionListener(e -> Main.runEvent(12)); // hunker down
+        greenLumber.addActionListener(e -> Main.runEvent(13));
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         greenContent.add(greenTitle, gbc);
@@ -857,14 +914,24 @@ public class GameFrame extends JFrame {
         gbc.gridwidth = 5;
         greenContent.add(greenDescription, gbc);
 
-        greenEvent.add(greenContent);
-        greenEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        greenControls.add(greenHunt, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        greenControls.add(greenLumber, gbc);
+
+        greenEvent.add(greenContent, BorderLayout.CENTER);
+        greenEvent.add(greenControls,BorderLayout.SOUTH);
 
         // Vinland Event ------------------------------
         JPanel vinEvent = new JPanel(new BorderLayout());
 
         JPanel vinContent = new JPanel(new GridBagLayout());
         vinContent.setBackground(gunmetal);
+
+        JPanel vinControls = new JPanel(new GridBagLayout());
+        vinControls.setBackground(cerulean);
 
         JLabel vinTitle = new JLabel("Vinland");
         vinTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -883,6 +950,12 @@ public class GameFrame extends JFrame {
                 "up a base camp so we can get working shelter and food so we can make it through the coming winter.");
         vinDescription.setForeground(emerald);
 
+        JButton finish = new JButton("Back to main menu");
+        finish.setPreferredSize(new Dimension(200, 50));
+        finish.setBackground(buttonbrown);
+        finish.setForeground(alertorange);
+        finish.addActionListener(e -> switchToPanel(MAIN));
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         vinContent.add(vinTitle, gbc);
@@ -894,8 +967,12 @@ public class GameFrame extends JFrame {
         gbc.gridwidth = 5;
         vinContent.add(vinDescription, gbc);
 
-        vinEvent.add(vinContent);
-        vinEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        vinControls.add(finish, gbc);
+
+        vinEvent.add(vinContent, BorderLayout.CENTER);
+        vinEvent.add(vinControls,BorderLayout.SOUTH);
 
         /* -------------- Calm Seas Panel ------------ */
         // Create Calm Seas Panel
