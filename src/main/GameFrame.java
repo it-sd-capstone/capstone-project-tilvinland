@@ -410,30 +410,24 @@ public class GameFrame extends JFrame {
 
         JPanel shopControls = new JPanel(new GridBagLayout());
         shopControls.setBackground(cerulean);
-        shopControls.setPreferredSize(new Dimension(200,200));
+        shopControls.setPreferredSize(new Dimension(200, 200));
 
         JButton shopRationsButton = new JButton("Buy Rations");
-        shopRationsButton.setPreferredSize(new Dimension(200,50));
-        shopRationsButton.setFont(new Font("Monospaced", Font.BOLD, 20));
-        shopRationsButton.setForeground(alertorange);
+        shopRationsButton.setPreferredSize(new Dimension(200, 50));
         shopRationsButton.setBackground(buttonbrown);
-        shopRationsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Main.runEvent(3);
-                JOptionPane.showMessageDialog(null, "Full parameter test from GameFrame", "Full Test", JOptionPane.INFORMATION_MESSAGE, lumberIcon);
-            }
+        shopRationsButton.setForeground(alertorange);
+        shopRationsButton.setFont(new Font("Monospaced", Font.BOLD, 20));
+        shopRationsButton.addActionListener(e -> {
+            Main.runEvent(3);
+            JOptionPane.showMessageDialog(null, "Full parameter test from GameFrame", "Full Test", JOptionPane.INFORMATION_MESSAGE, lumberIcon);
         });
 
         JButton shopWoodButton = new JButton("Buy Wood");
-        shopWoodButton.setPreferredSize(new Dimension(200,50));
-        shopWoodButton.setFont(new Font("Monospaced", Font.BOLD, 20));
-        shopWoodButton.setForeground(alertorange);
+        shopWoodButton.setPreferredSize(new Dimension(200, 50));
         shopWoodButton.setBackground(buttonbrown);
-        shopWoodButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Main.runEvent(2);
-            }
-        });
+        shopWoodButton.setForeground(alertorange);
+        shopWoodButton.setFont(new Font("Monospaced", Font.BOLD, 20));
+        shopWoodButton.addActionListener(e -> Main.runEvent(2));
 
         gbcShop.gridx = 0;
         gbcShop.gridy = 0;
@@ -447,6 +441,7 @@ public class GameFrame extends JFrame {
 
         shopPanel.add(shopContent);
         shopPanel.add(shopControls, BorderLayout.SOUTH);
+        /* ------------ END SHOP SCREEN ------------ */
 
         /* ------------ RANDOM EVENT SCREEN ------------ */
         JPanel randEvent = new JPanel(new BorderLayout());
@@ -587,48 +582,41 @@ public class GameFrame extends JFrame {
         combatEvent.add(combatControls,BorderLayout.SOUTH);
         combatEvent.add(combatContent,BorderLayout.CENTER);
 
-        // -- END COMBAT EVENT SCREEN --
-
+        /* ------------ End Combat Panel ------------ */
         JPanel endCombat = new JPanel(new BorderLayout());
 
         JPanel endCombatStatus = new JPanel(new GridBagLayout());
         endCombatStatus.setBackground(cerulean);
-        combatControls.setPreferredSize(new Dimension(200,200));
 
-        JPanel endCombatControl = new JPanel();
-        endCombatControl.setLayout(new GridBagLayout());
+        JPanel endCombatControl = new JPanel(new GridBagLayout());
         endCombatControl.setBackground(gunmetal);
+        endCombatControl.setPreferredSize(new Dimension(200, 200));
 
         JLabel combatResolution = new JLabel();
         combatResolution.setText("<html>You defeated " + Main.getEnemy().getName() + "!<br/>" +
-                                " You gained 20 gold, 40 rations, and 10 lumber</html>");
+                "You gained 20 gold, 40 rations, and 10 lumber</html>");
+        combatResolution.setFont(new Font("Monospaced", Font.BOLD, 20));
+        combatResolution.setForeground(alertorange);
 
         JButton endCombatButton = new JButton("Continue Adventure");
-        endCombatButton.setPreferredSize(new Dimension(200,100));
+        endCombatButton.setPreferredSize(new Dimension(200, 50));
+        endCombatButton.setBackground(buttonbrown);
+        endCombatButton.setForeground(alertorange);
+        endCombatButton.setFont(new Font("Monospaced", Font.BOLD, 20));
+        endCombatButton.addActionListener(e -> Main.runEvent(5));
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         endCombatStatus.add(combatResolution, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
         endCombatControl.add(endCombatButton, gbc);
 
-        attackButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Main.runEvent(5);
-            }
-        });
-
-        endCombat.add(endCombatStatus,BorderLayout.CENTER);
-        endCombat.add(endCombatControl,BorderLayout.SOUTH);
-
-
+        endCombat.add(endCombatStatus, BorderLayout.CENTER);
+        endCombat.add(endCombatControl, BorderLayout.SOUTH);
+        /* ------------ End of End Combat Panel ------------ */
 
         // Random generator for event name & description (Maybe needed to have them ref same ID)
         Random rng = new Random();
         int randomEvent = rng.nextInt(5) + 1;
-
 
         JLabel eventTitle = new JLabel();
         eventTitle.setText("Placeholder");
@@ -683,126 +671,425 @@ public class GameFrame extends JFrame {
         randEvent.add(eventContent);
         randEvent.add(eventControls,BorderLayout.SOUTH);
 
-
-        /* ------------ LOCATION EVENT SCREEN ------------ */
-        // Start Area Event
+        /*------- Start of Location Events -----*/
+        /* ------------ START Panel ------------ */
         JPanel startEvent = new JPanel(new BorderLayout());
+        startEvent.setBackground(gunmetal);
 
-        JPanel eventLocationControls = new JPanel(new GridBagLayout());
-        eventControls.setBackground(cerulean);
+        // Create content panel
+        JPanel startContent = new JPanel(new GridBagLayout());
+        startContent.setBackground(gunmetal);
 
-        JButton eventOptionShop = new JButton();
-        eventOptionOne.setPreferredSize(new Dimension(200,50));
+        // Create controls panel
+        JPanel startControls = new JPanel(new GridBagLayout());
+        startControls.setPreferredSize(new Dimension(200, 200));
+        startControls.setBackground(cerulean);
 
-        JButton eventOptionInv = new JButton();
-        eventOptionTwo.setPreferredSize(new Dimension(200,50));
+        // GBC for layout
+        GridBagConstraints gbcStart = new GridBagConstraints();
+        gbcStart.insets = new Insets(10, 30, 10, 30);
 
-        JButton eventOptionMembers = new JButton();
-        eventOptionThree.setPreferredSize(new Dimension(200,50));
+        // Start title
+        JLabel startTitle = new JLabel("Start Area");
+        startTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        startTitle.setForeground(alertorange);
 
-        JButton eventOptionTil = new JButton();
-        eventOptionFour.setPreferredSize(new Dimension(200,50));
+        // Start description
+        JTextArea startDesc = new JTextArea("We are about to make a long voyage across the seas. We better stock up on any supplies we will need for the long trip.");
+        startDesc.setEditable(false);
+        startDesc.setWrapStyleWord(true);
+        startDesc.setLineWrap(true);
+        startDesc.setFont(new Font("Monospaced", Font.PLAIN, 18));
+        startDesc.setBackground(transparent);
+        startDesc.setForeground(emerald);
+        startDesc.setPreferredSize(new Dimension(600, 100));
 
-        eventTitle.setText("Start Area"); // Change start area name?
+        // Shop button
+        JButton eventOptionShop = new JButton("Shop");
+        eventOptionShop.setPreferredSize(new Dimension(200, 50));
+        eventOptionShop.setBackground(buttonbrown);
+        eventOptionShop.setForeground(alertorange);
+        eventOptionShop.setFont(new Font("Monospaced", Font.BOLD, 20));
+        eventOptionShop.addActionListener(e -> switchToPanel(SHOP));
 
-        //JLabel eventImage = new JLabel();
-        //Add image icons later
+        // Check Inventory button
+        JButton eventOptionInv = new JButton("Check Inventory");
+        eventOptionInv.setPreferredSize(new Dimension(200, 50));
+        eventOptionInv.setBackground(buttonbrown);
+        eventOptionInv.setForeground(alertorange);
+        eventOptionInv.setFont(new Font("Monospaced", Font.BOLD, 20));
+        //eventOptionInv.addActionListener(e -> switchToPanel(INVENTORY)); // Uncomment if implemented
 
-        eventDescription.setText("We are about to make a long voyage across the seas. " +
-                "We better stock up on any supplies we will need for the long trip.");
-        eventDescription.setPreferredSize(new Dimension(100,100));
+        // Check Members button
+        JButton eventOptionMembers = new JButton("Check Members");
+        eventOptionMembers.setPreferredSize(new Dimension(200, 50));
+        eventOptionMembers.setBackground(buttonbrown);
+        eventOptionMembers.setForeground(alertorange);
+        eventOptionMembers.setFont(new Font("Monospaced", Font.BOLD, 20));
+        //eventOptionMembers.addActionListener(e -> switchToPanel(MEMBERS)); // Uncomment if implemented
 
-        eventOptionShop.setText("Shop");
-        eventOptionInv.setText("Check Inventory");
-        eventOptionMembers.setText("Check Members");
-        eventOptionTil.setText("Til Vinland");
+        // Continue button
+        JButton eventOptionTil = new JButton("Til Vinland");
+        eventOptionTil.setPreferredSize(new Dimension(200, 50));
+        eventOptionTil.setBackground(buttonbrown);
+        eventOptionTil.setForeground(alertorange);
+        eventOptionTil.setFont(new Font("Monospaced", Font.BOLD, 20));
+        eventOptionTil.addActionListener(e -> switchToPanel(EVENT)); // random event
 
-        eventLocationControls.setPreferredSize(new Dimension(200,200));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        eventLocationControls.add(createDefaultControls(), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        eventLocationControls.add(eventOptionShop, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        eventLocationControls.add(eventOptionInv, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        eventLocationControls.add(eventOptionMembers, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        eventLocationControls.add(eventOptionTil, gbc);
+        // Build startContent
+        gbcStart.gridx = 0;
+        gbcStart.gridy = 0;
+        gbcStart.gridwidth = 3;
+        startContent.add(startTitle, gbcStart);
+        gbcStart.gridy = 1;
+        startContent.add(startDesc, gbcStart);
 
-        startEvent.add(eventContent);
-        startEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        // Build startControls
+        gbcStart.gridwidth = 1;
+        gbcStart.gridy = 0;
+        gbcStart.gridx = 0;
+        startControls.add(eventOptionShop, gbcStart);
+        gbcStart.gridx = 1;
+        startControls.add(eventOptionInv, gbcStart);
+        gbcStart.gridx = 2;
+        startControls.add(eventOptionMembers, gbcStart);
+        gbcStart.gridy = 1;
+        gbcStart.gridx = 1;
+        startControls.add(eventOptionTil, gbcStart);
 
-        // ScotLand Event
+        // Add to startEvent panel
+        startEvent.add(startContent, BorderLayout.CENTER);
+        startEvent.add(startControls, BorderLayout.SOUTH);
+        /* ------------ End of START Panel ------------ */
+
+        /* ------------ Scotland Panel ------------ */
+        // Create Scotland panel
         JPanel scotEvent = new JPanel(new BorderLayout());
+        scotEvent.setBackground(gunmetal);
 
-        eventTitle.setText("Scotland"); // Change start area name?
+        // Create Scotland content panel
+        JPanel scotContent = new JPanel(new GridBagLayout());
+        scotContent.setBackground(gunmetal);
 
-        //JLabel eventImage = new JLabel();
-        //Add image icons later
+        // Create Scotland controls panel
+        JPanel scotControls = new JPanel(new GridBagLayout());
+        scotControls.setPreferredSize(new Dimension(200, 200));
+        scotControls.setBackground(cerulean);
 
-        eventDescription.setText("A Scottish Village can be seen on the coast and might " +
-                "not be keen to see you near their village. We can stop here to repair our " +
-                "ship or raid them for supplies. If we do raid them for supplies it might be a challenge.");
-        eventDescription.setPreferredSize(new Dimension(150,150));
+        // GBC layout
+        GridBagConstraints gbcScot = new GridBagConstraints();
+        gbcScot.insets = new Insets(10, 30, 10, 30);
 
-        scotEvent.add(eventContent);
-        scotEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        // Scotland Title
+        JLabel scotTitle = new JLabel(Main.eventTitles.get(9));
+        scotTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        scotTitle.setForeground(alertorange);
 
-        // Iceland Event
+        // Scotland text area
+        JTextArea scotDesc = new JTextArea(Main.eventDescriptions.get(9));
+        scotDesc.setEditable(false);
+        scotDesc.setWrapStyleWord(true);
+        scotDesc.setLineWrap(true);
+        scotDesc.setFont(new Font("Monospaced", Font.PLAIN, 18));
+        scotDesc.setBackground(transparent);
+        scotDesc.setForeground(emerald);
+        scotDesc.setPreferredSize(new Dimension(600, 100));
+
+        // Repair Ship button
+        JButton scotRepair = new JButton("Repair Ship");
+        scotRepair.setPreferredSize(new Dimension(200, 50));
+        scotRepair.setBackground(buttonbrown);
+        scotRepair.setForeground(alertorange);
+        scotRepair.setFont(new Font("Monospaced", Font.BOLD, 20));
+        scotRepair.addActionListener(e -> Main.runEvent(10)); // repair
+
+        // Raid Village button
+        JButton scotRaid = new JButton("Raid Village");
+        scotRaid.setPreferredSize(new Dimension(200, 50));
+        scotRaid.setBackground(buttonbrown);
+        scotRaid.setForeground(alertorange);
+        scotRaid.setFont(new Font("Monospaced", Font.BOLD, 20));
+        scotRaid.addActionListener(e -> Main.runEvent(15)); // combat
+
+        // Continue Sailing button
+        JButton scotSail = new JButton("Continue Sailing");
+        scotSail.setPreferredSize(new Dimension(200, 50));
+        scotSail.setBackground(buttonbrown);
+        scotSail.setForeground(alertorange);
+        scotSail.setFont(new Font("Monospaced", Font.BOLD, 20));
+        scotSail.addActionListener(e -> Main.runEvent(5)); // next event
+
+        // Build content
+        gbcScot.gridx = 0;
+        gbcScot.gridy = 0;
+        gbcScot.gridwidth = 3;
+        scotContent.add(scotTitle, gbcScot);
+        gbcScot.gridy = 1;
+        scotContent.add(scotDesc, gbcScot);
+
+        // Build controls
+        gbcScot.gridwidth = 1;
+        gbcScot.gridy = 0;
+        gbcScot.gridx = 0;
+        scotControls.add(createDefaultControls(), gbcScot);
+        gbcScot.gridx = 1;
+        scotControls.add(scotRepair, gbcScot);
+        gbcScot.gridx = 2;
+        scotControls.add(scotRaid, gbcScot);
+        gbcScot.gridx = 3;
+        scotControls.add(scotSail, gbcScot);
+
+        // Assemble Scotland panel
+        scotEvent.add(scotContent, BorderLayout.CENTER);
+        scotEvent.add(scotControls, BorderLayout.SOUTH);
+        /* ------------ End of Scotland Panel ------------ */
+
+        /* ------------ Iceland Panel ------------ */
+        // Create Iceland panel
         JPanel iceEvent = new JPanel(new BorderLayout());
+        iceEvent.setBackground(gunmetal);
 
-        eventTitle.setText("Iceland"); // Change start area name?
-        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
-        eventTitle.setForeground(alertorange);
+        // Create Iceland content panel
+        JPanel iceContent = new JPanel(new GridBagLayout());
+        iceContent.setBackground(gunmetal);
 
-        //JLabel eventImage = new JLabel();
-        //Add image icons later
+        // Create Iceland controls panel
+        JPanel iceControls = new JPanel(new GridBagLayout());
+        iceControls.setPreferredSize(new Dimension(200, 200));
+        iceControls.setBackground(cerulean);
 
-        eventDescription.setText("An island village that welcomes you to their village. " +
-                "This might be a good time to restock on supplies or repair any damage that the ship has sustained.");
-        eventDescription.setPreferredSize(new Dimension(100,100));
+        // GBC layout
+        GridBagConstraints gbcIce = new GridBagConstraints();
+        gbcIce.insets = new Insets(10, 30, 10, 30);
 
-        iceEvent.add(eventContent);
-        iceEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        // Iceland Title
+        JLabel iceTitle = new JLabel(Main.eventTitles.get(10));
+        iceTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        iceTitle.setForeground(alertorange);
 
-        // Greenland Event
+        // Iceland text area
+        JTextArea iceDesc = new JTextArea(Main.eventDescriptions.get(10));
+        iceDesc.setEditable(false);
+        iceDesc.setWrapStyleWord(true);
+        iceDesc.setLineWrap(true);
+        iceDesc.setFont(new Font("Monospaced", Font.PLAIN, 18));
+        iceDesc.setBackground(transparent);
+        iceDesc.setForeground(emerald);
+        iceDesc.setPreferredSize(new Dimension(600, 100));
+
+        // Restock Supplies button
+        JButton iceRestock = new JButton("Restock Supplies");
+        iceRestock.setPreferredSize(new Dimension(200, 50));
+        iceRestock.setBackground(buttonbrown);
+        iceRestock.setForeground(alertorange);
+        iceRestock.setFont(new Font("Monospaced", Font.BOLD, 20));
+        iceRestock.addActionListener(e -> Main.runEvent(1)); // shop
+
+        // Repair Ship button
+        JButton iceRepair = new JButton("Repair Ship");
+        iceRepair.setPreferredSize(new Dimension(200, 50));
+        iceRepair.setBackground(buttonbrown);
+        iceRepair.setForeground(alertorange);
+        iceRepair.setFont(new Font("Monospaced", Font.BOLD, 20));
+        iceRepair.addActionListener(e -> Main.runEvent(10)); // repair
+
+        // Continue Sailing button
+        JButton iceSail = new JButton("Continue Sailing");
+        iceSail.setPreferredSize(new Dimension(200, 50));
+        iceSail.setBackground(buttonbrown);
+        iceSail.setForeground(alertorange);
+        iceSail.setFont(new Font("Monospaced", Font.BOLD, 20));
+        iceSail.addActionListener(e -> Main.runEvent(5)); // next event
+
+        // Build Iceland content
+        gbcIce.gridx = 0;
+        gbcIce.gridy = 0;
+        gbcIce.gridwidth = 3;
+        iceContent.add(iceTitle, gbcIce);
+        gbcIce.gridy = 1;
+        iceContent.add(iceDesc, gbcIce);
+
+        // Build Iceland controls
+        gbcIce.gridwidth = 1;
+        gbcIce.gridy = 0;
+        gbcIce.gridx = 0;
+        iceControls.add(createDefaultControls(), gbcIce);
+        gbcIce.gridx = 1;
+        iceControls.add(iceRestock, gbcIce);
+        gbcIce.gridx = 2;
+        iceControls.add(iceRepair, gbcIce);
+        gbcIce.gridx = 3;
+        iceControls.add(iceSail, gbcIce);
+
+        // Assemble Iceland panel
+        iceEvent.add(iceContent, BorderLayout.CENTER);
+        iceEvent.add(iceControls, BorderLayout.SOUTH);
+        /* ------------ End of Iceland Panel ------------ */
+
+        /* ------------ Greenland Panel ------------ */
+        // Create Greenland panel
         JPanel greenEvent = new JPanel(new BorderLayout());
+        greenEvent.setBackground(gunmetal);
 
-        eventTitle.setText("Greenland"); // Change start area name?
-        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
-        eventTitle.setForeground(alertorange);
+        // Create Greenland content panel
+        JPanel greenContent = new JPanel(new GridBagLayout());
+        greenContent.setBackground(gunmetal);
 
-        //JLabel eventImage = new JLabel();
-        //Add image icons later
+        // Create Greenland controls panel
+        JPanel greenControls = new JPanel(new GridBagLayout());
+        greenControls.setPreferredSize(new Dimension(200, 200));
+        greenControls.setBackground(cerulean);
 
-        eventDescription.setText("A rocky coast line where large animals can be seen from " +
-                "the shore. We could stock up on more food or repair our ship for the voyage ahead.");
-        //eventDescription.setPreferredSize(new Dimension(100,100));
+        // GBC layout
+        GridBagConstraints gbcGreen = new GridBagConstraints();
+        gbcGreen.insets = new Insets(10, 30, 10, 30);
 
-        greenEvent.add(eventContent);
-        greenEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        // Greenland Title
+        JLabel greenTitle = new JLabel(Main.eventTitles.get(11));
+        greenTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        greenTitle.setForeground(alertorange);
 
-        // Vinland Event
+        // Greenland text area
+        JTextArea greenDesc = new JTextArea(Main.eventDescriptions.get(11));
+        greenDesc.setEditable(false);
+        greenDesc.setWrapStyleWord(true);
+        greenDesc.setLineWrap(true);
+        greenDesc.setFont(new Font("Monospaced", Font.PLAIN, 18));
+        greenDesc.setBackground(transparent);
+        greenDesc.setForeground(emerald);
+        greenDesc.setPreferredSize(new Dimension(600, 100));
+
+        // Hunt for Food button
+        JButton greenHunt = new JButton("Hunt for Food");
+        greenHunt.setPreferredSize(new Dimension(200, 50));
+        greenHunt.setBackground(buttonbrown);
+        greenHunt.setForeground(alertorange);
+        greenHunt.setFont(new Font("Monospaced", Font.BOLD, 20));
+        greenHunt.addActionListener(e -> Main.runEvent(12)); // hunt
+
+        // Repair Ship button
+        JButton greenRepair = new JButton("Repair Ship");
+        greenRepair.setPreferredSize(new Dimension(200, 50));
+        greenRepair.setBackground(buttonbrown);
+        greenRepair.setForeground(alertorange);
+        greenRepair.setFont(new Font("Monospaced", Font.BOLD, 20));
+        greenRepair.addActionListener(e -> Main.runEvent(10)); // repair
+
+        // Continue Sailing button
+        JButton greenSail = new JButton("Continue Sailing");
+        greenSail.setPreferredSize(new Dimension(200, 50));
+        greenSail.setBackground(buttonbrown);
+        greenSail.setForeground(alertorange);
+        greenSail.setFont(new Font("Monospaced", Font.BOLD, 20));
+        greenSail.addActionListener(e -> Main.runEvent(5)); // next event
+
+        // Build Greenland content
+        gbcGreen.gridx = 0;
+        gbcGreen.gridy = 0;
+        gbcGreen.gridwidth = 3;
+        greenContent.add(greenTitle, gbcGreen);
+        gbcGreen.gridy = 1;
+        greenContent.add(greenDesc, gbcGreen);
+
+        // Build Greenland controls
+        gbcGreen.gridwidth = 1;
+        gbcGreen.gridy = 0;
+        gbcGreen.gridx = 0;
+        greenControls.add(createDefaultControls(), gbcGreen);
+        gbcGreen.gridx = 1;
+        greenControls.add(greenHunt, gbcGreen);
+        gbcGreen.gridx = 2;
+        greenControls.add(greenRepair, gbcGreen);
+        gbcGreen.gridx = 3;
+        greenControls.add(greenSail, gbcGreen);
+
+        // Assemble Greenland panel
+        greenEvent.add(greenContent, BorderLayout.CENTER);
+        greenEvent.add(greenControls, BorderLayout.SOUTH);
+        /* ------------ End of Greenland Panel ------------ */
+
+        /* ------------ Vinland Panel ------------ */
+        // Create Vinland panel
         JPanel vinEvent = new JPanel(new BorderLayout());
+        vinEvent.setBackground(gunmetal);
 
-        eventTitle.setText("Vinland"); // Change start area name?
-        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
-        eventTitle.setForeground(alertorange);
+        // Create Vinland content panel
+        JPanel vinContent = new JPanel(new GridBagLayout());
+        vinContent.setBackground(gunmetal);
 
-        //JLabel eventImage = new JLabel();
-        //Add image icons later
+        // Create Vinland controls panel
+        JPanel vinControls = new JPanel(new GridBagLayout());
+        vinControls.setPreferredSize(new Dimension(200, 200));
+        vinControls.setBackground(cerulean);
 
-        eventDescription.setText("Fresh lands where we are going to settle. Time to set " +
-                "up a base camp so we can get working shelter and food so we can make it through the coming winter.");
-        //eventDescription.setPreferredSize(new Dimension(100,100));
+        // GBC layout
+        GridBagConstraints gbcVin = new GridBagConstraints();
+        gbcVin.insets = new Insets(10, 30, 10, 30);
 
-        vinEvent.add(eventContent);
-        vinEvent.add(eventLocationControls,BorderLayout.SOUTH);
+        // Vinland Title
+        JLabel vinTitle = new JLabel(Main.eventTitles.get(3));
+        vinTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        vinTitle.setForeground(alertorange);
+
+        // Vinland text area
+        JTextArea vinDesc = new JTextArea(Main.eventDescriptions.get(3));
+        vinDesc.setEditable(false);
+        vinDesc.setWrapStyleWord(true);
+        vinDesc.setLineWrap(true);
+        vinDesc.setFont(new Font("Monospaced", Font.PLAIN, 18));
+        vinDesc.setBackground(transparent);
+        vinDesc.setForeground(emerald);
+        vinDesc.setPreferredSize(new Dimension(600, 100));
+
+        // Settle New Land button
+        JButton vinSettle = new JButton("Settle the New Land");
+        vinSettle.setPreferredSize(new Dimension(200, 50));
+        vinSettle.setBackground(buttonbrown);
+        vinSettle.setForeground(alertorange);
+        vinSettle.setFont(new Font("Monospaced", Font.BOLD, 20));
+        vinSettle.addActionListener(e -> Main.runEvent(14)); // game end
+
+        // View Stats button
+        JButton vinStats = new JButton("View Stats");
+        vinStats.setPreferredSize(new Dimension(200, 50));
+        vinStats.setBackground(buttonbrown);
+        vinStats.setForeground(alertorange);
+        vinStats.setFont(new Font("Monospaced", Font.BOLD, 20));
+        vinStats.addActionListener(e -> switchToPanel(STATS)); // optional
+
+        // Back to Menu button
+        JButton vinMenu = new JButton("Main Menu");
+        vinMenu.setPreferredSize(new Dimension(200, 50));
+        vinMenu.setBackground(buttonbrown);
+        vinMenu.setForeground(alertorange);
+        vinMenu.setFont(new Font("Monospaced", Font.BOLD, 20));
+        vinMenu.addActionListener(e -> switchToPanel(MAIN)); // optional
+
+        // Build content
+        gbcVin.gridx = 0;
+        gbcVin.gridy = 0;
+        gbcVin.gridwidth = 3;
+        vinContent.add(vinTitle, gbcVin);
+        gbcVin.gridy = 1;
+        vinContent.add(vinDesc, gbcVin);
+
+        // Build controls
+        gbcVin.gridwidth = 1;
+        gbcVin.gridy = 0;
+        gbcVin.gridx = 0;
+        vinControls.add(createDefaultControls(), gbcVin);
+        gbcVin.gridx = 1;
+        vinControls.add(vinSettle, gbcVin);
+        gbcVin.gridx = 2;
+        vinControls.add(vinStats, gbcVin);
+        gbcVin.gridx = 3;
+        vinControls.add(vinMenu, gbcVin);
+
+        // Assemble Vinland panel
+        vinEvent.add(vinContent, BorderLayout.CENTER);
+        vinEvent.add(vinControls, BorderLayout.SOUTH);
+        /* ------------ End of Vinland Panel ------------ */
+
 
         /* -------------- Calm Seas Panel ------------ */
         // Create Calm Seas Panel
@@ -1161,6 +1448,7 @@ public class GameFrame extends JFrame {
         /* ----------------- End of Forest Panel --------------------- */
 
         /* ------------ Ship Sank Panel ------------ */
+        // Create Sank Panel
         JPanel shipSankPanel = new JPanel(new BorderLayout());
 
         JPanel sankContent = new JPanel(new GridBagLayout());
@@ -1170,28 +1458,60 @@ public class GameFrame extends JFrame {
         sankControls.setPreferredSize(new Dimension(200, 200));
         sankControls.setBackground(cerulean);
 
+        // GBC for layout
         GridBagConstraints gbcSank = new GridBagConstraints();
 
-        //TODO add JLabel to display final score
-
+        // Sank title
         JLabel sankTitle = new JLabel("Your ship has sank");
+        sankTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        sankTitle.setForeground(emerald);
 
-        JTextArea sankDesc = new JTextArea("Your ship took much damage and rests with the Kraken.");
+        // Sank text area
+        JTextArea sankDesc = new JTextArea("Your longship and crew is swallowed by the unforgivng North Sea. May you rest in the halls of Valhalla");
+        sankDesc.setEditable(false);
+        sankDesc.setWrapStyleWord(true);
+        sankDesc.setLineWrap(true);
+        sankDesc.setFont(new Font("Monospaced", Font.PLAIN, 18));
+        sankDesc.setBackground(transparent);
+        sankDesc.setForeground(emerald);
+        sankDesc.setPreferredSize(new Dimension(500, 100));
 
+        // Restart button
         JButton sankRestart = new JButton("Play Again?");
-        JButton sankQuit = new JButton("Quit");
-
-        // Brings player back to main menu panel
+        sankRestart.setPreferredSize(new Dimension(200, 50));
+        sankRestart.setBackground(buttonbrown);
+        sankRestart.setForeground(alertorange);
+        sankRestart.setFont(new Font("Monospaced", Font.BOLD, 20));
         sankRestart.addActionListener(e -> switchToPanel(MAIN));
-        // Closes the program
+
+        // Quit button
+        JButton sankQuit = new JButton("Quit");
+        sankQuit.setPreferredSize(new Dimension(200, 50));
+        sankQuit.setBackground(buttonbrown);
+        sankQuit.setForeground(alertorange);
+        sankQuit.setFont(new Font("Monospaced", Font.BOLD, 20));
         sankQuit.addActionListener(e -> this.dispose());
 
         // Build Sank Panel
+        gbcSank.gridx = 0;
+        gbcSank.gridy = 0;
+        sankContent.add(sankTitle, gbcSank);
+        gbcSank.gridy = 1;
+        sankContent.add(sankDesc, gbcSank);
+
+        gbcSank.gridy = 0;
+        gbcSank.gridx = 0;
+        sankControls.add(sankRestart, gbcSank);
+        gbcSank.gridx = 1;
+        sankControls.add(sankQuit, gbcSank);
+
         shipSankPanel.add(sankContent, BorderLayout.CENTER);
         shipSankPanel.add(sankControls, BorderLayout.SOUTH);
+        /* ------------ End of Sank Panel ------------ */
 
         /* ------------ Party Wipe Panel ------------ */
-        JPanel partyWipePanel = new JPanel();
+        // Create Wipe Panel
+        JPanel partyWipePanel = new JPanel(new BorderLayout());
 
         JPanel wipeContent = new JPanel(new GridBagLayout());
         wipeContent.setBackground(gunmetal);
@@ -1200,25 +1520,56 @@ public class GameFrame extends JFrame {
         wipeControls.setPreferredSize(new Dimension(200, 200));
         wipeControls.setBackground(cerulean);
 
+        // GBC for layout
         GridBagConstraints gbcWipe = new GridBagConstraints();
 
-        //TODO add JLabel to display final score
-
+        // Party wipe title
         JLabel wipeTitle = new JLabel("Party defeated");
+        wipeTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        wipeTitle.setForeground(emerald);
 
-        JTextArea wipeDesc = new JTextArea("Your party has been slain.\nMay their souls find peace in Valhalla");
+        // Party wipe text area
+        JTextArea wipeDesc = new JTextArea("Your party has been slain.\nMay their souls find peace in Valhalla.");
+        wipeDesc.setEditable(false);
+        wipeDesc.setWrapStyleWord(true);
+        wipeDesc.setLineWrap(true);
+        wipeDesc.setFont(new Font("Monospaced", Font.PLAIN, 18));
+        wipeDesc.setBackground(transparent);
+        wipeDesc.setForeground(emerald);
+        wipeDesc.setPreferredSize(new Dimension(500, 100));
 
+        // Restart button
         JButton wipeRestart = new JButton("Play Again?");
-        JButton wipeQuit = new JButton("Quit");
-
-        // Brings player back to main menu panel
+        wipeRestart.setPreferredSize(new Dimension(200, 50));
+        wipeRestart.setBackground(buttonbrown);
+        wipeRestart.setForeground(alertorange);
+        wipeRestart.setFont(new Font("Monospaced", Font.BOLD, 20));
         wipeRestart.addActionListener(e -> switchToPanel(MAIN));
-        // Closes the program
+
+        // Quit button
+        JButton wipeQuit = new JButton("Quit");
+        wipeQuit.setPreferredSize(new Dimension(200, 50));
+        wipeQuit.setBackground(buttonbrown);
+        wipeQuit.setForeground(alertorange);
+        wipeQuit.setFont(new Font("Monospaced", Font.BOLD, 20));
         wipeQuit.addActionListener(e -> this.dispose());
 
         // Build Wipe Panel
+        gbcWipe.gridx = 0;
+        gbcWipe.gridy = 0;
+        wipeContent.add(wipeTitle, gbcWipe);
+        gbcWipe.gridy = 1;
+        wipeContent.add(wipeDesc, gbcWipe);
+
+        gbcWipe.gridy = 0;
+        gbcWipe.gridx = 0;
+        wipeControls.add(wipeRestart, gbcWipe);
+        gbcWipe.gridx = 1;
+        wipeControls.add(wipeQuit, gbcWipe);
+
         partyWipePanel.add(wipeContent, BorderLayout.CENTER);
         partyWipePanel.add(wipeControls, BorderLayout.SOUTH);
+        /* ------------ End of Party Wipe Panel ------------ */
 
         /* ------------ Frame Parameters ------------ */
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -1274,12 +1625,28 @@ public class GameFrame extends JFrame {
                     switchToPanel(CALM);
                 } else if (seedInputText.equals("DEBUGROUGH")) { //TODO Testing - remove after
                     switchToPanel(ROUGH);
+                } else if (seedInputText.equals("DEBUGSHOP")) { //TODO Testing - remove after
+                    switchToPanel(SHOP);
                 } else if (seedInputText.equals("DEBUGSTORM")) { //TODO Testing - remove after
                     switchToPanel(STORM);
+                } else if (seedInputText.equals("DEBUGSCOTLAND")) { //TODO Testing - remove after
+                    switchToPanel(SCOTLAND);
+                } else if (seedInputText.equals("DEBUGGREENLAND")) { //TODO Testing - remove after
+                    switchToPanel(GREENLAND);
+                } else if (seedInputText.equals("DEBUGICELAND")) { //TODO Testing - remove after
+                    switchToPanel(ICELAND);
+                } else if (seedInputText.equals("DEBUGVINLAND")) { //TODO Testing - remove after
+                    switchToPanel(VINLAND);
+                } else if (seedInputText.equals("DEBUGSANK")) { //TODO Testing - remove after
+                    switchToPanel(SANK);
                 } else if (seedInputText.equals("DEBUGVILLAGE")) { //TODO Testing - remove after
                     switchToPanel(VILLAGE);
                 } else if (seedInputText.equals("DEBUGFOREST")) { //TODO Testing - remove after
                     switchToPanel(FOREST);
+                } else if (seedInputText.equals("DEBUGWIPE")) { //TODO Testing - remove after
+                    switchToPanel(WIPE);
+                } else if (seedInputText.equals("DEBUGFCOMBAT")) { //TODO Testing - remove after
+                    switchToPanel(FCOMBAT);
                 } else if (seedInputText.equals("DEBUGCOMBAT")) { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     switchToPanel(COMBAT);

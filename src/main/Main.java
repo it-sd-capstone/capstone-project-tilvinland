@@ -263,7 +263,6 @@ public class Main {
             party.get(id).setName(name);
             party.get(id).setActive(1);
         }
-
     }
 
     public static void runEvent(int event) { // Noncombat events
