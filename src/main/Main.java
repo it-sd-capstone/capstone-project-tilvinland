@@ -28,11 +28,12 @@ public class Main {
     private static int eventTotal;
     private static int mainEventTotal;
     private static int currentEvent;
-    private static Ship ship;
+    private static Ship ship = new Ship();
     private static int score;
     private static Enemy enemy;
     private static ArrayList<Player> party = new ArrayList<Player>();
     private static ArrayList<Item> items = new ArrayList<Item>();
+    private static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private static int activePlayers;
     private static String seedUsed;
     public static Map<Integer, String> eventTitles = new HashMap<>();
@@ -75,6 +76,7 @@ public class Main {
 
     public static void main(String[] args) {
         //mainFrame = new GameFrame();
+        setShip(ship = new Ship());
         initializeLists();
         mainFrame = new GameFrame();
     }
@@ -139,7 +141,7 @@ public class Main {
             // Fills enemy table
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Knight', 150)"));
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Village Man', 50)"));
-            command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Gaurd Captin', 100)"));
+            command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Guard Captain', 100)"));
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Bear', 100)"));
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Thief', 70)"));
 
@@ -228,41 +230,89 @@ public class Main {
             }
         } else {
             currentEvent = Math.max(5, 5 +rng.nextInt(6));
-            if (currentEvent == 5) {
-                mainFrame.switchToPanel(mainFrame.CALM);
-            } else if (currentEvent == 6) {
-                mainFrame.switchToPanel(mainFrame.ROUGH);
-            } else if (currentEvent == 7) {
-                mainFrame.switchToPanel(mainFrame.STORM);
-            } else if (currentEvent == 8) {
-                //mainFrame.switchToPanel(mainFrame.VILLAGE);
-            } else if (currentEvent == 9) {
-                //mainFrame.switchToPanel(mainFrame.FOREST);
-            }
+            do {
+                if (currentEvent == 5) {
+                    mainFrame.switchToPanel(mainFrame.CALM);
+                } else if (currentEvent == 6) {
+                    mainFrame.switchToPanel(mainFrame.ROUGH);
+                } else if (currentEvent == 7) {
+                    mainFrame.switchToPanel(mainFrame.STORM);
+                } else if (currentEvent == 8) {
+                    mainFrame.switchToPanel(mainFrame.VILLAGE);
+                } else if (currentEvent == 9) {
+                    mainFrame.switchToPanel(mainFrame.VILLAGE);
+                }
+            } while (currentEvent < 5 || currentEvent > 9);
             eventTotal++;
         }
     }
 
     public static void initializeLists() {
         party.clear();
-        party.add(new Player("1", 0, 0));
-        party.add(new Player("2", 1, 0));
-        party.add(new Player("3", 2, 0));
-        party.add(new Player("4", 3, 0));
+        party.add(new Player("", 0, 0));
+        party.add(new Player("", 1, 0));
+        party.add(new Player("", 2, 0));
+        party.add(new Player("", 3, 0));
 
         items.clear();
         items.add(new Item("Gold", 0, "Used to trade for materials", 100));
         items.add(new Item("Rations", 1, "Food", 100));
         items.add(new Item("Lumber", 2, "Used to fix ships", 100));
 
-        enemy = new Enemy("dummy",  0, 100);
+        enemies.clear();
+        try {
+            Connection db = createConnection();  // or use an existing cached connection
+            ResultSet rs = queryRaw(db, "SELECT * FROM enemy");
+            while (rs.next()) {
+                String name = rs.getString("name");
+                int id = rs.getInt("enemyId");
+                int health = rs.getInt("health");
+                enemies.add(new Enemy(name, id, health));
+            }
+            rs.close();
+            db.close();
+        } catch (Exception e) {
+            System.err.println("Error loading enemies: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        if (!enemies.isEmpty()) {
+            enemy = enemies.get(0);
+        } else {
+            enemy = new Enemy("null", 0, 1);
+        }
+
+        mainEventTotal = 0;
+        eventTotal = 0;
     }
 
-    public static void createParty(String name, int id) {
-        if (name != null) {
-            party.get(id).setName(name);
-            party.get(id).setActive(1);
+    public static void createParty(String name1, String name2, String name3, String name4) {
+
+        party.clear();
+        if (!name1.isBlank()) {
+            party.add(new Player(name1, 0, 1));
+        } else {
+            party.add(new Player("", 0, 0));
         }
+        if (!name2.isBlank()) {
+            party.add(new Player(name2, 1, 1));
+        } else {
+            party.add(new Player("", 1, 0));
+        }
+        if (!name3.isBlank()) {
+            party.add(new Player(name3, 2, 1));
+        } else {
+            party.add(new Player("", 2, 0));
+        }
+        if (!name4.isBlank()) {
+            party.add(new Player(name4, 3, 1));
+        } else {
+            party.add(new Player("", 3, 0));
+        }
+
+
+
+
     }
 
     public static void runEvent(int event) { // Noncombat events
@@ -273,7 +323,6 @@ public class Main {
             // Buy lumber
             addInventory(2, 5);
             removeItem(0, 10);
-            JOptionPane.showMessageDialog(null, "Purchase wood test from Main");
         } else if (event == 3) {
             // buy Rations
             addInventory(1, 10);
@@ -288,55 +337,57 @@ public class Main {
         } else if (event == 6) {
             // fishing
             int itemTOAdd = rng.nextInt(21);
-            addInventory(1, 10);
-            // mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            addInventory(1, itemTOAdd);
+            mainFrame.resourceChanges("After fishing you now have " + items.get(1).getAmount() + " of rations.");
+            mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 7) {
             // hunker down
             ship.removeHealth(10);
             if (ship.getHealth() <= 0) {
                 score = totalScore(createConnection(), party, items, ship);
-                //mainFrame.switchToPanel(mainFrame.SANK);
+                mainFrame.switchToPanel(mainFrame.SANK);
             }
+            runEvent(5);
         } else if (event == 8) {
             // push through rough waters
             ship.removeHealth(20);
             if (ship.getHealth() <= 0) {
                 score = totalScore(createConnection(), party, items, ship);
-                //mainFrame.switchToPanel(mainFrame.SANK);
+                mainFrame.switchToPanel(mainFrame.SANK);
             }
+            runEvent(5);
         } else if (event == 9) {
             // push through heavy storm
             ship.removeHealth(30);
             if (ship.getHealth() <= 0) {
                 score = totalScore(createConnection(), party, items, ship);
-                //mainFrame.switchToPanel(mainFrame.SANK);
+                mainFrame.switchToPanel(mainFrame.SANK);
             }
+            runEvent(5);
         } else if (event == 10) {
             //
         } else if (event == 11) {
             ship.addHealth(1);
-            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 12) {
             // hunt
             int itemTOAdd = rng.nextInt(21);
-            addInventory(1, 10);
-            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            addInventory(1, itemTOAdd);
+            mainFrame.resourceChanges("After hunting you now have " + items.get(1).getAmount() + " sets of rations.");
+            mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 13) {
             // CHopping wood
             int itemTOAdd = rng.nextInt(10);
-            addInventory(2, 10);
-            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
+            addInventory(2, itemTOAdd);
+            mainFrame.resourceChanges("After chopping wood you now have " + items.get(2).getAmount() + "  logs of lumber.");
+            mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 14) {
             // END
             score = totalScore(createConnection(), party, items, ship);
-            //.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 15) {
             // Start combat
             int enemyId = 0;
-            if (mainEventTotal == 1 && eventTotal == 4) {
-                enemyId = 1;
-            } else {
-                enemyId = 2 + rng.nextInt(4);
+            if (eventTotal != 4) {
+                enemyId = 1 + rng.nextInt(4);
             }
             startCombat(enemyId, createConnection());
         }
@@ -389,7 +440,7 @@ public class Main {
             }
             if (partyWipe(party)) {
                 score = totalScore(createConnection(), party, items, ship);
-                //mainFrame.switchToPanel(mainFrame.WIPE);
+                mainFrame.switchToPanel(mainFrame.WIPE);
             } else {
                 mainFrame.switchToPanel(mainFrame.COMBAT);
             }
@@ -435,20 +486,8 @@ public class Main {
 
     public static void startCombat(int enemyID, Connection db) {
 
-        try {
-            PreparedStatement enemyStmt = db.prepareStatement("SELECT * FROM enemy WHERE enemyId = ?");
-            enemyStmt.setInt(1, enemyID);
-
-            ResultSet rs = enemyStmt.executeQuery();
-
-            if (rs.next()) {
-                enemy.setName(rs.getString("name"));
-                enemy.setHealth(rs.getInt("health"));
-            }
-        } catch (SQLException e) {
-            System.err.println("Failed to start combat");
-            e.printStackTrace();
-        }
+        enemy.setName(enemies.get(0).getName());
+        enemy.setHealth(enemies.get(0).getHealth());
         mainFrame.switchToPanel(mainFrame.COMBAT);
     }
 
