@@ -329,13 +329,7 @@ public class GameFrame extends JFrame {
                 String partyNameThreeInput = partyThreeField.getText();
                 String partyNameFourInput = partyFourField.getText();
 
-                if (partyNameOneInput != null) {
-                    Main.createParty(partyNameOneInput, 0);
-                }
-
-                Main.createParty(partyNameTwoInput, 1);
-                Main.createParty(partyNameThreeInput, 2);
-                Main.createParty(partyNameFourInput,3);
+                Main.createParty(partyNameOneInput, partyNameTwoInput, partyNameThreeInput, partyNameFourInput);
 
                 Main.runEvent(5);
             }
@@ -1220,12 +1214,12 @@ public class GameFrame extends JFrame {
         controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Village Title
-        JLabel villageTitle = new JLabel(Main.eventTitles.get(8));
+        JLabel villageTitle = new JLabel(Main.eventTitles.get(7));
         villageTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         villageTitle.setForeground(alertorange);
 
         // Village Text area
-        JTextArea villageDesc = new JTextArea(Main.eventDescriptions.get(8));
+        JTextArea villageDesc = new JTextArea(Main.eventDescriptions.get(7));
         villageDesc.setEditable(false);
         villageDesc.setHighlighter(null);
         villageDesc.setBackground(transparent);
@@ -1295,12 +1289,12 @@ public class GameFrame extends JFrame {
         controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Forest Title
-        JLabel forestTitle = new JLabel(Main.eventTitles.get(9));
+        JLabel forestTitle = new JLabel(Main.eventTitles.get(8));
         forestTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         forestTitle.setForeground(alertorange);
 
         // Forest Test Area
-        JTextArea forestDesc = new JTextArea(Main.eventDescriptions.get(9));
+        JTextArea forestDesc = new JTextArea(Main.eventDescriptions.get(8));
         forestDesc.setEditable(false);
         forestDesc.setHighlighter(null);
         forestDesc.setBackground(transparent);
@@ -1449,7 +1443,10 @@ public class GameFrame extends JFrame {
 
         GridBagConstraints gbcResources = new GridBagConstraints();
 
-        JLabel resourcesDesc = new JLabel(rescourceLabel);
+        JLabel resourcesDesc = new JLabel();
+        resourcesDesc.setText(rescourceLabel);
+        resourcesDesc.setFont(new Font("Monospaced", Font.BOLD, 40));
+        resourcesDesc.setForeground(alertorange);
 
         JButton resourcesButton = new JButton("Set Sail");
 
@@ -1664,8 +1661,8 @@ public class GameFrame extends JFrame {
 
     }
 
-    public void resourceChanges(String resourceName, int itemID) {
-        rescourceLabel = "After gathering you now have " + Main.getItems().get(itemID).getAmount() + " " + resourceName;
+    public void resourceChanges(String resourceName) {
+        rescourceLabel = resourceName;
     }
 
 } // End of GameFrame.java

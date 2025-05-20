@@ -248,10 +248,10 @@ public class Main {
 
     public static void initializeLists() {
         party.clear();
-        party.add(new Player("1", 0, 0));
-        party.add(new Player("2", 1, 0));
-        party.add(new Player("3", 2, 0));
-        party.add(new Player("4", 3, 0));
+        party.add(new Player("", 0, 0));
+        party.add(new Player("", 1, 0));
+        party.add(new Player("", 2, 0));
+        party.add(new Player("", 3, 0));
 
         items.clear();
         items.add(new Item("Gold", 0, "Used to trade for materials", 100));
@@ -285,10 +285,31 @@ public class Main {
         eventTotal = 0;
     }
 
-    public static void createParty(String name, int id) {
+    public static void createParty(String name1, String name2, String name3, String name4) {
 
-        party.get(id).setName(name);
-        party.get(id).setActive(1);
+        party.clear();
+        if (!name1.isBlank()) {
+            party.add(new Player(name1, 0, 1));
+        } else {
+            party.add(new Player("", 0, 0));
+        }
+        if (!name2.isBlank()) {
+            party.add(new Player(name2, 1, 1));
+        } else {
+            party.add(new Player("", 1, 0));
+        }
+        if (!name3.isBlank()) {
+            party.add(new Player(name3, 2, 1));
+        } else {
+            party.add(new Player("", 2, 0));
+        }
+        if (!name4.isBlank()) {
+            party.add(new Player(name4, 3, 1));
+        } else {
+            party.add(new Player("", 3, 0));
+        }
+
+
 
 
     }
@@ -316,7 +337,7 @@ public class Main {
             // fishing
             int itemTOAdd = rng.nextInt(21);
             addInventory(1, itemTOAdd);
-            mainFrame.resourceChanges("rations", 1);
+            mainFrame.resourceChanges("After fishing you now have " + items.get(1).getAmount() + " of rations.");
             mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 7) {
             // hunker down
@@ -350,13 +371,13 @@ public class Main {
             // hunt
             int itemTOAdd = rng.nextInt(21);
             addInventory(1, itemTOAdd);
-            mainFrame.resourceChanges("rations", 1);
+            mainFrame.resourceChanges("After hunting you now have " + items.get(1).getAmount() + " sets of rations.");
             mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 13) {
             // CHopping wood
             int itemTOAdd = rng.nextInt(10);
             addInventory(2, itemTOAdd);
-            mainFrame.resourceChanges("lumber", 2);
+            mainFrame.resourceChanges("After chopping wood you now have " + items.get(2).getAmount() + "  logs of lumber.");
             mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 14) {
             // END
@@ -364,10 +385,8 @@ public class Main {
         } else if (event == 15) {
             // Start combat
             int enemyId = 0;
-            if (mainEventTotal == 1 && eventTotal == 4) {
-                enemyId = 1;
-            } else {
-                enemyId = 2 + rng.nextInt(4);
+            if (eventTotal != 4) {
+                enemyId = 1 + rng.nextInt(4);
             }
             startCombat(enemyId, createConnection());
         }
@@ -466,20 +485,8 @@ public class Main {
 
     public static void startCombat(int enemyID, Connection db) {
 
-        try {
-            PreparedStatement enemyStmt = db.prepareStatement("SELECT * FROM enemy WHERE enemyId = ?");
-            enemyStmt.setInt(1, enemyID);
-
-            ResultSet rs = enemyStmt.executeQuery();
-
-            if (rs.next()) {
-                enemy.setName(rs.getString("name"));
-                enemy.setHealth(rs.getInt("health"));
-            }
-        } catch (SQLException e) {
-            System.err.println("Failed to start combat");
-            e.printStackTrace();
-        }
+        enemy.setName(enemies.get(0).getName());
+        enemy.setHealth(enemies.get(0).getHealth());
         mainFrame.switchToPanel(mainFrame.COMBAT);
     }
 
