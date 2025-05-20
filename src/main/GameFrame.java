@@ -240,7 +240,15 @@ public class GameFrame extends JFrame {
         shipHealthText.setText("Ship Health: " + ship.getHealth());
 
         JLabel shipStatText = new JLabel();
-        shipStatText.setText("Ship Status: " + ship.getStatus());
+
+        shipStatText.setText("Ship Status: " + Main.getShip().getStatus());
+        shipStatText.setForeground(alertorange);
+
+        JLabel p1StatusPicture = new JLabel(partyOneLogo);
+        JLabel p1StatusText = new JLabel();
+
+        JLabel p2StatusPicture = new JLabel();
+        JLabel p2StatusText = new JLabel();
 
         gbcStatus.gridx = 0;
         gbcStatus.gridy = 0;
@@ -248,6 +256,7 @@ public class GameFrame extends JFrame {
 
         status.add(statusControls,BorderLayout.SOUTH);
         status.add(statusContent);
+
 
         /* ------------ Party Creation Panel ------------ */
         JPanel party = new JPanel();
@@ -335,7 +344,7 @@ public class GameFrame extends JFrame {
                 switchToPanel(WELCOME);
             }
         });
-
+      
         /* ------------ WELCOME SCREEN ------------ */
         JPanel welcomePanel = new JPanel(new BorderLayout());
 
@@ -473,41 +482,26 @@ public class GameFrame extends JFrame {
         combatControls.setPreferredSize(new Dimension(200,200));
 
         JPanel combatContent = new JPanel(new GridBagLayout());
-        eventContent.setBackground(gunmetal);
-        String labelText = "";
-        if (Main.getParty().get(0).getActive() == 1) {
-            labelText = "<html>" + Main.getParty().get(0).getName() + "<br/>Health: " + Main.getParty().get(0).getHealth() + "</html>";
-        }
-        JLabel p1Status = new JLabel();
-        p1Status.setText(labelText);
-        p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
-        if (Main.getParty().get(1).getActive() == 1) {
-            labelText = "<html>" + Main.getParty().get(1).getName() + "<br/>Health: " + Main.getParty().get(1).getHealth() + "</html>";
-        }
+        combatContent.setBackground(gunmetal);
+        final String[] labelText = {""};
+
+        JLabel p1Status = new JLabel();
+
         JLabel p2Status = new JLabel();
-        p2Status.setText(labelText);
-        p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JLabel p3Status = new JLabel();
-        if (Main.getParty().get(2).getActive() == 1) {
-            labelText = "<html>" + Main.getParty().get(2).getName() + "<br/>Health: " + Main.getParty().get(2).getHealth() + "</html>";
-            p3Status.setText(labelText);
-        }
-        p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JLabel p4Status = new JLabel();
-        if (Main.getParty().get(3).getActive() == 1) {
-            labelText = "<html>" + Main.getParty().get(3).getName() + "<br/>Health: " + Main.getParty().get(3).getHealth() + "</html>";
-            p4Status.setText(labelText);
-        }
 
-        p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
-        labelText = "<html>" + Main.getEnemy().getName() + "<br/>Health: " + Main.getEnemy().getHealth() + "</html>";
+        labelText[0] = "<html>" + Main.getEnemy().getName() + "<br/>Health: " + Main.getEnemy().getHealth() + "</html>";
 
         JLabel enemyStatus = new JLabel();
-        enemyStatus.setText(labelText);
+
+        enemyStatus.setText(labelText[0]);
+        enemyStatus.setForeground(alertorange);
+
         enemyStatus.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JButton blockButton = new JButton("Block");
@@ -1569,7 +1563,161 @@ public class GameFrame extends JFrame {
 
         partyWipePanel.add(wipeContent, BorderLayout.CENTER);
         partyWipePanel.add(wipeControls, BorderLayout.SOUTH);
+
+
+        /* ------------ Resource Panel ------------ */
+
+        JPanel resourcesPanel = new JPanel(new BorderLayout());
+
+        JPanel resourcesContent = new JPanel(new GridBagLayout());
+        resourcesContent.setBackground(gunmetal);
+
+        JPanel resourcesControls = new JPanel(new GridBagLayout());
+        resourcesControls.setPreferredSize(new Dimension(200, 200));
+        resourcesControls.setBackground(cerulean);
+
+        GridBagConstraints gbcResources = new GridBagConstraints();
+
+
+        JLabel resourcesDesc = new JLabel();
+        resourcesDesc.setText(rescourceLabel);
+        resourcesDesc.setFont(new Font("Monospaced", Font.BOLD, 40));
+        resourcesDesc.setForeground(alertorange);
+
+
+        JButton resourcesButton = new JButton("Set Sail");
+
+        gbcResources.gridx = 0;
+        gbcResources.gridy = 0;
+        resourcesContent.add(resourcesDesc, gbcResources);
+        gbcResources.gridy = 0;
+        gbcResources.gridx = 0;
+        resourcesControls.add(resourcesButton, gbcResources);
+
+        resourcesButton.addActionListener(e -> Main.runEvent(5));
+
+        resourcesPanel.add(resourcesContent, BorderLayout.CENTER);
+        resourcesPanel.add(resourcesControls, BorderLayout.SOUTH);
+
+        /* ------------ Party Creation Panel ------------ */
+        JPanel party = new JPanel();
+        party.setLayout(new BorderLayout());
+
+        GridBagConstraints gbcParty = new GridBagConstraints();
+        gbcParty.insets = new Insets(10, 30, 10, 30);
+
+        JPanel partyContent = new JPanel();
+        partyContent.setLayout(new GridBagLayout());
+        partyContent.setBackground(gunmetal);
+
+        JPanel partyControls = new JPanel();
+        partyControls.setLayout(new GridBagLayout());
+        partyControls.setBackground(cerulean);
+        partyControls.setPreferredSize(new Dimension(200,200));
+
+        JTextField partyOneField = new JTextField();
+        partyOneField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyTwoField = new JTextField();
+        partyTwoField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyThreeField = new JTextField();
+        partyThreeField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyFourField = new JTextField();
+        partyFourField.setPreferredSize(new Dimension(200, 24));
+
+        JLabel partyOneIcon = new JLabel(partyOneLogo);
+        JLabel partyTwoIcon = new JLabel(partyTwoLogo);
+        JLabel partyThreeIcon = new JLabel(partyThreeLogo);
+        JLabel partyFourIcon = new JLabel(partyFourLogo);
+
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 0;
+        partyContent.add(partyOneIcon, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 1;
+        partyContent.add(partyOneField, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 0;
+        partyContent.add(partyTwoIcon, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 1;
+        partyContent.add(partyTwoField, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 2;
+        partyContent.add(partyThreeIcon, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 3;
+        partyContent.add(partyThreeField, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 2;
+        partyContent.add(partyFourIcon, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 3;
+        partyContent.add(partyFourField, gbcParty);
+
+        JButton partyContinueButton = new JButton();
+        partyContinueButton.setText("Continue");
+        partyContinueButton.setPreferredSize(new Dimension(200,50));
+        partyContinueButton.setFont(new Font("Monospaced", Font.PLAIN, 20));
+        partyContinueButton.setForeground(alertorange);
+        partyContinueButton.setBackground(buttonbrown);
+        partyContinueButton.setBorder(BorderFactory.createEtchedBorder());
+
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 0;
+        partyControls.add(partyContinueButton, gbcParty);
+
+        party.add(partyControls, BorderLayout.SOUTH);
+        party.add(partyContent);
+
+        partyContinueButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String partyNameOneInput = partyOneField.getText();
+                String partyNameTwoInput = partyTwoField.getText();
+                String partyNameThreeInput = partyThreeField.getText();
+                String partyNameFourInput = partyFourField.getText();
+
+
+                Main.createParty(partyNameOneInput, partyNameTwoInput, partyNameThreeInput, partyNameFourInput);
+                p1StatusText.setText(Main.getParty().get(0).getName());
+                p1StatusText.setForeground(alertorange);
+                if (Main.getParty().get(0).getActive() == 1) {
+                    labelText[0] = "<html>" + Main.getParty().get(0).getName() + "<br/>Health: " + Main.getParty().get(0).getHealth() + "</html>";
+                    p1Status.setText(labelText[0]);
+                }
+                p1Status.setForeground(alertorange);
+                p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                if (Main.getParty().get(1).getActive() == 1) {
+                    labelText[0] = "<html>" + Main.getParty().get(1).getName() + "<br/>Health: " + Main.getParty().get(1).getHealth() + "</html>";
+                    p2Status.setText(labelText[0]);
+                }
+
+                p2Status.setForeground(alertorange);
+                p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                if (Main.getParty().get(3).getActive() == 1) {
+                    labelText[0] = "<html>" + Main.getParty().get(3).getName() + "<br/>Health: " + Main.getParty().get(3).getHealth() + "</html>";
+                    p4Status.setText(labelText[0]);
+                }
+                p4Status.setForeground(alertorange);
+                p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                if (Main.getParty().get(2).getActive() == 1) {
+                    labelText[0] = "<html>" + Main.getParty().get(2).getName() + "<br/>Health: " + Main.getParty().get(2).getHealth() + "</html>";
+                    p3Status.setText(labelText[0]);
+                }
+                p3Status.setForeground(alertorange);
+                p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                enemyStatus.repaint();
+
+                Main.runEvent(5);
+            }
+        });
+
+
         /* ------------ End of Party Wipe Panel ------------ */
+
 
         /* ------------ Frame Parameters ------------ */
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
