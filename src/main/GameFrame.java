@@ -13,7 +13,7 @@ import java.util.Random;
 public class GameFrame extends JFrame {
 
     // Vars
-    Ship ship = new Ship();
+    Ship ship = Main.getShip();
     Ship debugShip = new Ship();
     private static String currentPanel = "Main Menu";
     private static String previousPanel = "Main Menu";
@@ -224,8 +224,8 @@ public class GameFrame extends JFrame {
         //TODO add a heal party button?? (-rations)
         //TODO add some art!
         //TODO grab party names and stats
-        GridBagConstraints gbcStatus = new GridBagConstraints();
-        gbcStatus.insets = new Insets(10, 10, 10, 10);
+        GridBagConstraints gbcStatusPanel = new GridBagConstraints();
+        gbcStatusPanel.insets = new Insets(10, 10, 10, 10);
 
         JPanel status = new JPanel();
         status.setLayout(new BorderLayout());
@@ -240,14 +240,39 @@ public class GameFrame extends JFrame {
         statusControls.setPreferredSize(new Dimension(200,200));
 
         JLabel shipHealthText = new JLabel();
-        shipHealthText.setText("Ship Health: " + ship.getHealth());
+        shipHealthText.setText("Ship Health: " + Main.getShip().getHealth());
+        shipHealthText.setForeground(alertorange);
 
         JLabel shipStatText = new JLabel();
-        shipStatText.setText("Ship Status: " + ship.getStatus());
+        shipStatText.setText("Ship Status: " + Main.getShip().getStatus());
+        shipStatText.setForeground(alertorange);
 
-        gbcStatus.gridx = 0;
-        gbcStatus.gridy = 0;
-        statusControls.add(createBackButton());
+        JLabel p1StatusPicture = new JLabel(partyOneLogo);
+        JLabel p1StatusText = new JLabel();
+        p1StatusText.setText(Main.getParty().get(0).getName());
+        p1StatusText.setForeground(alertorange);
+
+        JLabel p2StatusPicture = new JLabel();
+        JLabel p2StatusText = new JLabel();
+
+
+
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 0;
+        statusContent.add(shipHealthText, gbcStatusPanel);
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 1;
+        statusContent.add(shipStatText, gbcStatusPanel);
+        gbcStatusPanel.gridx = 1;
+        gbcStatusPanel.gridy = 0;
+        statusContent.add(p1StatusPicture, gbcStatusPanel);
+        gbcStatusPanel.gridx = 1;
+        gbcStatusPanel.gridy = 1;
+        statusContent.add(p1StatusText, gbcStatusPanel);
+
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 0;
+        statusControls.add(createBackButton(), gbcStatusPanel);
 
         status.add(statusControls,BorderLayout.SOUTH);
         status.add(statusContent);
@@ -329,7 +354,9 @@ public class GameFrame extends JFrame {
                 String partyNameThreeInput = partyThreeField.getText();
                 String partyNameFourInput = partyFourField.getText();
 
+
                 Main.createParty(partyNameOneInput, partyNameTwoInput, partyNameThreeInput, partyNameFourInput);
+
 
                 Main.runEvent(5);
             }
@@ -723,6 +750,7 @@ public class GameFrame extends JFrame {
         startEventDescription.setForeground(emerald);
 
         startControls.setPreferredSize(new Dimension(200,200));
+
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -1443,10 +1471,12 @@ public class GameFrame extends JFrame {
 
         GridBagConstraints gbcResources = new GridBagConstraints();
 
+
         JLabel resourcesDesc = new JLabel();
         resourcesDesc.setText(rescourceLabel);
         resourcesDesc.setFont(new Font("Monospaced", Font.BOLD, 40));
         resourcesDesc.setForeground(alertorange);
+
 
         JButton resourcesButton = new JButton("Set Sail");
 
@@ -1482,11 +1512,13 @@ public class GameFrame extends JFrame {
         deck.add(combatEvent, COMBAT);
         deck.add(endCombat, FCOMBAT);
         deck.add(resourcesPanel, CONFRIM);
+
         deck.add(stormPanel, STORM);
         deck.add(forestPanel, FOREST);
         deck.add(villagePanel, VILLAGE);
         deck.add(roughPanel, ROUGH);
         deck.add(calmPanel, CALM);
+
 
         // Location Based Events
         deck.add(startEvent, START);
@@ -1535,7 +1567,7 @@ public class GameFrame extends JFrame {
                 } else if (seedInputText.equals("DEBUGTESTEVENT5")) {
                     Main.runEvent(5);
                 } else if (seedInputText.equals("DEBUGSANK")) {
-                    switchToPanel(SANK);
+                    switchToPanel(CONFRIM);
                 } else { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     Main.setSeed(seedInputText);
