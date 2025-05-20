@@ -76,6 +76,7 @@ public class Main {
 
     public static void main(String[] args) {
         //mainFrame = new GameFrame();
+        setShip(ship = new Ship());
         initializeLists();
         mainFrame = new GameFrame();
     }
