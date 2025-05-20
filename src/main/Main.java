@@ -201,31 +201,31 @@ public class Main {
     public static void decideEvent(int event, int mainEvent) {
         if (event % 4 == 0) {
             if (mainEvent == 0) {
-                mainFrame.switchToPanel("START");
+                mainFrame.switchToPanel(mainFrame.START);
                 System.out.println("Start");
                 currentEvent = 0;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 1) {
-                mainFrame.switchToPanel("SCOTLAND");
+                mainFrame.switchToPanel(mainFrame.SCOTLAND);
                 System.out.println("Scotland");
                 currentEvent = 1;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 2) {
-                mainFrame.switchToPanel("ICELAND");
+                mainFrame.switchToPanel(mainFrame.ICELAND);
                 System.out.println("iceland");
                 currentEvent = 2;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 3) {
-                mainFrame.switchToPanel("GREENLAND");
+                mainFrame.switchToPanel(mainFrame.GREENLAND);
                 System.out.println("greenland");
                 currentEvent = 3;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 4) {
-                mainFrame.switchToPanel("VINLAND");
+                mainFrame.switchToPanel(mainFrame.VINLAND);
                 System.out.println("vinland");
                 currentEvent = 4;
                 mainEventTotal++;
@@ -235,19 +235,19 @@ public class Main {
             currentEvent = Math.max(5, 5 +rng.nextInt(6));
             do {
                 if (currentEvent == 5) {
-                    mainFrame.switchToPanel("CALM");
+                    mainFrame.switchToPanel(mainFrame.CALM);
                     System.out.println("Calm");
                 } else if (currentEvent == 6) {
-                    mainFrame.switchToPanel("ROUGH");
+                    mainFrame.switchToPanel(mainFrame.ROUGH);
                     System.out.println("Rough");
                 } else if (currentEvent == 7) {
-                    mainFrame.switchToPanel("STORM");
+                    mainFrame.switchToPanel(mainFrame.STORM);
                     System.out.println("Storm");
                 } else if (currentEvent == 8) {
-                    mainFrame.switchToPanel("VILLAGE");
+                    mainFrame.switchToPanel(mainFrame.VILLAGE);
                     System.out.println("Village");
                 } else if (currentEvent == 9) {
-                    mainFrame.switchToPanel("FOREST");
+                    mainFrame.switchToPanel(mainFrame.VILLAGE);
                     System.out.println("Forest");
                 }
             } while (currentEvent < 5 || currentEvent > 9);
@@ -289,7 +289,6 @@ public class Main {
             // Buy lumber
             addInventory(2, 5);
             removeItem(0, 10);
-            JOptionPane.showMessageDialog(null, "Purchase wood test from Main");
         } else if (event == 3) {
             // buy Rations
             addInventory(1, 10);
