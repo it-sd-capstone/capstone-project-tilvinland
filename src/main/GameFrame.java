@@ -329,10 +329,7 @@ public class GameFrame extends JFrame {
                 String partyNameThreeInput = partyThreeField.getText();
                 String partyNameFourInput = partyFourField.getText();
 
-                Main.createParty(partyNameOneInput, 0);
-                Main.createParty(partyNameTwoInput, 1);
-                Main.createParty(partyNameThreeInput, 2);
-                Main.createParty(partyNameFourInput,3);
+                Main.createParty(partyNameOneInput, partyNameTwoInput, partyNameThreeInput, partyNameFourInput);
 
                 Main.runEvent(5);
             }
@@ -480,20 +477,24 @@ public class GameFrame extends JFrame {
         combatControls.setPreferredSize(new Dimension(200,200));
 
         JPanel combatContent = new JPanel(new GridBagLayout());
-        eventContent.setBackground(gunmetal);
+        combatContent.setBackground(gunmetal);
         String labelText = "";
+
+        JLabel p1Status = new JLabel();
         if (Main.getParty().get(0).getActive() == 1) {
             labelText = "<html>" + Main.getParty().get(0).getName() + "<br/>Health: " + Main.getParty().get(0).getHealth() + "</html>";
+            p1Status.setText(labelText);
         }
-        JLabel p1Status = new JLabel();
-        p1Status.setText(labelText);
+        p1Status.setForeground(alertorange);
         p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
+        JLabel p2Status = new JLabel();
         if (Main.getParty().get(1).getActive() == 1) {
             labelText = "<html>" + Main.getParty().get(1).getName() + "<br/>Health: " + Main.getParty().get(1).getHealth() + "</html>";
+            p2Status.setText(labelText);
         }
-        JLabel p2Status = new JLabel();
-        p2Status.setText(labelText);
+
+        p2Status.setForeground(alertorange);
         p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JLabel p3Status = new JLabel();
@@ -501,6 +502,7 @@ public class GameFrame extends JFrame {
             labelText = "<html>" + Main.getParty().get(2).getName() + "<br/>Health: " + Main.getParty().get(2).getHealth() + "</html>";
             p3Status.setText(labelText);
         }
+        p3Status.setForeground(alertorange);
         p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JLabel p4Status = new JLabel();
@@ -508,13 +510,14 @@ public class GameFrame extends JFrame {
             labelText = "<html>" + Main.getParty().get(3).getName() + "<br/>Health: " + Main.getParty().get(3).getHealth() + "</html>";
             p4Status.setText(labelText);
         }
-
+        p4Status.setForeground(alertorange);
         p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         labelText = "<html>" + Main.getEnemy().getName() + "<br/>Health: " + Main.getEnemy().getHealth() + "</html>";
 
         JLabel enemyStatus = new JLabel();
         enemyStatus.setText(labelText);
+        enemyStatus.setForeground(alertorange);
         enemyStatus.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JButton blockButton = new JButton("Block");
@@ -720,6 +723,7 @@ public class GameFrame extends JFrame {
         startEventDescription.setForeground(emerald);
 
         startControls.setPreferredSize(new Dimension(200,200));
+        gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 0;
         startControls.add(eventOptionShop, gbc);
@@ -1048,7 +1052,6 @@ public class GameFrame extends JFrame {
         calmPanel.add(calmControls, BorderLayout.SOUTH);
 
         // Add calmPanel to deck
-        deck.add(calmPanel, CALM);
         /* -------------- End of Calm Seas Panel ------------ */
 
         /* -------------- Rough Seas Panel ------------------ */
@@ -1124,7 +1127,7 @@ public class GameFrame extends JFrame {
         roughPanel.add(roughControls, BorderLayout.SOUTH);
 
         // Add roughPanel to deck
-        deck.add(roughPanel, ROUGH);
+
         /* -------------- End of Rough Seas Panel ------------ */
 
         /* ----------------- Storm Panel --------------------- */
@@ -1192,7 +1195,7 @@ public class GameFrame extends JFrame {
         stormPanel.add(stormControls, BorderLayout.SOUTH);
 
         // Add stormPanel to deck
-        deck.add(stormPanel, STORM);
+
         /* -------------- End of Storm Panel ----------------- */
 
         /*--------------- Village Panel ---------------------- */
@@ -1211,12 +1214,12 @@ public class GameFrame extends JFrame {
         controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Village Title
-        JLabel villageTitle = new JLabel(Main.eventTitles.get(8));
+        JLabel villageTitle = new JLabel(Main.eventTitles.get(7));
         villageTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         villageTitle.setForeground(alertorange);
 
         // Village Text area
-        JTextArea villageDesc = new JTextArea(Main.eventDescriptions.get(8));
+        JTextArea villageDesc = new JTextArea(Main.eventDescriptions.get(7));
         villageDesc.setEditable(false);
         villageDesc.setHighlighter(null);
         villageDesc.setBackground(transparent);
@@ -1267,7 +1270,7 @@ public class GameFrame extends JFrame {
         villagePanel.add(villageControls, BorderLayout.SOUTH);
 
         // Add villagePanel to deck
-        deck.add(villagePanel, VILLAGE);
+
         /*--------------- End of Village Panel ------------------ */
 
         /* ----------------- Forest Panel --------------------- */
@@ -1286,12 +1289,12 @@ public class GameFrame extends JFrame {
         controlGbc.insets = new Insets(10, 30, 10, 30);
 
         // Forest Title
-        JLabel forestTitle = new JLabel(Main.eventTitles.get(9));
+        JLabel forestTitle = new JLabel(Main.eventTitles.get(8));
         forestTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
         forestTitle.setForeground(alertorange);
 
         // Forest Test Area
-        JTextArea forestDesc = new JTextArea(Main.eventDescriptions.get(9));
+        JTextArea forestDesc = new JTextArea(Main.eventDescriptions.get(8));
         forestDesc.setEditable(false);
         forestDesc.setHighlighter(null);
         forestDesc.setBackground(transparent);
@@ -1342,7 +1345,7 @@ public class GameFrame extends JFrame {
         forestPanel.add(forestControls, BorderLayout.SOUTH);
 
         // Add forestPanel to deck
-        deck.add(forestPanel, FOREST);
+
 
         /* ------------ Ship Sank Panel ------------ */
         JPanel shipSankPanel = new JPanel(new BorderLayout());
@@ -1440,7 +1443,10 @@ public class GameFrame extends JFrame {
 
         GridBagConstraints gbcResources = new GridBagConstraints();
 
-        JLabel resourcesDesc = new JLabel(rescourceLabel);
+        JLabel resourcesDesc = new JLabel();
+        resourcesDesc.setText(rescourceLabel);
+        resourcesDesc.setFont(new Font("Monospaced", Font.BOLD, 40));
+        resourcesDesc.setForeground(alertorange);
 
         JButton resourcesButton = new JButton("Set Sail");
 
@@ -1475,7 +1481,12 @@ public class GameFrame extends JFrame {
         deck.add(party, PARTY);
         deck.add(combatEvent, COMBAT);
         deck.add(endCombat, FCOMBAT);
-        deck.add(resourcesContent, CONFRIM);
+        deck.add(resourcesPanel, CONFRIM);
+        deck.add(stormPanel, STORM);
+        deck.add(forestPanel, FOREST);
+        deck.add(villagePanel, VILLAGE);
+        deck.add(roughPanel, ROUGH);
+        deck.add(calmPanel, CALM);
 
         // Location Based Events
         deck.add(startEvent, START);
@@ -1650,8 +1661,8 @@ public class GameFrame extends JFrame {
 
     }
 
-    public void resourceChanges(String resourceName, int itemID) {
-        rescourceLabel = "After gathering you now have " + Main.getItems().get(itemID).getAmount() + " " + resourceName;
+    public void resourceChanges(String resourceName) {
+        rescourceLabel = resourceName;
     }
 
 } // End of GameFrame.java

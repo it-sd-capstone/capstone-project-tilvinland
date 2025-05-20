@@ -28,7 +28,7 @@ public class Main {
     private static int eventTotal;
     private static int mainEventTotal;
     private static int currentEvent;
-    private static Ship ship;
+    private static Ship ship = new Ship();
     private static int score;
     private static Enemy enemy;
     private static ArrayList<Player> party = new ArrayList<Player>();
@@ -140,7 +140,7 @@ public class Main {
             // Fills enemy table
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Knight', 150)"));
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Village Man', 50)"));
-            command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Gaurd Captin', 100)"));
+            command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Guard Captain', 100)"));
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Bear', 100)"));
             command.executeUpdate(("INSERT INTO enemy (name, health) VALUES ('Thief', 70)"));
 
@@ -203,31 +203,26 @@ public class Main {
         if (event % 4 == 0) {
             if (mainEvent == 0) {
                 mainFrame.switchToPanel(mainFrame.START);
-                System.out.println("Start");
                 currentEvent = 0;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 1) {
                 mainFrame.switchToPanel(mainFrame.SCOTLAND);
-                System.out.println("Scotland");
                 currentEvent = 1;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 2) {
                 mainFrame.switchToPanel(mainFrame.ICELAND);
-                System.out.println("iceland");
                 currentEvent = 2;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 3) {
                 mainFrame.switchToPanel(mainFrame.GREENLAND);
-                System.out.println("greenland");
                 currentEvent = 3;
                 mainEventTotal++;
                 eventTotal++;
             } else if (mainEvent == 4) {
                 mainFrame.switchToPanel(mainFrame.VINLAND);
-                System.out.println("vinland");
                 currentEvent = 4;
                 mainEventTotal++;
                 eventTotal++;
@@ -237,19 +232,14 @@ public class Main {
             do {
                 if (currentEvent == 5) {
                     mainFrame.switchToPanel(mainFrame.CALM);
-                    System.out.println("Calm");
                 } else if (currentEvent == 6) {
                     mainFrame.switchToPanel(mainFrame.ROUGH);
-                    System.out.println("Rough");
                 } else if (currentEvent == 7) {
                     mainFrame.switchToPanel(mainFrame.STORM);
-                    System.out.println("Storm");
                 } else if (currentEvent == 8) {
                     mainFrame.switchToPanel(mainFrame.VILLAGE);
-                    System.out.println("Village");
                 } else if (currentEvent == 9) {
                     mainFrame.switchToPanel(mainFrame.VILLAGE);
-                    System.out.println("Forest");
                 }
             } while (currentEvent < 5 || currentEvent > 9);
             eventTotal++;
@@ -258,10 +248,10 @@ public class Main {
 
     public static void initializeLists() {
         party.clear();
-        party.add(new Player("1", 0, 0));
-        party.add(new Player("2", 1, 0));
-        party.add(new Player("3", 2, 0));
-        party.add(new Player("4", 3, 0));
+        party.add(new Player("", 0, 0));
+        party.add(new Player("", 1, 0));
+        party.add(new Player("", 2, 0));
+        party.add(new Player("", 3, 0));
 
         items.clear();
         items.add(new Item("Gold", 0, "Used to trade for materials", 100));
@@ -295,11 +285,32 @@ public class Main {
         eventTotal = 0;
     }
 
-    public static void createParty(String name, int id) {
-        if (name != null) {
-            party.get(id).setName(name);
-            party.get(id).setActive(1);
+    public static void createParty(String name1, String name2, String name3, String name4) {
+
+        party.clear();
+        if (!name1.isBlank()) {
+            party.add(new Player(name1, 0, 1));
+        } else {
+            party.add(new Player("", 0, 0));
         }
+        if (!name2.isBlank()) {
+            party.add(new Player(name2, 1, 1));
+        } else {
+            party.add(new Player("", 1, 0));
+        }
+        if (!name3.isBlank()) {
+            party.add(new Player(name3, 2, 1));
+        } else {
+            party.add(new Player("", 2, 0));
+        }
+        if (!name4.isBlank()) {
+            party.add(new Player(name4, 3, 1));
+        } else {
+            party.add(new Player("", 3, 0));
+        }
+
+
+
 
     }
 
@@ -326,7 +337,7 @@ public class Main {
             // fishing
             int itemTOAdd = rng.nextInt(21);
             addInventory(1, itemTOAdd);
-            mainFrame.resourceChanges("rations", 1);
+            mainFrame.resourceChanges("After fishing you now have " + items.get(1).getAmount() + " of rations.");
             mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 7) {
             // hunker down
@@ -335,6 +346,7 @@ public class Main {
                 score = totalScore(createConnection(), party, items, ship);
                 mainFrame.switchToPanel(mainFrame.SANK);
             }
+            runEvent(5);
         } else if (event == 8) {
             // push through rough waters
             ship.removeHealth(20);
@@ -342,6 +354,7 @@ public class Main {
                 score = totalScore(createConnection(), party, items, ship);
                 mainFrame.switchToPanel(mainFrame.SANK);
             }
+            runEvent(5);
         } else if (event == 9) {
             // push through heavy storm
             ship.removeHealth(30);
@@ -349,6 +362,7 @@ public class Main {
                 score = totalScore(createConnection(), party, items, ship);
                 mainFrame.switchToPanel(mainFrame.SANK);
             }
+            runEvent(5);
         } else if (event == 10) {
             //
         } else if (event == 11) {
@@ -357,25 +371,22 @@ public class Main {
             // hunt
             int itemTOAdd = rng.nextInt(21);
             addInventory(1, itemTOAdd);
-            mainFrame.resourceChanges("rations", 1);
+            mainFrame.resourceChanges("After hunting you now have " + items.get(1).getAmount() + " sets of rations.");
             mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 13) {
             // CHopping wood
             int itemTOAdd = rng.nextInt(10);
             addInventory(2, itemTOAdd);
-            mainFrame.resourceChanges("lumber", 2);
+            mainFrame.resourceChanges("After chopping wood you now have " + items.get(2).getAmount() + "  logs of lumber.");
             mainFrame.switchToPanel(mainFrame.CONFRIM);
-            //mainFrame.cardLayout.show(mainFrame.deck, mainFrame.MAIN); //TODO
         } else if (event == 14) {
             // END
             score = totalScore(createConnection(), party, items, ship);
         } else if (event == 15) {
             // Start combat
             int enemyId = 0;
-            if (mainEventTotal == 1 && eventTotal == 4) {
-                enemyId = 1;
-            } else {
-                enemyId = 2 + rng.nextInt(4);
+            if (eventTotal != 4) {
+                enemyId = 1 + rng.nextInt(4);
             }
             startCombat(enemyId, createConnection());
         }
@@ -428,7 +439,7 @@ public class Main {
             }
             if (partyWipe(party)) {
                 score = totalScore(createConnection(), party, items, ship);
-                //mainFrame.switchToPanel(mainFrame.WIPE);
+                mainFrame.switchToPanel(mainFrame.WIPE);
             } else {
                 mainFrame.switchToPanel(mainFrame.COMBAT);
             }
@@ -474,20 +485,8 @@ public class Main {
 
     public static void startCombat(int enemyID, Connection db) {
 
-        try {
-            PreparedStatement enemyStmt = db.prepareStatement("SELECT * FROM enemy WHERE enemyId = ?");
-            enemyStmt.setInt(1, enemyID);
-
-            ResultSet rs = enemyStmt.executeQuery();
-
-            if (rs.next()) {
-                enemy.setName(rs.getString("name"));
-                enemy.setHealth(rs.getInt("health"));
-            }
-        } catch (SQLException e) {
-            System.err.println("Failed to start combat");
-            e.printStackTrace();
-        }
+        enemy.setName(enemies.get(0).getName());
+        enemy.setHealth(enemies.get(0).getHealth());
         mainFrame.switchToPanel(mainFrame.COMBAT);
     }
 
