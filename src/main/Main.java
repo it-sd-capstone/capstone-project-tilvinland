@@ -338,8 +338,8 @@ public class Main {
             // fishing
             int itemTOAdd = rng.nextInt(21);
             addInventory(1, itemTOAdd);
-            mainFrame.resourceChanges("After fishing you now have " + items.get(1).getAmount() + " of rations.");
-            mainFrame.switchToPanel(mainFrame.CONFRIM);
+            //mainFrame.resourceChanges("After fishing you now have " + items.get(1).getAmount() + " of rations.");
+            //mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 7) {
             // hunker down
             ship.removeHealth(10);
@@ -372,14 +372,14 @@ public class Main {
             // hunt
             int itemTOAdd = rng.nextInt(21);
             addInventory(1, itemTOAdd);
-            mainFrame.resourceChanges("After hunting you now have " + items.get(1).getAmount() + " sets of rations.");
-            mainFrame.switchToPanel(mainFrame.CONFRIM);
+            //mainFrame.resourceChanges("After hunting you now have " + items.get(1).getAmount() + " sets of rations.");
+            //mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 13) {
             // CHopping wood
             int itemTOAdd = rng.nextInt(10);
             addInventory(2, itemTOAdd);
-            mainFrame.resourceChanges("After chopping wood you now have " + items.get(2).getAmount() + "  logs of lumber.");
-            mainFrame.switchToPanel(mainFrame.CONFRIM);
+            //mainFrame.resourceChanges("After chopping wood you now have " + items.get(2).getAmount() + "  logs of lumber.");
+            //mainFrame.switchToPanel(mainFrame.CONFRIM);
         } else if (event == 14) {
             // END
             score = totalScore(createConnection(), party, items, ship);
