@@ -74,12 +74,20 @@ public class GameFrame extends JFrame {
 
     ImageIcon lumberIcon = new ImageIcon("./resources/lumberPile.png");
 
+    ImageIcon shipConditionPerfect = new ImageIcon("./resources/ShipDamageImages/Perfect.png");
+    ImageIcon shipConditionGreat = new ImageIcon("./resources/ShipDamageImages/Great.png");
+    ImageIcon shipConditionDamaged = new ImageIcon("./resources/ShipDamageImages/Damaged.png");
+    ImageIcon shipConditionSevere = new ImageIcon("./resources/ShipDamageImages/Severe.png");
+    ImageIcon shipConditionSank = new ImageIcon("./resources/ShipDamageImages/Sank.png");
+
     private String rescourceLabel = "";
 
     public GameFrame() {
         // Reference Main and Database
         //Main main = new Main();
         Connection db = Main.createConnection();
+
+        final String[] labelText = {""};
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -185,6 +193,9 @@ public class GameFrame extends JFrame {
         JLabel dbStatText = new JLabel();
         dbStatText.setText("Ship Status: " + debugShip.getStatus());
 
+        JLabel dbStatsImage = new JLabel();
+        dbStatsImage.setIcon(shipConditionPerfect);
+
         JButton hpUpButton = new JButton("+5 Lumber(25 HP)");
         hpUpButton.setPreferredSize(new Dimension(200,50));
         JButton hpDownButton = new JButton("-20 HP");
@@ -196,6 +207,9 @@ public class GameFrame extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 1;
         dbStats.add(dbStatText, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        dbStats.add(dbStatsImage, gbc);
         gbc.gridx = 0;
         gbc.gridy = 2;
         dbStats.add(hpUpButton, gbc);
@@ -208,6 +222,17 @@ public class GameFrame extends JFrame {
                 debugShip.addHealth(5);
                 dbHealthText.setText("Ship Health: " + debugShip.getHealth());
                 dbStatText.setText("Ship Status: " + debugShip.getStatus());
+                if (debugShip.getStatus() == "Perfect Condition"){
+                    dbStatsImage.setIcon(shipConditionPerfect);
+                } else if (debugShip.getStatus() == "Great Condition") {
+                    dbStatsImage.setIcon(shipConditionGreat);
+                } else if (debugShip.getStatus() == "Damaged") {
+                    dbStatsImage.setIcon(shipConditionDamaged);
+                } else if (debugShip.getStatus() == "Severe Damage") {
+                    dbStatsImage.setIcon(shipConditionSevere);
+                } else if (debugShip.getStatus() == "Sank") {
+                    dbStatsImage.setIcon(shipConditionSank);
+                }
             }
         });
 
@@ -216,6 +241,17 @@ public class GameFrame extends JFrame {
                 debugShip.removeHealth(20);
                 dbHealthText.setText("Ship Health: " + debugShip.getHealth());
                 dbStatText.setText("Ship Status: " + debugShip.getStatus());
+                if (debugShip.getStatus() == "Perfect Condition"){
+                    dbStatsImage.setIcon(shipConditionPerfect);
+                } else if (debugShip.getStatus() == "Great Condition") {
+                    dbStatsImage.setIcon(shipConditionGreat);
+                } else if (debugShip.getStatus() == "Damaged") {
+                    dbStatsImage.setIcon(shipConditionDamaged);
+                } else if (debugShip.getStatus() == "Severe Damage") {
+                    dbStatsImage.setIcon(shipConditionSevere);
+                } else if (debugShip.getStatus() == "Sank") {
+                    dbStatsImage.setIcon(shipConditionSank);
+                }
             }
         });
 
@@ -252,8 +288,20 @@ public class GameFrame extends JFrame {
         p1StatusText.setText(Main.getParty().get(0).getName());
         p1StatusText.setForeground(alertorange);
 
-        JLabel p2StatusPicture = new JLabel();
+        JLabel p2StatusPicture = new JLabel(partyTwoLogo);
         JLabel p2StatusText = new JLabel();
+        p2StatusText.setText(Main.getParty().get(0).getName());
+        p2StatusText.setForeground(alertorange);
+
+        JLabel p3StatusPicture = new JLabel(partyThreeLogo);
+        JLabel p3StatusText = new JLabel();
+        p3StatusText.setText(Main.getParty().get(0).getName());
+        p3StatusText.setForeground(alertorange);
+
+        JLabel p4StatusPicture = new JLabel(partyFourLogo);
+        JLabel p4StatusText = new JLabel();
+        p4StatusText.setText(Main.getParty().get(0).getName());
+        p4StatusText.setForeground(alertorange);
 
 
 
@@ -269,6 +317,24 @@ public class GameFrame extends JFrame {
         gbcStatusPanel.gridx = 1;
         gbcStatusPanel.gridy = 1;
         statusContent.add(p1StatusText, gbcStatusPanel);
+        gbcStatusPanel.gridx = 2;
+        gbcStatusPanel.gridy = 0;
+        statusContent.add(p2StatusPicture, gbcStatusPanel);
+        gbcStatusPanel.gridx = 2;
+        gbcStatusPanel.gridy = 1;
+        statusContent.add(p2StatusText, gbcStatusPanel);
+        gbcStatusPanel.gridx = 1;
+        gbcStatusPanel.gridy = 2;
+        statusContent.add(p3StatusPicture, gbcStatusPanel);
+        gbcStatusPanel.gridx = 1;
+        gbcStatusPanel.gridy = 3;
+        statusContent.add(p3StatusText, gbcStatusPanel);
+        gbcStatusPanel.gridx = 2;
+        gbcStatusPanel.gridy = 2;
+        statusContent.add(p4StatusPicture, gbcStatusPanel);
+        gbcStatusPanel.gridx = 2;
+        gbcStatusPanel.gridy = 3;
+        statusContent.add(p4StatusText, gbcStatusPanel);
 
         gbcStatusPanel.gridx = 0;
         gbcStatusPanel.gridy = 0;
@@ -276,91 +342,6 @@ public class GameFrame extends JFrame {
 
         status.add(statusControls,BorderLayout.SOUTH);
         status.add(statusContent);
-
-        /* ------------ Party Creation Panel ------------ */
-        JPanel party = new JPanel();
-        party.setLayout(new BorderLayout());
-
-        GridBagConstraints gbcParty = new GridBagConstraints();
-        gbcParty.insets = new Insets(10, 30, 10, 30);
-
-        JPanel partyContent = new JPanel();
-        partyContent.setLayout(new GridBagLayout());
-        partyContent.setBackground(gunmetal);
-
-        JPanel partyControls = new JPanel();
-        partyControls.setLayout(new GridBagLayout());
-        partyControls.setBackground(cerulean);
-        partyControls.setPreferredSize(new Dimension(200,200));
-
-        JTextField partyOneField = new JTextField();
-        partyOneField.setPreferredSize(new Dimension(200, 24));
-        JTextField partyTwoField = new JTextField();
-        partyTwoField.setPreferredSize(new Dimension(200, 24));
-        JTextField partyThreeField = new JTextField();
-        partyThreeField.setPreferredSize(new Dimension(200, 24));
-        JTextField partyFourField = new JTextField();
-        partyFourField.setPreferredSize(new Dimension(200, 24));
-
-        JLabel partyOneIcon = new JLabel(partyOneLogo);
-        JLabel partyTwoIcon = new JLabel(partyTwoLogo);
-        JLabel partyThreeIcon = new JLabel(partyThreeLogo);
-        JLabel partyFourIcon = new JLabel(partyFourLogo);
-
-        gbcParty.gridx = 0;
-        gbcParty.gridy = 0;
-        partyContent.add(partyOneIcon, gbcParty);
-        gbcParty.gridx = 0;
-        gbcParty.gridy = 1;
-        partyContent.add(partyOneField, gbcParty);
-        gbcParty.gridx = 1;
-        gbcParty.gridy = 0;
-        partyContent.add(partyTwoIcon, gbcParty);
-        gbcParty.gridx = 1;
-        gbcParty.gridy = 1;
-        partyContent.add(partyTwoField, gbcParty);
-        gbcParty.gridx = 0;
-        gbcParty.gridy = 2;
-        partyContent.add(partyThreeIcon, gbcParty);
-        gbcParty.gridx = 0;
-        gbcParty.gridy = 3;
-        partyContent.add(partyThreeField, gbcParty);
-        gbcParty.gridx = 1;
-        gbcParty.gridy = 2;
-        partyContent.add(partyFourIcon, gbcParty);
-        gbcParty.gridx = 1;
-        gbcParty.gridy = 3;
-        partyContent.add(partyFourField, gbcParty);
-
-        JButton partyContinueButton = new JButton();
-        partyContinueButton.setText("Continue");
-        partyContinueButton.setPreferredSize(new Dimension(200,50));
-        partyContinueButton.setFont(new Font("Monospaced", Font.PLAIN, 20));
-        partyContinueButton.setForeground(alertorange);
-        partyContinueButton.setBackground(buttonbrown);
-        partyContinueButton.setBorder(BorderFactory.createEtchedBorder());
-
-        gbcParty.gridx = 0;
-        gbcParty.gridy = 0;
-        partyControls.add(partyContinueButton, gbcParty);
-
-        party.add(partyControls, BorderLayout.SOUTH);
-        party.add(partyContent);
-
-        partyContinueButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String partyNameOneInput = partyOneField.getText();
-                String partyNameTwoInput = partyTwoField.getText();
-                String partyNameThreeInput = partyThreeField.getText();
-                String partyNameFourInput = partyFourField.getText();
-
-
-                Main.createParty(partyNameOneInput, partyNameTwoInput, partyNameThreeInput, partyNameFourInput);
-
-
-                Main.runEvent(5);
-            }
-        });
 
         /* ------------ WELCOME SCREEN ------------ */
         JPanel welcomePanel = new JPanel(new BorderLayout());
@@ -505,45 +486,19 @@ public class GameFrame extends JFrame {
 
         JPanel combatContent = new JPanel(new GridBagLayout());
         combatContent.setBackground(gunmetal);
-        String labelText = "";
 
         JLabel p1Status = new JLabel();
-        if (Main.getParty().get(0).getActive() == 1) {
-            labelText = "<html>" + Main.getParty().get(0).getName() + "<br/>Health: " + Main.getParty().get(0).getHealth() + "</html>";
-            p1Status.setText(labelText);
-        }
-        p1Status.setForeground(alertorange);
-        p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JLabel p2Status = new JLabel();
-        if (Main.getParty().get(1).getActive() == 1) {
-            labelText = "<html>" + Main.getParty().get(1).getName() + "<br/>Health: " + Main.getParty().get(1).getHealth() + "</html>";
-            p2Status.setText(labelText);
-        }
-
-        p2Status.setForeground(alertorange);
-        p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JLabel p3Status = new JLabel();
-        if (Main.getParty().get(2).getActive() == 1) {
-            labelText = "<html>" + Main.getParty().get(2).getName() + "<br/>Health: " + Main.getParty().get(2).getHealth() + "</html>";
-            p3Status.setText(labelText);
-        }
-        p3Status.setForeground(alertorange);
-        p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
         JLabel p4Status = new JLabel();
-        if (Main.getParty().get(3).getActive() == 1) {
-            labelText = "<html>" + Main.getParty().get(3).getName() + "<br/>Health: " + Main.getParty().get(3).getHealth() + "</html>";
-            p4Status.setText(labelText);
-        }
-        p4Status.setForeground(alertorange);
-        p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
 
-        labelText = "<html>" + Main.getEnemy().getName() + "<br/>Health: " + Main.getEnemy().getHealth() + "</html>";
+        labelText[0] = "<html>" + Main.getEnemy().getName() + "<br/>Health: " + Main.getEnemy().getHealth() + "</html>";
 
         JLabel enemyStatus = new JLabel();
-        enemyStatus.setText(labelText);
+        enemyStatus.setText(labelText[0]);
         enemyStatus.setForeground(alertorange);
         enemyStatus.setFont(new Font("Monospaced", Font.BOLD, 30));
 
@@ -618,6 +573,7 @@ public class GameFrame extends JFrame {
 
         combatEvent.add(combatControls,BorderLayout.SOUTH);
         combatEvent.add(combatContent,BorderLayout.CENTER);
+
 
         // -- END COMBAT EVENT SCREEN --
 
@@ -721,16 +677,22 @@ public class GameFrame extends JFrame {
         startContent.setBackground(gunmetal);
 
         JButton eventOptionShop = new JButton("Shop");
-        eventOptionShop.setPreferredSize(new Dimension(200,50));
+        eventOptionShop.setFont(new Font("Monospaced", Font.BOLD, 20));
+        eventOptionShop.setPreferredSize(new Dimension(200,100));
+        eventOptionShop.setBackground(buttonbrown);
+        eventOptionShop.setForeground(alertorange);
 
         JButton eventOptionInv = new JButton("Check Inventory");
-        eventOptionInv.setPreferredSize(new Dimension(200,50));
+        eventOptionInv.setPreferredSize(new Dimension(200,100));
 
         JButton eventOptionMembers = new JButton("Check Members");
         eventOptionMembers.setPreferredSize(new Dimension(200,50));
 
         JButton eventOptionSail = new JButton("Set Sail");
-        eventOptionSail.setPreferredSize(new Dimension(200,50));
+        eventOptionSail.setFont(new Font("Monospaced", Font.BOLD, 20));
+        eventOptionSail.setPreferredSize(new Dimension(200,100));
+        eventOptionSail.setBackground(buttonbrown);
+        eventOptionSail.setForeground(alertorange);
 
         JLabel startEventTitle = new JLabel("Start Area"); // Change start area name?
         startEventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
@@ -745,7 +707,7 @@ public class GameFrame extends JFrame {
         startEventDescription.setFocusable(false);
         startEventDescription.setBackground(transparent);
         startEventDescription.setLineWrap(true);
-        startEventDescription.setText("We are about to make a long voyage across the seas. " +
+        startEventDescription.setText("We are about to make a long voyage across the seas. \n" +
                 "We better stock up on any supplies we will need for the long trip.");
         startEventDescription.setForeground(emerald);
 
@@ -754,15 +716,12 @@ public class GameFrame extends JFrame {
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        startControls.add(eventOptionShop, gbc);
+        startControls.add(createDefaultControls(),gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        startControls.add(eventOptionInv, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        startControls.add(eventOptionMembers, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
+        startControls.add(eventOptionShop, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
         startControls.add(eventOptionSail, gbc);
 
         gbc.gridx = 0;
@@ -1492,7 +1451,157 @@ public class GameFrame extends JFrame {
         resourcesPanel.add(resourcesContent, BorderLayout.CENTER);
         resourcesPanel.add(resourcesControls, BorderLayout.SOUTH);
 
+        /* ------------ Party Creation Panel ------------ */
+        JPanel party = new JPanel();
+        party.setLayout(new BorderLayout());
 
+        GridBagConstraints gbcParty = new GridBagConstraints();
+        gbcParty.insets = new Insets(10, 30, 10, 30);
+
+        JPanel partyContent = new JPanel();
+        partyContent.setLayout(new GridBagLayout());
+        partyContent.setBackground(gunmetal);
+
+        JPanel partyControls = new JPanel();
+        partyControls.setLayout(new GridBagLayout());
+        partyControls.setBackground(cerulean);
+        partyControls.setPreferredSize(new Dimension(200,200));
+
+        JTextField partyOneField = new JTextField();
+        partyOneField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyTwoField = new JTextField();
+        partyTwoField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyThreeField = new JTextField();
+        partyThreeField.setPreferredSize(new Dimension(200, 24));
+        JTextField partyFourField = new JTextField();
+        partyFourField.setPreferredSize(new Dimension(200, 24));
+
+        JLabel partyOneIcon = new JLabel(partyOneLogo);
+        JLabel partyTwoIcon = new JLabel(partyTwoLogo);
+        JLabel partyThreeIcon = new JLabel(partyThreeLogo);
+        JLabel partyFourIcon = new JLabel(partyFourLogo);
+
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 0;
+        partyContent.add(partyOneIcon, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 1;
+        partyContent.add(partyOneField, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 0;
+        partyContent.add(partyTwoIcon, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 1;
+        partyContent.add(partyTwoField, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 2;
+        partyContent.add(partyThreeIcon, gbcParty);
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 3;
+        partyContent.add(partyThreeField, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 2;
+        partyContent.add(partyFourIcon, gbcParty);
+        gbcParty.gridx = 1;
+        gbcParty.gridy = 3;
+        partyContent.add(partyFourField, gbcParty);
+
+        JButton partyContinueButton = new JButton();
+        partyContinueButton.setText("Continue");
+        partyContinueButton.setPreferredSize(new Dimension(200,50));
+        partyContinueButton.setFont(new Font("Monospaced", Font.PLAIN, 20));
+        partyContinueButton.setForeground(alertorange);
+        partyContinueButton.setBackground(buttonbrown);
+        partyContinueButton.setBorder(BorderFactory.createEtchedBorder());
+
+        gbcParty.gridx = 0;
+        gbcParty.gridy = 0;
+        partyControls.add(partyContinueButton, gbcParty);
+
+        party.add(partyControls, BorderLayout.SOUTH);
+        party.add(partyContent);
+
+        partyContinueButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String partyNameOneInput = partyOneField.getText();
+                String partyNameTwoInput = partyTwoField.getText();
+                String partyNameThreeInput = partyThreeField.getText();
+                String partyNameFourInput = partyFourField.getText();
+
+                ImageIcon partyOneLogo = new ImageIcon("./resources/PartyIcons/partyOne.png");
+                ImageIcon partyTwoLogo = new ImageIcon("./resources/PartyIcons/partyTwo.png");
+                ImageIcon partyThreeLogo = new ImageIcon("./resources/PartyIcons/partyThree.png");
+                ImageIcon partyFourLogo = new ImageIcon("./resources/PartyIcons/partyFour.png");
+
+                Main.createParty(partyNameOneInput, partyNameTwoInput, partyNameThreeInput, partyNameFourInput);
+                p1StatusText.setText(Main.getParty().get(0).getName());
+                p1StatusText.setForeground(alertorange);
+
+                p2StatusText.setText(Main.getParty().get(1).getName());
+                p2StatusText.setForeground(alertorange);
+
+                p3StatusText.setText(Main.getParty().get(2).getName());
+                p3StatusText.setForeground(alertorange);
+
+                p4StatusText.setText(Main.getParty().get(3).getName());
+                p4StatusText.setForeground(alertorange);
+
+
+                if (Main.getParty().get(0).getActive() == 1) {
+                    labelText[0] = "<html>" + Main.getParty().get(0).getName() + "<br/>Health: " + Main.getParty().get(0).getHealth() + "</html>";
+                    p1Status.setText(labelText[0]);
+                    partyOneIcon.setIcon(partyOneLogo);
+
+                } else if (Main.getParty().get(0).getActive() == 0) {
+                    labelText[0] = " ";
+                    p1Status.setText(labelText[0]);
+                    partyOneIcon.setIcon(null);
+                }
+                p1Status.setForeground(alertorange);
+                p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                if (Main.getParty().get(1).getActive() == 1) {
+                    labelText[0] = "<html>" + Main.getParty().get(1).getName() + "<br/>Health: " + Main.getParty().get(1).getHealth() + "</html>";
+                    p2Status.setText(labelText[0]);
+                    partyTwoIcon.setIcon(partyTwoLogo);
+                } else if (Main.getParty().get(1).getActive() == 0) {
+                    labelText[0] = " ";
+                    p2Status.setText(labelText[0]);
+                    partyTwoIcon.setIcon(null);
+                }
+
+                p2Status.setForeground(alertorange);
+                p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                if (Main.getParty().get(2).getActive() == 1) {
+                    labelText[0] = "<html>" + Main.getParty().get(2).getName() + "<br/>Health: " + Main.getParty().get(2).getHealth() + "</html>";
+                    p3Status.setText(labelText[0]);
+                    partyThreeIcon.setIcon(partyThreeLogo);
+                } else if (Main.getParty().get(2).getActive() == 0) {
+                    labelText[0] = " ";
+                    p3Status.setText(labelText[0]);
+                    partyThreeIcon.setIcon(null);
+                }
+                p3Status.setForeground(alertorange);
+                p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                if (Main.getParty().get(3).getActive() == 1) {
+                    labelText[0] = "<html>" + Main.getParty().get(3).getName() + "<br/>Health: " + Main.getParty().get(3).getHealth() + "</html>";
+                    p4Status.setText(labelText[0]);
+                    partyFourIcon.setIcon(partyFourLogo);
+                } else if (Main.getParty().get(3).getActive() == 0) {
+                    labelText[0] = " ";
+                    p4Status.setText(labelText[0]);
+                    partyFourIcon.setIcon(null);
+                }
+                p4Status.setForeground(alertorange);
+                p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                enemyStatus.repaint();
+
+                Main.runEvent(5);
+            }
+        });
 
         /* ------------ Frame Parameters ------------ */
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -1642,8 +1751,8 @@ public class GameFrame extends JFrame {
         JButton back = new JButton("Back");
         back.setPreferredSize(new Dimension(200, 50));
         back.setFont(new Font("Monospaced", Font.BOLD, 20));
-        back.setForeground(columbiablue);
-        back.setBackground(darkslate);
+        back.setForeground(buttonbrown);
+        back.setBackground(alertorange);
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //isGoingBack = true;
