@@ -68,6 +68,7 @@ public class GameFrame extends JFrame {
     ImageIcon partyTwoLogo = new ImageIcon("./resources/PartyIcons/partyTwo.png");
     ImageIcon partyThreeLogo = new ImageIcon("./resources/PartyIcons/partyThree.png");
     ImageIcon partyFourLogo = new ImageIcon("./resources/PartyIcons/partyFour.png");
+    ImageIcon partyInactiveLogo = new ImageIcon("./resources/PartyIcons/partyInactive.png");
 
     ImageIcon borderDecoTL = new ImageIcon("./resources/CornerTopLeft.png");
     ImageIcon borderDecoTR = new ImageIcon("./resources/CornerTopRight.png");
@@ -80,7 +81,9 @@ public class GameFrame extends JFrame {
     ImageIcon shipConditionSevere = new ImageIcon("./resources/ShipDamageImages/Severe.png");
     ImageIcon shipConditionSank = new ImageIcon("./resources/ShipDamageImages/Sank.png");
 
+    //Globals
     private String rescourceLabel = "";
+    private JLabel shipStatusImage = new JLabel();
 
     public GameFrame() {
         // Reference Main and Database
@@ -304,12 +307,14 @@ public class GameFrame extends JFrame {
         p4StatusText.setForeground(alertorange);
 
 
-
         gbcStatusPanel.gridx = 0;
         gbcStatusPanel.gridy = 0;
-        statusContent.add(shipHealthText, gbcStatusPanel);
+        statusContent.add(shipStatusImage, gbcStatusPanel);
         gbcStatusPanel.gridx = 0;
         gbcStatusPanel.gridy = 1;
+        statusContent.add(shipHealthText, gbcStatusPanel);
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 2;
         statusContent.add(shipStatText, gbcStatusPanel);
         gbcStatusPanel.gridx = 1;
         gbcStatusPanel.gridy = 0;
@@ -1555,7 +1560,7 @@ public class GameFrame extends JFrame {
                 } else if (Main.getParty().get(0).getActive() == 0) {
                     labelText[0] = " ";
                     p1Status.setText(labelText[0]);
-                    partyOneIcon.setIcon(null);
+                    p1StatusPicture.setIcon(partyInactiveLogo);
                 }
                 p1Status.setForeground(alertorange);
                 p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
@@ -1567,7 +1572,7 @@ public class GameFrame extends JFrame {
                 } else if (Main.getParty().get(1).getActive() == 0) {
                     labelText[0] = " ";
                     p2Status.setText(labelText[0]);
-                    partyTwoIcon.setIcon(null);
+                    p2StatusPicture.setIcon(partyInactiveLogo);
                 }
 
                 p2Status.setForeground(alertorange);
@@ -1580,7 +1585,7 @@ public class GameFrame extends JFrame {
                 } else if (Main.getParty().get(2).getActive() == 0) {
                     labelText[0] = " ";
                     p3Status.setText(labelText[0]);
-                    partyThreeIcon.setIcon(null);
+                    p3StatusPicture.setIcon(partyInactiveLogo);
                 }
                 p3Status.setForeground(alertorange);
                 p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
@@ -1592,7 +1597,7 @@ public class GameFrame extends JFrame {
                 } else if (Main.getParty().get(3).getActive() == 0) {
                     labelText[0] = " ";
                     p4Status.setText(labelText[0]);
-                    partyFourIcon.setIcon(null);
+                    p4StatusPicture.setIcon(partyInactiveLogo);
                 }
                 p4Status.setForeground(alertorange);
                 p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
@@ -1783,6 +1788,18 @@ public class GameFrame extends JFrame {
 
         shipStatButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (Main.getShip().getStatus() == "Perfect Condition"){
+                    shipStatusImage.setIcon(shipConditionPerfect);
+                } else if (Main.getShip().getStatus() == "Great Condition") {
+                    shipStatusImage.setIcon(shipConditionGreat);
+                } else if (Main.getShip().getStatus() == "Damaged") {
+                    shipStatusImage.setIcon(shipConditionDamaged);
+                } else if (Main.getShip().getStatus() == "Severe Damage") {
+                    shipStatusImage.setIcon(shipConditionSevere);
+                } else if (Main.getShip().getStatus() == "Sank") {
+                    shipStatusImage.setIcon(shipConditionSank);
+                }
+
                 switchToPanel(STATS);
             }
         });
