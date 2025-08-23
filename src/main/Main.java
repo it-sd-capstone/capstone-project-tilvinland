@@ -24,9 +24,14 @@ public class Main {
     private static final int TIMEOUT_STATEMENT_S = 5;
 
 
-    private static Random rng;
+    private static Random rng = new Random();
+    //TODO dont need these
     private static int eventTotal;
     private static int mainEventTotal;
+
+    private static int weight;
+    private static int eventCounter = 1;
+
     private static int currentEvent;
     private static Ship ship = new Ship();
     private static int score;
@@ -200,53 +205,6 @@ public class Main {
 
     }
 
-    public static void decideEvent(int event, int mainEvent) {
-        if (event % 4 == 0) {
-            if (mainEvent == 0) {
-                mainFrame.switchToPanel(mainFrame.START);
-                currentEvent = 0;
-                mainEventTotal++;
-                eventTotal++;
-            } else if (mainEvent == 1) {
-                mainFrame.switchToPanel(mainFrame.SCOTLAND);
-                currentEvent = 1;
-                mainEventTotal++;
-                eventTotal++;
-            } else if (mainEvent == 2) {
-                mainFrame.switchToPanel(mainFrame.ICELAND);
-                currentEvent = 2;
-                mainEventTotal++;
-                eventTotal++;
-            } else if (mainEvent == 3) {
-                mainFrame.switchToPanel(mainFrame.GREENLAND);
-                currentEvent = 3;
-                mainEventTotal++;
-                eventTotal++;
-            } else if (mainEvent == 4) {
-                mainFrame.switchToPanel(mainFrame.VINLAND);
-                currentEvent = 4;
-                mainEventTotal++;
-                eventTotal++;
-            }
-        } else {
-            currentEvent = Math.max(5, 5 +rng.nextInt(6));
-            do {
-                if (currentEvent == 5) {
-                    mainFrame.switchToPanel(mainFrame.CALM);
-                } else if (currentEvent == 6) {
-                    mainFrame.switchToPanel(mainFrame.ROUGH);
-                } else if (currentEvent == 7) {
-                    mainFrame.switchToPanel(mainFrame.STORM);
-                } else if (currentEvent == 8) {
-                    mainFrame.switchToPanel(mainFrame.VILLAGE);
-                } else if (currentEvent == 9) {
-                    mainFrame.switchToPanel(mainFrame.VILLAGE);
-                }
-            } while (currentEvent < 5 || currentEvent > 9);
-            eventTotal++;
-        }
-    }
-
     public static void initializeLists() {
         party.clear();
         party.add(new Player("", 0, 0));
@@ -313,84 +271,6 @@ public class Main {
 
 
 
-    }
-
-    public static void runEvent(int event) { // Noncombat events
-        if (event == 1) {
-            // Shop events 1 - 4
-            mainFrame.switchToPanel(mainFrame.SHOP);
-        } else if (event == 2) {
-            // Buy lumber
-            addInventory(2, 5);
-            removeItem(0, 10);
-        } else if (event == 3) {
-            // buy Rations
-            addInventory(1, 10);
-            removeItem(0, 10);
-        } else if (event == 4) {
-
-        } else if (event == 5) {
-            // Run next event
-            getActivePlayers();
-            removeItem(1, activePlayers * 5);
-            decideEvent(eventTotal, mainEventTotal);
-        } else if (event == 6) {
-            // fishing
-            int itemTOAdd = rng.nextInt(21);
-            addInventory(1, itemTOAdd);
-            //mainFrame.resourceChanges("After fishing you now have " + items.get(1).getAmount() + " of rations.");
-            //mainFrame.switchToPanel(mainFrame.CONFRIM);
-        } else if (event == 7) {
-            // hunker down
-            ship.removeHealth(10);
-            if (ship.getHealth() <= 0) {
-                score = totalScore(createConnection(), party, items, ship);
-                mainFrame.switchToPanel(mainFrame.SANK);
-            }
-            runEvent(5);
-        } else if (event == 8) {
-            // push through rough waters
-            ship.removeHealth(20);
-            if (ship.getHealth() <= 0) {
-                score = totalScore(createConnection(), party, items, ship);
-                mainFrame.switchToPanel(mainFrame.SANK);
-            }
-            runEvent(5);
-        } else if (event == 9) {
-            // push through heavy storm
-            ship.removeHealth(30);
-            if (ship.getHealth() <= 0) {
-                score = totalScore(createConnection(), party, items, ship);
-                mainFrame.switchToPanel(mainFrame.SANK);
-            }
-            runEvent(5);
-        } else if (event == 10) {
-            //
-        } else if (event == 11) {
-            ship.addHealth(1);
-        } else if (event == 12) {
-            // hunt
-            int itemTOAdd = rng.nextInt(21);
-            addInventory(1, itemTOAdd);
-            //mainFrame.resourceChanges("After hunting you now have " + items.get(1).getAmount() + " sets of rations.");
-            //mainFrame.switchToPanel(mainFrame.CONFRIM);
-        } else if (event == 13) {
-            // CHopping wood
-            int itemTOAdd = rng.nextInt(10);
-            addInventory(2, itemTOAdd);
-            //mainFrame.resourceChanges("After chopping wood you now have " + items.get(2).getAmount() + "  logs of lumber.");
-            //mainFrame.switchToPanel(mainFrame.CONFRIM);
-        } else if (event == 14) {
-            // END
-            score = totalScore(createConnection(), party, items, ship);
-        } else if (event == 15) {
-            // Start combat
-            int enemyId = 0;
-            if (eventTotal != 4) {
-                enemyId = 1 + rng.nextInt(4);
-            }
-            startCombat(enemyId, createConnection());
-        }
     }
 
     public static void runCombat(int choice) {
