@@ -7,8 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
+//<editor-fold desc="Test">
+// </editor-fold>
+
 //TODO add party panel
 //TODO rework welcome shop to be a general use shop panel.
+
+// event = rng.nextInt(max - min + 1) + min; <- Leave this here, might come in handy later
 
 public class GameFrame extends JFrame {
 
@@ -18,6 +23,7 @@ public class GameFrame extends JFrame {
     private static String currentPanel = "Main Menu";
     private static String previousPanel = "Main Menu";
 
+    //<editor-fold desc="Panel Vars">
     // Deck Panels
     JPanel deck = new JPanel();
     String MAIN = "Main Menu";
@@ -42,11 +48,11 @@ public class GameFrame extends JFrame {
     String VILLAGE = "VILLAGE";
     String FOREST = "FOREST";
     String CONFRIM = "Resource Confirmed";
-
     String WIPE = "Party Wipe";
     String SANK = "Ship Sank";
 
     CardLayout cardLayout = new CardLayout();
+    // </editor-fold>
 
     //Custom Colors
     private Color emerald = new Color(105,220,158);
@@ -58,6 +64,7 @@ public class GameFrame extends JFrame {
     private Color buttonbrown = new Color(66,39,15);
     private Color transparent = new Color(0,0,0,0);
 
+    //<editor-fold desc="Resources">
     // Resources
     ImageIcon bigLogo = new ImageIcon("./resources/logo.png");
     ImageIcon smallLogo = new ImageIcon("./resources/logo_small.png");
@@ -80,6 +87,7 @@ public class GameFrame extends JFrame {
     ImageIcon shipConditionDamaged = new ImageIcon("./resources/ShipDamageImages/Damaged.png");
     ImageIcon shipConditionSevere = new ImageIcon("./resources/ShipDamageImages/Severe.png");
     ImageIcon shipConditionSank = new ImageIcon("./resources/ShipDamageImages/Sank.png");
+    // </editor-fold>
 
     //Globals
     private String rescourceLabel = "";
@@ -98,6 +106,7 @@ public class GameFrame extends JFrame {
         // set CardLayout to the deck panel layout manager
         deck.setLayout(cardLayout);
 
+        //<editor-fold desc="Main Menu Panel">
         /* ------------ Main Menu Panel ------------ */
         JPanel mainMenu = new JPanel();
         mainMenu.setLayout(new BorderLayout());
@@ -184,7 +193,9 @@ public class GameFrame extends JFrame {
 
         mainMenu.add(menuOptions,BorderLayout.SOUTH);
         mainMenu.add(menuContent,BorderLayout.CENTER);
+// </editor-fold>
 
+        //<editor-fold desc="DEBUG PANELS">
         /* ############ Debug/Testing Panels ############ */
         //TODO ### REMOVE - TESTING ONLY ###
         // NOT FOR PRODUCTION - REMOVE AFTER TESTING
@@ -257,7 +268,9 @@ public class GameFrame extends JFrame {
                 }
             }
         });
+// </editor-fold>
 
+        //<editor-fold desc="Ship/Party Stats Panel">
         /* ------------ Ship/Party Status Panel ------------ */
         //TODO add a ship repair button
         //TODO add a heal party button?? (-rations)
@@ -347,7 +360,9 @@ public class GameFrame extends JFrame {
 
         status.add(statusControls,BorderLayout.SOUTH);
         status.add(statusContent);
+// </editor-fold>
 
+        //<editor-fold desc="WELCOME PANEL">
         /* ------------ WELCOME SCREEN ------------ */
         JPanel welcomePanel = new JPanel(new BorderLayout());
 
@@ -361,7 +376,8 @@ public class GameFrame extends JFrame {
         setSailButton.setPreferredSize(new Dimension(200,50));
         setSailButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Main.runEvent(5);
+                //TODO runEvent Refactor - event = 0
+                EventEngine.runEvent(-1);
             }
         });
 
@@ -369,7 +385,8 @@ public class GameFrame extends JFrame {
         welcomeShopButton.setPreferredSize(new Dimension(200,50));
         welcomeShopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Main.runEvent(1);
+                //TODO runEvent Refactor - event = 1
+                EventEngine.runEvent(1);
             }
         });
 
@@ -410,7 +427,9 @@ public class GameFrame extends JFrame {
 
         welcomePanel.add(welcomeContent);
         welcomePanel.add(welcomeControls, BorderLayout.SOUTH);
+// </editor-fold>
 
+        //<editor-fold desc="SHOP PANEL">>
         /* ------------ SHOP SCREEN ------------ */
         JPanel shopPanel = new JPanel(new BorderLayout());
 
@@ -431,7 +450,8 @@ public class GameFrame extends JFrame {
         shopRationsButton.setBackground(buttonbrown);
         shopRationsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Main.runEvent(3);
+                Main.addInventory(1, 10);
+                Main.removeItem(0, 10);
                 JOptionPane.showMessageDialog(null, "Full parameter test from GameFrame", "Full Test", JOptionPane.INFORMATION_MESSAGE, lumberIcon);
             }
         });
@@ -443,7 +463,8 @@ public class GameFrame extends JFrame {
         shopWoodButton.setBackground(buttonbrown);
         shopWoodButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Main.runEvent(2);
+                Main.addInventory(1, 10);
+                Main.removeItem(0, 10);
             }
         });
 
@@ -459,7 +480,9 @@ public class GameFrame extends JFrame {
 
         shopPanel.add(shopContent);
         shopPanel.add(shopControls, BorderLayout.SOUTH);
+// </editor-fold
 
+        //<editor-fold desc="RANDOM EVENT PANEL">
         /* ------------ RANDOM EVENT SCREEN ------------ */
         JPanel randEvent = new JPanel(new BorderLayout());
 
@@ -480,8 +503,9 @@ public class GameFrame extends JFrame {
 
         JButton eventOptionFour = new JButton();
         eventOptionFour.setPreferredSize(new Dimension(200,50));
+// </editor-fold>
 
-
+        //<editor-fold desc="COMBAT PANEL">
         /* ------------ COMBAT EVENT SCREEN ------------ */
         JPanel combatEvent = new JPanel(new BorderLayout());
 
@@ -578,8 +602,9 @@ public class GameFrame extends JFrame {
 
         combatEvent.add(combatControls,BorderLayout.SOUTH);
         combatEvent.add(combatContent,BorderLayout.CENTER);
+// </editor-fold>
 
-
+        //<editor-fold desc="END COMBAT PANEL">
         // -- END COMBAT EVENT SCREEN --
 
         JPanel endCombat = new JPanel(new BorderLayout());
@@ -607,15 +632,21 @@ public class GameFrame extends JFrame {
         gbc.gridy = 0;
         endCombatControl.add(endCombatButton, gbc);
 
-        attackButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Main.runEvent(5);
-            }
-        });
+        // Why this here?
+
+//        attackButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//
+//                //What this do?
+//                Main.runEvent(5);
+//            }
+//        });
 
         endCombat.add(endCombatStatus,BorderLayout.CENTER);
         endCombat.add(endCombatControl,BorderLayout.SOUTH);
+// </editor-fold>
 
+        //<editor-fold desc="PLACEHOLDER EVENT PANEL">
         /* ------------ PLACEHOLDER EVENT SCREEN ------------ */
         JLabel eventTitle = new JLabel();
         eventTitle.setText("Placeholder");
@@ -669,7 +700,7 @@ public class GameFrame extends JFrame {
 
         randEvent.add(eventContent);
         randEvent.add(eventControls,BorderLayout.SOUTH);
-
+// </editor-fold>
 
         /* ------------ LOCATION EVENT SCREEN ------------ */
         // Start Area Event ------------------------------
@@ -779,8 +810,8 @@ public class GameFrame extends JFrame {
         scotLumber.setBackground(buttonbrown);
         scotCombat.setForeground(alertorange);
         scotLumber.setForeground(alertorange);
-        scotCombat.addActionListener(e -> Main.runEvent(15)); // hunker down
-        scotLumber.addActionListener(e -> Main.runEvent(13));
+        scotCombat.addActionListener(e -> EventEngine.runEvent(-2)); // start combat
+        scotLumber.addActionListener(e -> EventEngine.runEvent(13)); //Chop wood event
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -837,8 +868,8 @@ public class GameFrame extends JFrame {
         iceFish.setBackground(buttonbrown);
         iceShop.setForeground(alertorange);
         iceFish.setForeground(alertorange);
-        iceShop.addActionListener(e -> Main.runEvent(1)); // hunker down
-        iceFish.addActionListener(e -> Main.runEvent(6));
+        iceShop.addActionListener(e -> EventEngine.runEvent(1)); // shop
+        iceFish.addActionListener(e -> EventEngine.runEvent(6)); //fish
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -896,8 +927,8 @@ public class GameFrame extends JFrame {
         greenLumber.setBackground(buttonbrown);
         greenHunt.setForeground(alertorange);
         greenLumber.setForeground(alertorange);
-        greenHunt.addActionListener(e -> Main.runEvent(12)); // hunker down
-        greenLumber.addActionListener(e -> Main.runEvent(13));
+        greenHunt.addActionListener(e -> EventEngine.runEvent(12)); // hunt
+        greenLumber.addActionListener(e -> EventEngine.runEvent(13)); // chop wood
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -1016,9 +1047,10 @@ public class GameFrame extends JFrame {
         calmFish.setForeground(alertorange);
         calmRepair.setForeground(alertorange);
         calmSailing.setForeground(alertorange);
-        calmFish.addActionListener(e -> Main.runEvent(6)); // fishing
-        calmRepair.addActionListener(e -> Main.runEvent(10)); // repair ship
-        calmSailing.addActionListener(e -> Main.runEvent(5)); // continue sailing
+        calmFish.addActionListener(e -> EventEngine.runEvent(6)); // fishing
+        // TODO repair can be removed?
+        calmRepair.addActionListener(e -> EventEngine.runEvent(10)); // repair ship - currently call null event - pre-event refactor
+        calmSailing.addActionListener(e -> EventEngine.runEvent(-1));
 
         // Add content to calmContent
         gbc.gridx = 0;
@@ -1091,9 +1123,9 @@ public class GameFrame extends JFrame {
         roughWait.setForeground(alertorange);
         roughFish.setForeground(alertorange);
         roughSail.setForeground(alertorange);
-        roughWait.addActionListener(e -> Main.runEvent(7)); // hunker down
-        roughFish.addActionListener(e -> Main.runEvent(6)); // fish
-        roughSail.addActionListener(e -> Main.runEvent(8)); // continue sailing
+        roughWait.addActionListener(e -> EventEngine.runEvent(7)); // hunker down
+        roughFish.addActionListener(e -> EventEngine.runEvent(6)); // fish
+        roughSail.addActionListener(e -> EventEngine.runEvent(8)); // continue sailing
 
         // Add content to roughContent
         gbc.gridx = 0;
@@ -1162,8 +1194,8 @@ public class GameFrame extends JFrame {
         stormSail.setBackground(buttonbrown);
         stormWait.setForeground(alertorange);
         stormSail.setForeground(alertorange);
-        stormWait.addActionListener(e -> Main.runEvent(7)); // hunker down
-        stormSail.addActionListener(e -> Main.runEvent(9)); // storm event
+        stormWait.addActionListener(e -> EventEngine.runEvent(7)); // hunker down
+        stormSail.addActionListener(e -> EventEngine.runEvent(9)); // storm event
 
         // Add content to stormContent
         gbc.gridx = 0;
@@ -1234,9 +1266,9 @@ public class GameFrame extends JFrame {
         villageShop.setForeground(alertorange);
         villageRepair.setForeground(alertorange);
         villageSail.setForeground(alertorange);
-        villageShop.addActionListener(e -> Main.runEvent(1)); // shop
-        villageRepair.addActionListener(e -> Main.runEvent(10)); // repair?
-        villageSail.addActionListener(e -> Main.runEvent(5)); // continue sailing
+        villageShop.addActionListener(e -> EventEngine.runEvent(1)); // shop
+        villageRepair.addActionListener(e -> EventEngine.runEvent(10)); // repair?
+        villageSail.addActionListener(e -> EventEngine.runEvent(-1)); // continue sailing
 
         // add content to villageContent
         gbc.gridx = 0;
@@ -1309,9 +1341,9 @@ public class GameFrame extends JFrame {
         forestWood.setForeground(alertorange);
         forestHunt.setForeground(alertorange);
         forestSail.setForeground(alertorange);
-        forestWood.addActionListener(e -> Main.runEvent(13)); // Wood
-        forestHunt.addActionListener(e -> Main.runEvent(12)); // Hunt
-        forestSail.addActionListener(e -> Main.runEvent(5));  // Continue Sailing
+        forestWood.addActionListener(e -> EventEngine.runEvent(13)); // Wood
+        forestHunt.addActionListener(e -> EventEngine.runEvent(12)); // Hunt
+        forestSail.addActionListener(e -> EventEngine.runEvent(-1));  // Continue Sailing
 
         // Add content to forestContent
         gbc.gridx = 0;
@@ -1451,7 +1483,7 @@ public class GameFrame extends JFrame {
         gbcResources.gridx = 0;
         resourcesControls.add(resourcesButton, gbcResources);
 
-        resourcesButton.addActionListener(e -> Main.runEvent(5));
+        resourcesButton.addActionListener(e -> EventEngine.runEvent(-1));
 
         resourcesPanel.add(resourcesContent, BorderLayout.CENTER);
         resourcesPanel.add(resourcesControls, BorderLayout.SOUTH);
@@ -1604,7 +1636,9 @@ public class GameFrame extends JFrame {
 
                 enemyStatus.repaint();
 
-                Main.runEvent(5);
+                EventEngine.runEvent(-1);
+
+                //Main.runEvent(-1);
             }
         });
 
@@ -1632,7 +1666,6 @@ public class GameFrame extends JFrame {
         deck.add(villagePanel, VILLAGE);
         deck.add(roughPanel, ROUGH);
         deck.add(calmPanel, CALM);
-
 
         // Location Based Events
         deck.add(startEvent, START);
@@ -1673,13 +1706,12 @@ public class GameFrame extends JFrame {
                     switchToPanel(VILLAGE);
                 } else if (seedInputText.equals("DEBUGFOREST")) { //TODO Testing - remove after
                     switchToPanel(FOREST);
-                } else if (seedInputText.equals("DEBUGCOMBAT")) { //User leaves the field blank
-                    //Temporary, should run the game - switch to the first game screen
+                } else if (seedInputText.equals("DEBUGCOMBAT")) {
                     switchToPanel(COMBAT);
                 } else if (seedInputText.equals("DEBUGWIPE")) {
                     switchToPanel(WIPE);
-                } else if (seedInputText.equals("DEBUGTESTEVENT5")) {
-                    Main.runEvent(5);
+                } else if (seedInputText.equals("DEBUGTESTEVENTRAND")) {
+                    EventEngine.runEvent(-1);
                 } else if (seedInputText.equals("DEBUGSANK")) {
                     switchToPanel(CONFRIM);
                 } else { //User leaves the field blank
@@ -1730,7 +1762,7 @@ public class GameFrame extends JFrame {
         eventOptionSail.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                Main.runEvent(5); // Random Event?
+                EventEngine.runEvent(-1); // Random Event?
 
             }
         });
