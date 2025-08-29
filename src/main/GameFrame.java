@@ -2,18 +2,19 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.sql.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 
 //<editor-fold desc="Test">
 // </editor-fold>
 
 //TODO add party panel
 //TODO rework welcome shop to be a general use shop panel.
-
-// event = rng.nextInt(max - min + 1) + min; <- Leave this here, might come in handy later
 
 public class GameFrame extends JFrame {
 
@@ -55,14 +56,14 @@ public class GameFrame extends JFrame {
     // </editor-fold>
 
     //Custom Colors
-    private Color emerald = new Color(105,220,158);
-    private Color gunmetal = new Color(37,48,49);
-    private Color darkslate = new Color(49,86,89 );
-    private Color cerulean = new Color(41,120,160);
-    private Color columbiablue = new Color(198,224,255);
-    private Color alertorange = new Color(227,159,78);
-    private Color buttonbrown = new Color(66,39,15);
-    private Color transparent = new Color(0,0,0,0);
+    private final Color emerald = new Color(105,220,158);
+    private final Color gunmetal = new Color(37,48,49);
+    private final Color darkslate = new Color(49,86,89 );
+    private final Color cerulean = new Color(41,120,160);
+    private final Color columbiablue = new Color(198,224,255);
+    private final Color alertorange = new Color(227,159,78);
+    private final Color buttonbrown = new Color(66,39,15);
+    private final Color transparent = new Color(0,0,0,0);
 
     //<editor-fold desc="Resources">
     // Resources
@@ -92,6 +93,21 @@ public class GameFrame extends JFrame {
     //Globals
     private String rescourceLabel = "";
     private JLabel shipStatusImage = new JLabel();
+    public static int eventID = 0;
+
+    ObjectMapper mapper = new ObjectMapper();
+    TestDat testDat = new TestDat();
+    File saveFile = new File("./resources/Data/testDat.json");
+
+    private JButton eventOptionOne = new JButton();
+    private JButton eventOptionTwo = new JButton();
+    private JButton eventOptionThree = new JButton();
+    private JButton eventOptionFour = new JButton();
+    private JLabel eventTitle = new JLabel();
+    private String eventTitleString;
+    private JLabel eventImage = new JLabel();
+    //Add image icons later
+    private JTextArea eventDescription = new JTextArea(5,40);
 
     public GameFrame() {
         // Reference Main and Database
@@ -233,6 +249,7 @@ public class GameFrame extends JFrame {
 
         hpUpButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
                 debugShip.addHealth(5);
                 dbHealthText.setText("Ship Health: " + debugShip.getHealth());
                 dbStatText.setText("Ship Status: " + debugShip.getStatus());
@@ -247,14 +264,37 @@ public class GameFrame extends JFrame {
                 } else if (debugShip.getStatus() == "Sank") {
                     dbStatsImage.setIcon(shipConditionSank);
                 }
+
+                //TODO json I/O save/load test
+                //testDat.setDebugHealth(debugShip.getHealth());
+                try {
+                    TestDat modifyShipHealth = mapper.readValue(saveFile, TestDat.class);
+
+                    System.out.println("JSON file read successfully.");
+                    System.out.println("Original Seed in save file: " + modifyShipHealth.getDebugHealth());
+                    System.out.println("Original DB Ship Health: " + modifyShipHealth.getDebugHealth());
+
+                    modifyShipHealth.setDebugHealth(debugShip.getHealth());
+                    mapper.writeValue(saveFile, modifyShipHealth);
+                    System.out.println("JSON file updated successfully.");
+
+                    TestDat readShipHealth = mapper.readValue(saveFile, TestDat.class);
+                    System.out.println("DB Ship Health: " + readShipHealth.getDebugHealth());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+
+                }
+
             }
         });
 
         hpDownButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
                 debugShip.removeHealth(20);
                 dbHealthText.setText("Ship Health: " + debugShip.getHealth());
                 dbStatText.setText("Ship Status: " + debugShip.getStatus());
+
                 if (debugShip.getStatus() == "Perfect Condition"){
                     dbStatsImage.setIcon(shipConditionPerfect);
                 } else if (debugShip.getStatus() == "Great Condition") {
@@ -265,6 +305,27 @@ public class GameFrame extends JFrame {
                     dbStatsImage.setIcon(shipConditionSevere);
                 } else if (debugShip.getStatus() == "Sank") {
                     dbStatsImage.setIcon(shipConditionSank);
+                }
+
+                //TODO json I/O save/load test
+                try {
+                    TestDat modifyShipHealth = mapper.readValue(saveFile, TestDat.class);
+
+                    System.out.println("JSON file read successfully.");
+                    System.out.println("Original Seed in save file: " + modifyShipHealth.getDebugHealth());
+                    System.out.println("Original DB Ship Health: " + modifyShipHealth.getDebugHealth());
+
+                    modifyShipHealth.setDebugHealth(debugShip.getHealth());
+                    System.out.println("New Seed:" + modifyShipHealth.getSeedInput());
+
+                    mapper.writeValue(saveFile, modifyShipHealth);
+                    System.out.println("JSON file updated successfully.");
+
+                    TestDat readShipHealth = mapper.readValue(saveFile, TestDat.class);
+                    System.out.println("DB Ship Health: " + readShipHealth.getDebugHealth());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+
                 }
             }
         });
@@ -492,17 +553,55 @@ public class GameFrame extends JFrame {
         JPanel eventContent = new JPanel(new GridBagLayout());
         eventContent.setBackground(gunmetal);
 
-        JButton eventOptionOne = new JButton();
         eventOptionOne.setPreferredSize(new Dimension(200,50));
-
-        JButton eventOptionTwo = new JButton();
         eventOptionTwo.setPreferredSize(new Dimension(200,50));
-
-        JButton eventOptionThree = new JButton();
         eventOptionThree.setPreferredSize(new Dimension(200,50));
-
-        JButton eventOptionFour = new JButton();
         eventOptionFour.setPreferredSize(new Dimension(200,50));
+        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
+        eventTitle.setForeground(alertorange);
+        eventDescription.setEditable(false);
+        eventDescription.setHighlighter(null);
+        eventDescription.setFocusable(false);
+        eventDescription.setBackground(transparent);
+        eventDescription.setLineWrap(true);
+        eventDescription.setText("placeholder");
+        eventDescription.setForeground(emerald);
+
+        eventOptionOne.setText("Option One");
+        eventOptionTwo.setText("Option Two");
+        eventOptionThree.setText("Option Three");
+        eventOptionFour.setText("Option Four");
+
+        eventControls.setPreferredSize(new Dimension(200,200));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        eventControls.add(createDefaultControls(), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        eventControls.add(eventOptionOne, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        eventControls.add(eventOptionTwo, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        eventControls.add(eventOptionThree, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        eventControls.add(eventOptionFour, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        eventContent.add(eventTitle, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        eventContent.add(eventImage, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 5;
+        eventContent.add(eventDescription, gbc);
+
+        randEvent.add(eventContent);
+        randEvent.add(eventControls,BorderLayout.SOUTH);
 // </editor-fold>
 
         //<editor-fold desc="COMBAT PANEL">
@@ -646,61 +745,7 @@ public class GameFrame extends JFrame {
         endCombat.add(endCombatControl,BorderLayout.SOUTH);
 // </editor-fold>
 
-        //<editor-fold desc="PLACEHOLDER EVENT PANEL">
-        /* ------------ PLACEHOLDER EVENT SCREEN ------------ */
-        JLabel eventTitle = new JLabel();
-        eventTitle.setText("Placeholder");
-        eventTitle.setFont(new Font("Monospaced", Font.BOLD, 40));
-        eventTitle.setForeground(alertorange);
-
-        JLabel eventImage = new JLabel();
-        //Add image icons later
-
-        JTextArea eventDescription = new JTextArea(5,40);
-        eventDescription.setEditable(false);
-        eventDescription.setHighlighter(null);
-        eventDescription.setFocusable(false);
-        eventDescription.setBackground(transparent);
-        eventDescription.setLineWrap(true);
-        eventDescription.setText("placeholder");
-        eventDescription.setForeground(emerald);
-
-        eventOptionOne.setText("Option One");
-        eventOptionTwo.setText("Option Two");
-        eventOptionThree.setText("Option Three");
-        eventOptionFour.setText("Option Four");
-
-        eventControls.setPreferredSize(new Dimension(200,200));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        eventControls.add(createDefaultControls(), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        eventControls.add(eventOptionOne, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        eventControls.add(eventOptionTwo, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        eventControls.add(eventOptionThree, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        eventControls.add(eventOptionFour, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        eventContent.add(eventTitle, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        eventContent.add(eventImage, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 5;
-        eventContent.add(eventDescription, gbc);
-
-        randEvent.add(eventContent);
-        randEvent.add(eventControls,BorderLayout.SOUTH);
-// </editor-fold>
+        //<editor-fold desc="GENERIC LOCATION PANEL">
 
         /* ------------ LOCATION EVENT SCREEN ------------ */
         // Start Area Event ------------------------------
@@ -774,6 +819,9 @@ public class GameFrame extends JFrame {
         startEvent.add(startContent, BorderLayout.CENTER);
 
         startEvent.add(startControls,BorderLayout.SOUTH);
+        // </editor-fold>
+
+        //<editor-fold desc="SCOTLAND">
 
         // ScotLand Event ------------------------------
         JPanel scotEvent = new JPanel(new BorderLayout());
@@ -834,6 +882,10 @@ public class GameFrame extends JFrame {
         scotEvent.add(scotContent, BorderLayout.CENTER);
         scotEvent.add(scotControls,BorderLayout.SOUTH);
 
+        // </editor-fold>
+
+        //<editor-fold desc="ICELAND">
+
         // Iceland Event ------------------------------
         JPanel iceEvent = new JPanel(new BorderLayout());
 
@@ -892,6 +944,9 @@ public class GameFrame extends JFrame {
 
         iceEvent.add(iceContent, BorderLayout.CENTER);
         iceEvent.add(iceControls,BorderLayout.SOUTH);
+        // </editor-fold>
+
+        //<editor-fold desc="GREENLAND">
 
         // Greenland Event ------------------------------
         JPanel greenEvent = new JPanel(new BorderLayout());
@@ -950,6 +1005,9 @@ public class GameFrame extends JFrame {
 
         greenEvent.add(greenContent, BorderLayout.CENTER);
         greenEvent.add(greenControls,BorderLayout.SOUTH);
+        // </editor-fold>
+
+        //<editor-fold desc="VINLAND">
 
         // Vinland Event ------------------------------
         JPanel vinEvent = new JPanel(new BorderLayout());
@@ -1000,6 +1058,9 @@ public class GameFrame extends JFrame {
 
         vinEvent.add(vinContent, BorderLayout.CENTER);
         vinEvent.add(vinControls,BorderLayout.SOUTH);
+        // </editor-fold>
+
+        //<editor-fold desc="CALM SEAS PANEL">
 
         /* -------------- Calm Seas Panel ------------ */
         // Create Calm Seas Panel
@@ -1077,6 +1138,9 @@ public class GameFrame extends JFrame {
 
         // Add calmPanel to deck
         /* -------------- End of Calm Seas Panel ------------ */
+        // </editor-fold>
+
+        //<editor-fold desc="ROUGH SEAS PANEL">
 
         /* -------------- Rough Seas Panel ------------------ */
         // Create Rough Seas panel
@@ -1153,6 +1217,9 @@ public class GameFrame extends JFrame {
         // Add roughPanel to deck
 
         /* -------------- End of Rough Seas Panel ------------ */
+        // </editor-fold>
+
+        //<editor-fold desc="STORM PANEL">
 
         /* ----------------- Storm Panel --------------------- */
         // Create Storm Panel
@@ -1221,6 +1288,9 @@ public class GameFrame extends JFrame {
         // Add stormPanel to deck
 
         /* -------------- End of Storm Panel ----------------- */
+        // </editor-fold>
+
+        //<editor-fold desc="VILLAGE PANEL">
 
         /*--------------- Village Panel ---------------------- */
         // Create village panel
@@ -1296,6 +1366,9 @@ public class GameFrame extends JFrame {
         // Add villagePanel to deck
 
         /*--------------- End of Village Panel ------------------ */
+        // </editor-fold>
+
+        //<editor-fold desc="FOREST PANEL">
 
         /* ----------------- Forest Panel --------------------- */
         // Create Forest Panel
@@ -1369,7 +1442,9 @@ public class GameFrame extends JFrame {
         forestPanel.add(forestControls, BorderLayout.SOUTH);
 
         // Add forestPanel to deck
+        // </editor-fold>
 
+        //<editor-fold desc="SANK PANEL">
 
         /* ------------ Ship Sank Panel ------------ */
         JPanel shipSankPanel = new JPanel(new BorderLayout());
@@ -1422,6 +1497,9 @@ public class GameFrame extends JFrame {
         // Build Sank Panel
         shipSankPanel.add(sankContent, BorderLayout.CENTER);
         shipSankPanel.add(sankControls, BorderLayout.SOUTH);
+        // </editor-fold>
+
+        //<editor-fold desc="PARTY WIPE">
 
         /* ------------ Party Wipe Panel ------------ */
         JPanel partyWipePanel = new JPanel();
@@ -1453,6 +1531,9 @@ public class GameFrame extends JFrame {
         // Build Wipe Panel
         partyWipePanel.add(wipeContent, BorderLayout.CENTER);
         partyWipePanel.add(wipeControls, BorderLayout.SOUTH);
+        // </editor-fold>
+
+        //<editor-fold desc="RESOURCE PANEL">
 
         /* ------------ Resource Panel ------------ */
 
@@ -1487,6 +1568,9 @@ public class GameFrame extends JFrame {
 
         resourcesPanel.add(resourcesContent, BorderLayout.CENTER);
         resourcesPanel.add(resourcesControls, BorderLayout.SOUTH);
+        // </editor-fold>
+
+        //<editor-fold desc="PARTY CREATION PANEL">
 
         /* ------------ Party Creation Panel ------------ */
         JPanel party = new JPanel();
@@ -1558,6 +1642,7 @@ public class GameFrame extends JFrame {
         party.add(partyControls, BorderLayout.SOUTH);
         party.add(partyContent);
 
+        //TODO have a cath for when a player does not enter any names. Make a pop up that states at least one name must be filled in
         partyContinueButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String partyNameOneInput = partyOneField.getText();
@@ -1638,9 +1723,18 @@ public class GameFrame extends JFrame {
 
                 EventEngine.runEvent(-1);
 
+                //TODO json reading test - remove after testing
+                TestDat readTestDat = null;
+                try {
+                    readTestDat = mapper.readValue(new File("./resources/Data/testDat.json"), TestDat.class);
+                    System.out.println("Seed Input from json: " + readTestDat.getSeedInput());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 //Main.runEvent(-1);
             }
         });
+        // </editor-fold>
 
         /* ------------ Frame Parameters ------------ */
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -1687,7 +1781,32 @@ public class GameFrame extends JFrame {
                 String seedInputText = seedField.getText();
 
                 if (seedInputText.equals("DEBUGSTATUS")) { //TODO Testing - remove after
+
+                    TestDat readTestDat = null;
+                    try {
+                        readTestDat = mapper.readValue(new File("./resources/Data/testDat.json"), TestDat.class);
+                        System.out.println("Last recorded ship health from json: " + readTestDat.getDebugHealth());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    debugShip.setHealth(readTestDat.getDebugHealth());
+                    dbHealthText.setText("Ship Health: " + debugShip.getHealth());
+                    dbStatText.setText("Ship Status: " + debugShip.getStatus());
+
+                    if (debugShip.getStatus() == "Perfect Condition"){
+                        dbStatsImage.setIcon(shipConditionPerfect);
+                    } else if (debugShip.getStatus() == "Great Condition") {
+                        dbStatsImage.setIcon(shipConditionGreat);
+                    } else if (debugShip.getStatus() == "Damaged") {
+                        dbStatsImage.setIcon(shipConditionDamaged);
+                    } else if (debugShip.getStatus() == "Severe Damage") {
+                        dbStatsImage.setIcon(shipConditionSevere);
+                    } else if (debugShip.getStatus() == "Sank") {
+                        dbStatsImage.setIcon(shipConditionSank);
+                    }
+
                     switchToPanel(DBSTATS);
+
                 } else if (seedInputText.equals("DEBUGEVENT")) { //TODO Testing - remove after
                     switchToPanel(EVENT);
                 } else if (seedInputText.equals("DEBUGSTART")) { //TODO Testing - remove after
@@ -1714,12 +1833,39 @@ public class GameFrame extends JFrame {
                     EventEngine.runEvent(-1);
                 } else if (seedInputText.equals("DEBUGSANK")) {
                     switchToPanel(CONFRIM);
+                } else if (seedInputText.equals("DEBUGJSON")) {
+                    System.out.println(testDat.getDebugHealth() + testDat.getSeedInput());
                 } else { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
-                    Main.setSeed(seedInputText);
+                    long randSeedLong = System.currentTimeMillis();
+                    String randSeedString = Long.toString(randSeedLong);
+                    Main.setSeed(randSeedString);
                     switchToPanel(PARTY);
+                }// end debug if's
+
+                //TODO testing json I/O delete after testing!
+
+                try {
+
+                    //Read JSON file
+                    TestDat modifySeed = mapper.readValue(saveFile, TestDat.class);
+                    //Modify SeedInput
+                    modifySeed.setSeedInput(seedInputText);
+                    //Write changes to saveFile
+                    mapper.writeValue(saveFile, modifySeed);
+
+                    //TODO Testing - remove for production
+//                    TestDat readSeed = mapper.readValue(saveFile, TestDat.class);
+//
+//                    System.out.println(readSeed.getSeedInput());
+//                    System.out.println(readSeed.getDebugHealth());
+
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
+
             }
+
         }); // End of playButton listener
 
         // Event Option Buttons
@@ -1736,7 +1882,9 @@ public class GameFrame extends JFrame {
         });
 
         eventOptionFour.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {}
+            public void actionPerformed(ActionEvent e) {
+                EventEngine.runEvent(-1);
+            }
         });
 
 
@@ -1762,7 +1910,7 @@ public class GameFrame extends JFrame {
         eventOptionSail.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                EventEngine.runEvent(-1); // Random Event?
+                EventEngine.runEvent(10000000); // Random Event?
 
             }
         });
@@ -1844,7 +1992,6 @@ public class GameFrame extends JFrame {
             previousPanel = currentPanel;
             System.out.println("Switching to " + panelName + " from " + currentPanel + ", previous = " + previousPanel);
             currentPanel = panelName;
-
         }
 
         cardLayout.show(deck, panelName);
@@ -1853,6 +2000,28 @@ public class GameFrame extends JFrame {
 
     public void resourceChanges(String resourceName) {
         rescourceLabel = resourceName;
+    }
+
+    public void setEventID(int eventID) {
+        GameFrame.eventID = eventID;
+        //TODO I want this to be read from a json file so it knows to change events by reading event data from the json
+        if (eventID == 1) {
+            eventTitle.setText("Common event 1");
+        } else if (eventID == 2) {
+            eventTitle.setText("Common event 2");
+        } else if (eventID == 3) {
+            eventTitle.setText("Common event 3");
+        } else if (eventID == 4) {
+            eventTitle.setText("Common event 4");
+        } else if (eventID == 5) {
+            eventTitle.setText("Common event 5");
+        } else if (eventID == 6) {
+            eventTitle.setText("Common event 6");
+        } else {
+            eventTitle.setText("Placeholder");
+        }
+        this.repaint();
+        this.revalidate();
     }
 
 } // End of GameFrame.java

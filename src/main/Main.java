@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +47,7 @@ public class Main {
     public static Map<Integer, String> eventDescriptions = new HashMap<>();
 
     //Runs the main game window from the GameFrame.java class
-    private static GameFrame mainFrame;
+    public static GameFrame mainFrame;
 
 
     private static class InputFilter extends DocumentFilter {
@@ -80,9 +82,21 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        //mainFrame = new GameFrame();
         setShip(ship = new Ship());
         initializeLists();
+
+        //Create save file if one does not exist
+        String filePath = "./resources/Data/session.json";
+        File saveFile = new File(filePath);
+        if (!saveFile.exists()) {
+            try {
+                saveFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        //Initiate the game frame
         mainFrame = new GameFrame();
     }
 
@@ -196,11 +210,14 @@ public class Main {
     }
 
     public static void setSeed(String input) {
-        rng = new Random();
+        rng = null;
         if (input != null) {
-            long seed = (long) input.hashCode();
-            rng.setSeed(seed);
+            long seed = input.hashCode();
+            //rng.setSeed(seed);
+            rng = new Random(seed);
             seedUsed = input;
+        } else {
+            rng = new Random(System.currentTimeMillis());
         }
 
     }
