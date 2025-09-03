@@ -7,9 +7,10 @@ with Java and SQLite to help create the GUI and database
 for the player.
 
 # Installation
-* Requires a text editor like Intellij IDEA or Virural Studio Code
-* Includes JUnit.
-* Includes SQLite.
+* Requires an IDE like Intellij IDEA or Virtual Studio Code
+* Includes JUnit
+* Includes SQLite
+* Includes Jackson
 * Requires JDK 21 to run. Download here: https://www.oracle.com/java/technologies/downloads/
 
 # Testing
