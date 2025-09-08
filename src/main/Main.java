@@ -1,5 +1,9 @@
 package main;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import main.controllers.InputOutput;
+import main.models.Session;
+
 import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.text.DocumentFilter;
@@ -84,18 +88,28 @@ public class Main {
     public static void main(String[] args) {
         setShip(ship = new Ship());
         initializeLists();
-
-        //Create save file if one does not exist
+        ObjectMapper objectMapper = new ObjectMapper();
         String filePath = "./resources/Data/session.json";
-        File saveFile = new File(filePath);
-        if (!saveFile.exists()) {
-            try {
-                saveFile.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        File sessionFile = new File(filePath);
+        try{
+            if (!sessionFile.exists()) {
+                sessionFile.createNewFile();
+                Session defaultSession = new Session(
+                        null,
+                        100,
+                        new String[] {null},
+                        new int[] {0},
+                        new int[] {0}
+                );
+                objectMapper.writeValue(sessionFile, defaultSession);
+            } else {
+                objectMapper.readValue(sessionFile, Session.class);
             }
-        }
 
+        } catch (Exception e) {
+            System.out.println("Session file corrupt or unreadable. Restoring...");
+            restoreSession();
+        }
         //Initiate the game frame
         mainFrame = new GameFrame();
     }
@@ -499,6 +513,34 @@ public class Main {
             e.printStackTrace();
         }
 
+    }
+
+    public static void restoreSession() {
+        String filePath = "./resources/Data/session.json";
+        File sessionFile = new File(filePath);
+        if (sessionFile.exists()) {
+            sessionFile.delete();
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                sessionFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                Session defaultSession = new Session(
+                        null,
+                        100,
+                        new String[] {null},
+                        new int[] {0},
+                        new int[] {0}
+                );
+                objectMapper.writeValue(sessionFile, defaultSession);
+                System.out.println("Restore session successful!");
+            } catch (Exception e) {
+                System.out.println("Failed to restore session");
+            }
+        }
     }
 
     // Adds starter items to player's inventory using items table in database

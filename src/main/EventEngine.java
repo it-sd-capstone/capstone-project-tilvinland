@@ -36,77 +36,62 @@ public class EventEngine {
         if (event == 0) { // RANDOM EVENTS START HERE
             System.out.println("Common Event 1");
             Main.mainFrame.setEventID(1);
-            Main.mainFrame.switchToPanel("Event");
             eventCounter++;
         } else if (event == 1) {
             System.out.println("Common Event 2");
             Main.mainFrame.setEventID(2);
-            Main.mainFrame.switchToPanel("Event");
             eventCounter++;
         } else if (event == 2) {
             System.out.println("Common Event 3");
             Main.mainFrame.setEventID(3);
-            Main.mainFrame.switchToPanel("Event");
             eventCounter++;
         } else if (event == 3) {
             System.out.println("Common Event 4");
             Main.mainFrame.setEventID(4);
-            Main.mainFrame.switchToPanel("Event");
             eventCounter++;
         } else if (event == 4) {
             System.out.println("Common Event 5");
             Main.mainFrame.setEventID(5);
-            Main.mainFrame.switchToPanel("Event");
             eventCounter++;
         } else if (event == 5) {
             System.out.println("Common Event 6");
             Main.mainFrame.setEventID(6);
-            Main.mainFrame.switchToPanel("Event");
             eventCounter++;
         } else if (event == 6) {
             System.out.println("Uncommon Event 1");
-            Main.mainFrame.eventID = 11;
-            Main.mainFrame.switchToPanel("Event");
+            Main.mainFrame.setEventID(11);
             eventCounter++;
         } else if (event == 7) {
             System.out.println("Uncommon Event 2");
-            Main.mainFrame.eventID = 12;
-            Main.mainFrame.switchToPanel("Event");
+            Main.mainFrame.setEventID(12);
             eventCounter++;
         } else if (event == 8) {
             System.out.println("Uncommon Event 3");
-            Main.mainFrame.eventID = 13;
-            Main.mainFrame.switchToPanel("Event");
+            Main.mainFrame.setEventID(13);
             eventCounter++;
         } else if (event == 9) {
             System.out.println("Rare Event 1");
-            Main.mainFrame.eventID = 21;
-            Main.mainFrame.switchToPanel("Event");
+            Main.mainFrame.setEventID(21);
             eventCounter++;
         } else if (event == 10) {
             System.out.println("Rare Event 2");
-            Main.mainFrame.eventID = 22;
-            Main.mainFrame.switchToPanel("Event");
+            Main.mainFrame.setEventID(22);
             eventCounter++;
         } else if (event == 11) {
             System.out.println("Rare Event 3");
-            Main.mainFrame.eventID = 23;
-            Main.mainFrame.switchToPanel("Event");
+            Main.mainFrame.setEventID(23);
             eventCounter++;
         } else if (event == 12) {
             System.out.println("Special Event 1");
-            Main.mainFrame.eventID = 31;
-            Main.mainFrame.switchToPanel("Event");
+            Main.mainFrame.setEventID(31);
             eventCounter++;
         } else if (event == -1) {
             System.out.println("Main Event 1");
-            Main.mainFrame.eventID = -1;
-            Main.mainFrame.switchToPanel("Event");
+            Main.mainFrame.setEventID(-1);
             eventCounter++;
         } else if (event == -2) {
             System.out.println("Main Event 2");
-            Main.mainFrame.eventID = -2;
-            Main.mainFrame.switchToPanel("Event");
+            Main.mainFrame.setEventID(-2);
             eventCounter++;
         }
 
