@@ -2,18 +2,21 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.sql.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 import java.util.Random;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
+import main.models.Session;
 
 //<editor-fold desc="Test">
 // </editor-fold>
 
-//TODO add party panel
 //TODO rework welcome shop to be a general use shop panel.
 
 public class GameFrame extends JFrame {
@@ -96,8 +99,8 @@ public class GameFrame extends JFrame {
     public static int eventID = 0;
 
     ObjectMapper mapper = new ObjectMapper();
-    TestDat testDat = new TestDat();
-    File saveFile = new File("./resources/Data/testDat.json");
+    Session session = new Session();
+    File sessionFile = new File("./resources/Data/session.json");
 
     private JButton eventOptionOne = new JButton();
     private JButton eventOptionTwo = new JButton();
@@ -268,17 +271,17 @@ public class GameFrame extends JFrame {
                 //TODO json I/O save/load test
                 //testDat.setDebugHealth(debugShip.getHealth());
                 try {
-                    TestDat modifyShipHealth = mapper.readValue(saveFile, TestDat.class);
+                    Session modifyShipHealth = mapper.readValue(sessionFile, Session.class);
 
                     System.out.println("JSON file read successfully.");
-                    System.out.println("Original Seed in save file: " + modifyShipHealth.getDebugHealth());
+                    System.out.println("Original Seed in save file: " + modifyShipHealth.getSeedInput());
                     System.out.println("Original DB Ship Health: " + modifyShipHealth.getDebugHealth());
 
                     modifyShipHealth.setDebugHealth(debugShip.getHealth());
-                    mapper.writeValue(saveFile, modifyShipHealth);
+                    mapper.writeValue(sessionFile, modifyShipHealth);
                     System.out.println("JSON file updated successfully.");
 
-                    TestDat readShipHealth = mapper.readValue(saveFile, TestDat.class);
+                    Session readShipHealth = mapper.readValue(sessionFile, Session.class);
                     System.out.println("DB Ship Health: " + readShipHealth.getDebugHealth());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -309,19 +312,19 @@ public class GameFrame extends JFrame {
 
                 //TODO json I/O save/load test
                 try {
-                    TestDat modifyShipHealth = mapper.readValue(saveFile, TestDat.class);
+                    Session modifyShipHealth = mapper.readValue(sessionFile, Session.class);
 
                     System.out.println("JSON file read successfully.");
-                    System.out.println("Original Seed in save file: " + modifyShipHealth.getDebugHealth());
+                    System.out.println("Original Seed in save file: " + modifyShipHealth.getSeedInput());
                     System.out.println("Original DB Ship Health: " + modifyShipHealth.getDebugHealth());
 
                     modifyShipHealth.setDebugHealth(debugShip.getHealth());
                     System.out.println("New Seed:" + modifyShipHealth.getSeedInput());
 
-                    mapper.writeValue(saveFile, modifyShipHealth);
+                    mapper.writeValue(sessionFile, modifyShipHealth);
                     System.out.println("JSON file updated successfully.");
 
-                    TestDat readShipHealth = mapper.readValue(saveFile, TestDat.class);
+                    Session readShipHealth = mapper.readValue(sessionFile, Session.class);
                     System.out.println("DB Ship Health: " + readShipHealth.getDebugHealth());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -335,7 +338,6 @@ public class GameFrame extends JFrame {
         /* ------------ Ship/Party Status Panel ------------ */
         //TODO add a ship repair button
         //TODO add a heal party button?? (-rations)
-        //TODO add some art!
         //TODO grab party names and stats
         GridBagConstraints gbcStatusPanel = new GridBagConstraints();
         gbcStatusPanel.insets = new Insets(10, 10, 10, 10);
@@ -343,8 +345,8 @@ public class GameFrame extends JFrame {
         JPanel status = new JPanel();
         status.setLayout(new BorderLayout());
 
-        JPanel statusContent = new JPanel();
-        statusContent.setLayout(new GridBagLayout());
+        JPanel statusContent = new JPanel(new BorderLayout());
+        //statusContent.setLayout(new GridBagLayout());
         statusContent.setBackground(gunmetal);
 
         JPanel statusControls = new JPanel();
@@ -359,6 +361,32 @@ public class GameFrame extends JFrame {
         JLabel shipStatText = new JLabel();
         shipStatText.setText("Ship Status: " + Main.getShip().getStatus());
         shipStatText.setForeground(alertorange);
+
+        //SWITCH TO LUMBER AND OTHER RESOURCES
+        //TODO quantity should change based on inventory. Placeholder for now
+        JLabel lumberText = new JLabel();
+        lumberText.setText("LUMBER");
+        lumberText.setForeground(alertorange);
+
+        JLabel lumberQuant = new JLabel();
+        lumberQuant.setText("0000");
+        lumberQuant.setForeground(alertorange);
+
+        JLabel rationsText = new JLabel();
+        rationsText.setText("RATIONS");
+        rationsText.setForeground(alertorange);
+
+        JLabel rationsQuant = new JLabel();
+        rationsQuant.setText("0000");
+        rationsQuant.setForeground(alertorange);
+
+        JLabel goldText = new JLabel();
+        goldText.setText("GOLD");
+        goldText.setForeground(alertorange);
+
+        JLabel goldQuant = new JLabel();
+        goldQuant.setText("0000");
+        goldQuant.setForeground(alertorange);
 
         JLabel p1StatusPicture = new JLabel(partyOneLogo);
         JLabel p1StatusText = new JLabel();
@@ -380,40 +408,76 @@ public class GameFrame extends JFrame {
         p4StatusText.setText(Main.getParty().get(0).getName());
         p4StatusText.setForeground(alertorange);
 
+        JPanel shipStatPanel = new JPanel(new GridBagLayout());
+        shipStatPanel.setBackground(gunmetal);
+        shipStatPanel.setPreferredSize(new Dimension(300,statusContent.getHeight()));
+
+        JPanel partyStatPanel = new JPanel(new GridBagLayout());
+        partyStatPanel.setBackground(darkslate);
+
+        JPanel invPanel = new JPanel(new GridBagLayout());
+        invPanel.setBackground(gunmetal);
+        invPanel.setPreferredSize(new Dimension(200,statusContent.getHeight()));
+
+
+        statusContent.add(shipStatPanel, BorderLayout.WEST);
+        statusContent.add(partyStatPanel, BorderLayout.CENTER);
+        statusContent.add(invPanel, BorderLayout.EAST);
 
         gbcStatusPanel.gridx = 0;
         gbcStatusPanel.gridy = 0;
-        statusContent.add(shipStatusImage, gbcStatusPanel);
+        shipStatPanel.add(shipStatusImage, gbcStatusPanel);
         gbcStatusPanel.gridx = 0;
         gbcStatusPanel.gridy = 1;
-        statusContent.add(shipHealthText, gbcStatusPanel);
+        shipStatPanel.add(shipHealthText, gbcStatusPanel);
         gbcStatusPanel.gridx = 0;
         gbcStatusPanel.gridy = 2;
-        statusContent.add(shipStatText, gbcStatusPanel);
+        shipStatPanel.add(lumberQuant, gbcStatusPanel);
+
         gbcStatusPanel.gridx = 1;
         gbcStatusPanel.gridy = 0;
-        statusContent.add(p1StatusPicture, gbcStatusPanel);
+        partyStatPanel.add(p1StatusPicture, gbcStatusPanel);
         gbcStatusPanel.gridx = 1;
         gbcStatusPanel.gridy = 1;
-        statusContent.add(p1StatusText, gbcStatusPanel);
+        partyStatPanel.add(p1StatusText, gbcStatusPanel);
         gbcStatusPanel.gridx = 2;
         gbcStatusPanel.gridy = 0;
-        statusContent.add(p2StatusPicture, gbcStatusPanel);
+        partyStatPanel.add(p2StatusPicture, gbcStatusPanel);
         gbcStatusPanel.gridx = 2;
         gbcStatusPanel.gridy = 1;
-        statusContent.add(p2StatusText, gbcStatusPanel);
+        partyStatPanel.add(p2StatusText, gbcStatusPanel);
         gbcStatusPanel.gridx = 1;
         gbcStatusPanel.gridy = 2;
-        statusContent.add(p3StatusPicture, gbcStatusPanel);
+        partyStatPanel.add(p3StatusPicture, gbcStatusPanel);
         gbcStatusPanel.gridx = 1;
         gbcStatusPanel.gridy = 3;
-        statusContent.add(p3StatusText, gbcStatusPanel);
+        partyStatPanel.add(p3StatusText, gbcStatusPanel);
         gbcStatusPanel.gridx = 2;
         gbcStatusPanel.gridy = 2;
-        statusContent.add(p4StatusPicture, gbcStatusPanel);
+        partyStatPanel.add(p4StatusPicture, gbcStatusPanel);
         gbcStatusPanel.gridx = 2;
         gbcStatusPanel.gridy = 3;
-        statusContent.add(p4StatusText, gbcStatusPanel);
+        partyStatPanel.add(p4StatusText, gbcStatusPanel);
+
+        //CHANGE THIS TO INV STUFF
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 0;
+        invPanel.add(lumberText, gbcStatusPanel);
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 1;
+        invPanel.add(lumberQuant, gbcStatusPanel);
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 2;
+        invPanel.add(rationsText, gbcStatusPanel);
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 3;
+        invPanel.add(rationsQuant, gbcStatusPanel);
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 4;
+        invPanel.add(goldText, gbcStatusPanel);
+        gbcStatusPanel.gridx = 0;
+        gbcStatusPanel.gridy = 5;
+        invPanel.add(goldQuant, gbcStatusPanel);
 
         gbcStatusPanel.gridx = 0;
         gbcStatusPanel.gridy = 0;
@@ -1645,89 +1709,95 @@ public class GameFrame extends JFrame {
         //TODO have a cath for when a player does not enter any names. Make a pop up that states at least one name must be filled in
         partyContinueButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String partyNameOneInput = partyOneField.getText();
-                String partyNameTwoInput = partyTwoField.getText();
-                String partyNameThreeInput = partyThreeField.getText();
-                String partyNameFourInput = partyFourField.getText();
+                String partyNameOneInput = partyOneField.getText().trim();
+                String partyNameTwoInput = partyTwoField.getText().trim();
+                String partyNameThreeInput = partyThreeField.getText().trim();
+                String partyNameFourInput = partyFourField.getText().trim();
 
-                ImageIcon partyOneLogo = new ImageIcon("./resources/PartyIcons/partyOne.png");
-                ImageIcon partyTwoLogo = new ImageIcon("./resources/PartyIcons/partyTwo.png");
-                ImageIcon partyThreeLogo = new ImageIcon("./resources/PartyIcons/partyThree.png");
-                ImageIcon partyFourLogo = new ImageIcon("./resources/PartyIcons/partyFour.png");
+                if (partyNameOneInput.isEmpty() && partyNameTwoInput.isEmpty() && partyNameThreeInput.isEmpty() && partyNameFourInput.isEmpty()) {
+                    //switchToPanel("PARTY");
+                    System.out.println("A party member name must be entered!");
+                } else {
 
-                Main.createParty(partyNameOneInput, partyNameTwoInput, partyNameThreeInput, partyNameFourInput);
-                p1StatusText.setText(Main.getParty().get(0).getName());
-                p1StatusText.setForeground(alertorange);
+                    ImageIcon partyOneLogo = new ImageIcon("./resources/PartyIcons/partyOne.png");
+                    ImageIcon partyTwoLogo = new ImageIcon("./resources/PartyIcons/partyTwo.png");
+                    ImageIcon partyThreeLogo = new ImageIcon("./resources/PartyIcons/partyThree.png");
+                    ImageIcon partyFourLogo = new ImageIcon("./resources/PartyIcons/partyFour.png");
 
-                p2StatusText.setText(Main.getParty().get(1).getName());
-                p2StatusText.setForeground(alertorange);
+                    Main.createParty(partyNameOneInput, partyNameTwoInput, partyNameThreeInput, partyNameFourInput);
+                    p1StatusText.setText(Main.getParty().get(0).getName());
+                    p1StatusText.setForeground(alertorange);
 
-                p3StatusText.setText(Main.getParty().get(2).getName());
-                p3StatusText.setForeground(alertorange);
+                    p2StatusText.setText(Main.getParty().get(1).getName());
+                    p2StatusText.setForeground(alertorange);
 
-                p4StatusText.setText(Main.getParty().get(3).getName());
-                p4StatusText.setForeground(alertorange);
+                    p3StatusText.setText(Main.getParty().get(2).getName());
+                    p3StatusText.setForeground(alertorange);
+
+                    p4StatusText.setText(Main.getParty().get(3).getName());
+                    p4StatusText.setForeground(alertorange);
+
+                    if (Main.getParty().get(0).getActive() == 1) {
+                        labelText[0] = "<html>" + Main.getParty().get(0).getName() + "<br/>Health: " + Main.getParty().get(0).getHealth() + "</html>";
+                        p1Status.setText(labelText[0]);
+                        partyOneIcon.setIcon(partyOneLogo);
+
+                    } else if (Main.getParty().get(0).getActive() == 0) {
+                        labelText[0] = " ";
+                        p1Status.setText(labelText[0]);
+                        p1StatusPicture.setIcon(partyInactiveLogo);
+                    }
+                    p1Status.setForeground(alertorange);
+                    p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                    if (Main.getParty().get(1).getActive() == 1) {
+                        labelText[0] = "<html>" + Main.getParty().get(1).getName() + "<br/>Health: " + Main.getParty().get(1).getHealth() + "</html>";
+                        p2Status.setText(labelText[0]);
+                        partyTwoIcon.setIcon(partyTwoLogo);
+                    } else if (Main.getParty().get(1).getActive() == 0) {
+                        labelText[0] = " ";
+                        p2Status.setText(labelText[0]);
+                        p2StatusPicture.setIcon(partyInactiveLogo);
+                    }
+
+                    p2Status.setForeground(alertorange);
+                    p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                    if (Main.getParty().get(2).getActive() == 1) {
+                        labelText[0] = "<html>" + Main.getParty().get(2).getName() + "<br/>Health: " + Main.getParty().get(2).getHealth() + "</html>";
+                        p3Status.setText(labelText[0]);
+                        partyThreeIcon.setIcon(partyThreeLogo);
+                    } else if (Main.getParty().get(2).getActive() == 0) {
+                        labelText[0] = " ";
+                        p3Status.setText(labelText[0]);
+                        p3StatusPicture.setIcon(partyInactiveLogo);
+                    }
+                    p3Status.setForeground(alertorange);
+                    p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                    if (Main.getParty().get(3).getActive() == 1) {
+                        labelText[0] = "<html>" + Main.getParty().get(3).getName() + "<br/>Health: " + Main.getParty().get(3).getHealth() + "</html>";
+                        p4Status.setText(labelText[0]);
+                        partyFourIcon.setIcon(partyFourLogo);
+                    } else if (Main.getParty().get(3).getActive() == 0) {
+                        labelText[0] = " ";
+                        p4Status.setText(labelText[0]);
+                        p4StatusPicture.setIcon(partyInactiveLogo);
+                    }
+                    p4Status.setForeground(alertorange);
+                    p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
+
+                    enemyStatus.repaint();
 
 
-                if (Main.getParty().get(0).getActive() == 1) {
-                    labelText[0] = "<html>" + Main.getParty().get(0).getName() + "<br/>Health: " + Main.getParty().get(0).getHealth() + "</html>";
-                    p1Status.setText(labelText[0]);
-                    partyOneIcon.setIcon(partyOneLogo);
-
-                } else if (Main.getParty().get(0).getActive() == 0) {
-                    labelText[0] = " ";
-                    p1Status.setText(labelText[0]);
-                    p1StatusPicture.setIcon(partyInactiveLogo);
+                    EventEngine.runEvent(-1);
                 }
-                p1Status.setForeground(alertorange);
-                p1Status.setFont(new Font("Monospaced", Font.BOLD, 30));
-
-                if (Main.getParty().get(1).getActive() == 1) {
-                    labelText[0] = "<html>" + Main.getParty().get(1).getName() + "<br/>Health: " + Main.getParty().get(1).getHealth() + "</html>";
-                    p2Status.setText(labelText[0]);
-                    partyTwoIcon.setIcon(partyTwoLogo);
-                } else if (Main.getParty().get(1).getActive() == 0) {
-                    labelText[0] = " ";
-                    p2Status.setText(labelText[0]);
-                    p2StatusPicture.setIcon(partyInactiveLogo);
-                }
-
-                p2Status.setForeground(alertorange);
-                p2Status.setFont(new Font("Monospaced", Font.BOLD, 30));
-
-                if (Main.getParty().get(2).getActive() == 1) {
-                    labelText[0] = "<html>" + Main.getParty().get(2).getName() + "<br/>Health: " + Main.getParty().get(2).getHealth() + "</html>";
-                    p3Status.setText(labelText[0]);
-                    partyThreeIcon.setIcon(partyThreeLogo);
-                } else if (Main.getParty().get(2).getActive() == 0) {
-                    labelText[0] = " ";
-                    p3Status.setText(labelText[0]);
-                    p3StatusPicture.setIcon(partyInactiveLogo);
-                }
-                p3Status.setForeground(alertorange);
-                p3Status.setFont(new Font("Monospaced", Font.BOLD, 30));
-
-                if (Main.getParty().get(3).getActive() == 1) {
-                    labelText[0] = "<html>" + Main.getParty().get(3).getName() + "<br/>Health: " + Main.getParty().get(3).getHealth() + "</html>";
-                    p4Status.setText(labelText[0]);
-                    partyFourIcon.setIcon(partyFourLogo);
-                } else if (Main.getParty().get(3).getActive() == 0) {
-                    labelText[0] = " ";
-                    p4Status.setText(labelText[0]);
-                    p4StatusPicture.setIcon(partyInactiveLogo);
-                }
-                p4Status.setForeground(alertorange);
-                p4Status.setFont(new Font("Monospaced", Font.BOLD, 30));
-
-                enemyStatus.repaint();
-
-                EventEngine.runEvent(-1);
 
                 //TODO json reading test - remove after testing
-                TestDat readTestDat = null;
+                Session readSession = null;
                 try {
-                    readTestDat = mapper.readValue(new File("./resources/Data/testDat.json"), TestDat.class);
-                    System.out.println("Seed Input from json: " + readTestDat.getSeedInput());
+                    readSession = mapper.readValue(new File("./resources/Data/session.json"), Session.class);
+                    System.out.println("Seed Input from json: " + readSession.getSeedInput());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -1737,7 +1807,8 @@ public class GameFrame extends JFrame {
         // </editor-fold>
 
         /* ------------ Frame Parameters ------------ */
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setSize(1280, 720);
         this.setPreferredSize(new Dimension(1920, 1080));
         this.setMinimumSize(new Dimension(720, 576));
@@ -1782,14 +1853,15 @@ public class GameFrame extends JFrame {
 
                 if (seedInputText.equals("DEBUGSTATUS")) { //TODO Testing - remove after
 
-                    TestDat readTestDat = null;
+                    Session readSession = null;
                     try {
-                        readTestDat = mapper.readValue(new File("./resources/Data/testDat.json"), TestDat.class);
-                        System.out.println("Last recorded ship health from json: " + readTestDat.getDebugHealth());
+                        readSession = mapper.readValue(new File("./resources/Data/session.json"), Session.class);
+                        System.out.println("Last recorded ship health from json: " + readSession.getDebugHealth());
                     } catch (IOException ex) {
+                        System.out.println("Unable to read JSON. Delete .resources/data/session.json and rerun program to repopulate session.json");
                         throw new RuntimeException(ex);
                     }
-                    debugShip.setHealth(readTestDat.getDebugHealth());
+                    debugShip.setHealth(readSession.getDebugHealth());
                     dbHealthText.setText("Ship Health: " + debugShip.getHealth());
                     dbStatText.setText("Ship Status: " + debugShip.getStatus());
 
@@ -1834,7 +1906,7 @@ public class GameFrame extends JFrame {
                 } else if (seedInputText.equals("DEBUGSANK")) {
                     switchToPanel(CONFRIM);
                 } else if (seedInputText.equals("DEBUGJSON")) {
-                    System.out.println(testDat.getDebugHealth() + testDat.getSeedInput());
+                    System.out.println(session.getDebugHealth() + session.getSeedInput());
                 } else { //User leaves the field blank
                     //Temporary, should run the game - switch to the first game screen
                     long randSeedLong = System.currentTimeMillis();
@@ -1846,13 +1918,12 @@ public class GameFrame extends JFrame {
                 //TODO testing json I/O delete after testing!
 
                 try {
-
                     //Read JSON file
-                    TestDat modifySeed = mapper.readValue(saveFile, TestDat.class);
+                    Session modifySeed = mapper.readValue(sessionFile, Session.class);
                     //Modify SeedInput
                     modifySeed.setSeedInput(seedInputText);
                     //Write changes to saveFile
-                    mapper.writeValue(saveFile, modifySeed);
+                    mapper.writeValue(sessionFile, modifySeed);
 
                     //TODO Testing - remove for production
 //                    TestDat readSeed = mapper.readValue(saveFile, TestDat.class);
@@ -1927,9 +1998,32 @@ public class GameFrame extends JFrame {
         // Add deck panel to the frame
         this.add(deck);
 
+        //Custom close logic for frame
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                //Check if the currently displayed panel is Main or Party. If it is, do not autosave.
+                if (currentPanel.equals("Main Menu") || currentPanel.equals("Party")) {
+                    dispose();
+                } else {
+                    //Call the autosave method and close the frame.
+                    saveSession();
+                    dispose();
+                }
+            }
+        });
+
         /* !!! KEEP LAST !!! */
         this.setVisible(true);
         switchToPanel(MAIN);
+    }
+
+    //TODO This should save current session data into a copy called playerSave or something like that.
+    // That way when the game is close it will auto save the current game.
+    // Then in the load game button's function, session should be populated with playerSave.
+    private void saveSession() {
+        System.out.println("Save file logic should be placed here");
+        //read the session json and write/copy its results to a seprate saveFile
     }
 
     private JButton createBackButton() {
@@ -2004,24 +2098,65 @@ public class GameFrame extends JFrame {
 
     public void setEventID(int eventID) {
         GameFrame.eventID = eventID;
+        Random rng = new Random();
         //TODO I want this to be read from a json file so it knows to change events by reading event data from the json
         if (eventID == 1) {
-            eventTitle.setText("Common event 1");
+            eventTitle.setText("Calm Seas");
+            eventDescription.setText("The seas are calm here. \n Njord has blessed us with a plenty of fish!");
+            eventOptionOne.setText("Cast Nets");
+            eventOptionOne.setToolTipText("++Rations");
+            eventOptionOne.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    Main.addInventory(3, (rng.nextInt(6 - 2 + 1) + 2));
+                }
+            });
+            eventOptionTwo.setText("Continue");
+            switchToPanel(EVENT);
         } else if (eventID == 2) {
             eventTitle.setText("Common event 2");
+            switchToPanel(EVENT);
         } else if (eventID == 3) {
             eventTitle.setText("Common event 3");
+            switchToPanel(EVENT);
         } else if (eventID == 4) {
             eventTitle.setText("Common event 4");
+            switchToPanel(EVENT);
         } else if (eventID == 5) {
             eventTitle.setText("Common event 5");
+            switchToPanel(EVENT);
         } else if (eventID == 6) {
             eventTitle.setText("Common event 6");
+            switchToPanel(EVENT);
+        } else if (eventID == 11) {
+            eventTitle.setText("Uncommon Event 1");
+            switchToPanel(EVENT);
+        } else if (eventID == 12) {
+            eventTitle.setText("Uncommon Event 2");
+            switchToPanel(EVENT);
+        } else if (eventID == 13) {
+            eventTitle.setText("Uncommon Event 3");
+            switchToPanel(EVENT);
+        } else if (eventID == 21) {
+            eventTitle.setText("Rare Event 1");
+            switchToPanel(EVENT);
+        } else if (eventID == 22) {
+            eventTitle.setText("Rare Event 2");
+            switchToPanel(EVENT);
+        } else if (eventID == 23) {
+            eventTitle.setText("Rare Event 3");
+            switchToPanel(EVENT);
+        } else if (eventID == 31) {
+            eventTitle.setText("Special Event");
+            switchToPanel(EVENT);
+        } else if (eventID == -1) {
+            switchToPanel(SCOTLAND);
+        } else if (eventID == -2) {
+            eventTitle.setText("Main Event 2"); //TODO change this to switchToPanel of each main event's specific panel
         } else {
             eventTitle.setText("Placeholder");
         }
-        this.repaint();
-        this.revalidate();
+        //this.repaint();
+        //this.revalidate();
     }
 
 } // End of GameFrame.java
